@@ -4,9 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var db = require('./connection/connection')
+var userRouter = require('./routes/user');
+var adminRouter = require('./routes/admin');
 
 var app = express();
 
@@ -20,8 +20,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+db.connect((err)=>
+{
+  if(err)
+  {
+    console.log("Database Connection Failure");
+  }else{
+    console.log("Database Connection Success");
+  }
+})
+app.use('/', userRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

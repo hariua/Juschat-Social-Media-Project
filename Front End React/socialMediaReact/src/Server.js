@@ -1,2 +1,2 @@
-const server = {ip:"http://localhost:3001"}
+const server = "http://localhost:3001"
 export default server
