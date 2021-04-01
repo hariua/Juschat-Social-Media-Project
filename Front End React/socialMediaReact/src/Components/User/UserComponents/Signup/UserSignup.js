@@ -77,6 +77,10 @@ export default function UserSignup() {
     }
     function formSubmit()
     {
+        document.getElementById("Name").value=""
+        document.getElementById("Email").value=""
+        document.getElementById("Mobile").value=""
+        document.getElementById("Password").value=""
         let formData={
             Name:Name,
             Email:Email,
@@ -96,25 +100,25 @@ export default function UserSignup() {
 
                 <div className="form-group">
                     <label><h5>Name</h5></label>
-                    <input type="text" name="Name" onBlur={handleChange} className="form-control" placeholder="Enter your Name" />
+                    <input type="text" name="Name" id="Name" onBlur={handleChange} className="form-control" placeholder="Enter your Name" />
                     <p className="text-center text-danger" id="nameErr" ></p>
                 </div>
 
                 <div className="form-group">
                     <label><h5>Email</h5></label>
-                    <input type="email" name="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
+                    <input type="email" name="Email" id="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
                     <p className="text-center text-danger" id="emailErr" ></p>
                 </div>
 
                 <div className="form-group">
                     <label><h5>Mobile</h5></label>
-                    <input type="number" name="Mobile" onBlur={handleChange} className="form-control" placeholder="Enter your Mobile" />
+                    <input type="number" name="Mobile" id="Mobile" onBlur={handleChange} className="form-control" placeholder="Enter your Mobile" />
                     <p className="text-center text-danger" id="mobileErr" ></p>
                 </div>
 
                 <div className="form-group">
                     <label><h5>Password</h5></label>
-                    <input type="password" name="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
+                    <input type="password" name="Password"id="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
                     <p className="text-center text-danger" id="passwordErr" ></p>
                 </div>
 

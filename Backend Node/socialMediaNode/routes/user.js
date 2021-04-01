@@ -5,13 +5,20 @@ var userHelper = require('../helper/userHelper')
 /* GET home page. */
 router.post('/signIn',(req,res)=>
 {
-  console.log(req.body)
+  userHelper.userLogin(req.body).then((data)=>
+  {
+    console.log("res",data);
+  })
   res.send("Hello")
 })
 router.post('/signUp',(req,res)=>
 {
   console.log(req.body);
-  res.send('success')
+  userHelper.userSignup(req.body).then((data)=>
+  {
+    
+    res.send(data)
+  })
 })
 
 module.exports = router;
