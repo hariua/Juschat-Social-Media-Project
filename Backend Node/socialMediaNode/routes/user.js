@@ -11,14 +11,23 @@ router.post('/signIn',(req,res)=>
   })
   res.send("Hello")
 })
-router.post('/signUp',(req,res)=>
+router.post('/signUp',async(req,res)=>
 {
   console.log(req.body);
-  userHelper.userSignup(req.body).then((data)=>
+  userHelper.userCheckup(req.body).then((response)=>
   {
-    
-    res.send(data)
-  })
+    console.log(response);
+    if(response.userExist)
+    {
+      res.send("Exist")
+    }
+    else{
+      res.send("New")
+    }
+  })  
 })
-
+router.post('/otpSubmit',(req,res)=>
+  {
+    console.log(req.body);
+  })
 module.exports = router;

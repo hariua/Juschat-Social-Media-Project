@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React,{useState} from 'react'
 import { Form, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link,useHistory } from 'react-router-dom'
 import server from '../../../../Server'
 import './UserSignup.css'
 
@@ -11,6 +11,7 @@ export default function UserSignup() {
     const [Email,setEmail] = useState('')
     const [Mobile,setMobile] = useState('')
     const [Password,setPassword] = useState('')
+    let history = useHistory()
     function handleChange(event) {
         event.preventDefault()
         let err = false
@@ -90,6 +91,13 @@ export default function UserSignup() {
         axios.post(server+'/signUp',formData).then((response)=>
         {
             console.log(response);
+            if(response.data==="New")
+            {
+                history.push('/otpSubmit')
+            }
+            else{
+                alert("User Already Exists")
+            }
         })
     }
     return (
