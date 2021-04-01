@@ -2,6 +2,8 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser')
+var session = require('express-session')
 var logger = require('morgan');
 var cors = require('cors')
 var db = require('./connection/connection')
@@ -12,9 +14,28 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+app.use(
+  session({
+    key: 'user_id',
+    secret: 'this is random',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
 
+     maxAge: 500000,
+     secure:true
+    }
+
+  })
+);
+app.use(function (req, res, next) {
+  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+  next();
+})
 app.use(logger('dev'));
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

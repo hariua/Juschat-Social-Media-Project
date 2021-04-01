@@ -18,16 +18,23 @@ module.exports={
                 resolve(status)
             }
             else{
-                // userData.Password =await bcrypt.hash(userData.Password,10)
-                // db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((data)=>
-                // {
-                //     status.user = data.ops[0]
-                //     console.log(status.user,"user");
-                //     resolve(status)
-                // })
+                
                 status.newUser = true;
                 resolve(status)
             }
+        })
+    },
+    signupUser:(userData)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            userData.Password =await bcrypt.hash(userData.Password,10)
+                db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((data)=>
+                {
+                    
+                    console.log(data.ops[0],"user");
+                    resolve(data.ops[0])
+                })
         })
     },
     userLogin:(userData)=>
