@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Link,useHistory } from 'react-router-dom'
 import server from '../../../../Server'
@@ -11,6 +11,14 @@ export default function UserSignup() {
     const [Email,setEmail] = useState('')
     const [Mobile,setMobile] = useState('')
     const [Password,setPassword] = useState('')
+    useEffect(()=>
+    {
+      let token = localStorage.getItem('jwt')
+      if(token)
+      {
+        history.push('/home')
+      }
+    },[])
     let history = useHistory()
     function handleChange(event) {
         event.preventDefault()
@@ -91,8 +99,11 @@ export default function UserSignup() {
         axios.post(server+'/signUp',formData).then((response)=>
         {
             console.log(response);
-            if(response.data==="New")
+            
+            
+            if(response.data.value==="New")
             {
+
                 history.push('/otpSubmit')
             }
             else{

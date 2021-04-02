@@ -2,16 +2,15 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser')
 var session = require('express-session')
 var logger = require('morgan');
 var cors = require('cors')
+var dotenv = require('dotenv').config()
 var db = require('./connection/connection')
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -31,6 +30,7 @@ app.use(
 );
 app.use(function (req, res, next) {
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+  
   next();
 })
 app.use(logger('dev'));

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import './UserSignup.css'
-import { useHistory, Link } from "react-router-dom";
+import {useHistory, Link} from "react-router-dom";
 import axios from "axios";
 import server from "../../../../Server";
+import Home from "../home/Home";
+import Header from "../../Header";
 
 export default function OtpSubmit() {
     const [Otp, setOtp] = useState('')
-
+    let history = useHistory()
     function handleChange(event) {
         event.preventDefault()
         let err = false
@@ -35,11 +37,19 @@ export default function OtpSubmit() {
 
         let data = {
             Otp: Otp
+            // jwt:localStorage.getItem('jwt')
 
         }
         console.log(data);
         axios.post(server + '/otpSubmit', data).then((response) => {
             console.log(response)
+            if(response.data.userLog===true)
+            {
+                history.push('/')
+            }
+            else{
+                alert("Invalid OTP")
+            }
         })
 
 

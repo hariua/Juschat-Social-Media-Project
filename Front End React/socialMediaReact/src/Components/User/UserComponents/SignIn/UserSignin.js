@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import './UserSignin.css'
 import { useHistory, Link } from "react-router-dom";
@@ -6,8 +6,17 @@ import axios from "axios";
 import server from "../../../../Server";
 
 export default function UserSignin() {
+  useEffect(()=>
+  {
+    let token = localStorage.getItem('jwt')
+    if(token)
+    {
+      history.push('/home')
+    }
+  },[])
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
+  let history = useHistory()
   function handleChange(event) {
     event.preventDefault()
     let err = false
@@ -55,6 +64,13 @@ export default function UserSignin() {
     }
     axios.post(server + '/signIn', data).then((response) => {
       console.log(response)
+      if(response.data.loginStatus === true)
+      {
+        localStorage.setItem("jwt",response.data.jwtToken)
+        history.push('/home')
+      }else{
+        alert("Invalid Username or Password")
+      }
     })
 
 

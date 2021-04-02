@@ -1,7 +1,17 @@
 import { Collapse } from '@material-ui/core'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Card,Button } from 'react-bootstrap'
+import { useHistory } from 'react-router'
 export default function Home() {
+    let history = useHistory()
+    useEffect(()=>
+    {
+        let token = localStorage.getItem('jwt')
+        if(!token)
+        {
+            history.push('/')
+        }
+    },[])
     function likeBefore() {
         document.getElementById("likeBefore").hidden = true
         document.getElementById("likeAfter").hidden = false
