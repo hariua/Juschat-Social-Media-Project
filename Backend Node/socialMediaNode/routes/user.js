@@ -2,13 +2,20 @@ var express = require('express');
 var router = express.Router();
 var userHelper = require('../helper/userHelper')
 var otp = require('../connection/otp')
+var fs = require('fs')
 var jwt = require('jsonwebtoken');
+var path = require('path')
 var userData={}
 const twilio = require('twilio')(otp.ACCOUNT_SID,otp.AUTH_TOKEN)
 function authenticateToken(req,res,next)
 {
+  if(req.body.jwt)
+  {
+    let token = req.body.jwt
+  }else{
+    token = req.query.jwt
+  }
   
-  const token = req.body.jwt
   if(token ==null)
   {
     console.log("token null");
@@ -41,7 +48,8 @@ router.post('/signIn',(req,res)=>
     {
       let jwtToken = jwt.sign(data.user,process.env.SECRET_KEY)
       console.log("res",data.user);
-      res.send({loginStatus:true,jwtToken,user:data.user.Name})
+
+      res.send({loginStatus:true,jwtToken,user:data.user.Name,id:data.user._id})
     }
     else{
       res.send({loginStatus:false})
@@ -103,6 +111,50 @@ router.post('/otpSubmit',(req,res)=>
       else{
         res.send({userLog:false})
       }
+    })
+  })
+  router.post('/changeProPic',authenticateToken,(req,res)=>
+  {
+    
+    let img = req.files.img
+    
+    img.mv('./public/ProfileImages/'+req.user._id+'.jpg')
+    res.send('/ProfileImages/'+req.user._id+'.jpg')
+  })
+  router.get('/getProfileDetails',authenticateToken,(req,res)=>
+  {
+    userHelper.findUser(req.user._id).then((data)=>
+    {
+      let val = path.join(__dirname,'../')
+      let img = path.join(__dirname,'../public/ProfileImages/'+req.user._id+'.jpg')
+      console.log(img);
+      if(fs.existsSync(img))
+      {
+        console.log("img exist");
+        res.send({user:data,imgUrl:'/ProfileImages/'+req.user._id+'.jpg'})
+      }else{
+        res.send({user:data,imgUrl:''})
+      }
+        
+     
+      
+    })
+    
+  })
+  router.post('/editProfileDetails',authenticateToken,(req,res)=>
+  {
+    console.log("user edit ",req.body);
+    userHelper.editProfile(req.body.Name,req.body.Description,req.user._id).then((response)=>
+    {
+      req.user=response
+      res.send({user:req.user})
+    })
+  })
+  router.post('/changePassword',authenticateToken,(req,res)=>
+  {
+    userHelper.changePassword(req.body,req.user._id).then((response)=>
+    {
+      res.send(response)
     })
   })
 module.exports = router;

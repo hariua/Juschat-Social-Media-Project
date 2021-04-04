@@ -2,6 +2,8 @@ import React from 'react'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import Header from './Header'
 import Home from './UserComponents/home/Home'
+import EditProfile from './UserComponents/Profile/EditProfile'
+import UserProfile from './UserComponents/Profile/UserProfile'
 import SignIn from './UserComponents/SignIn/UserSignin'
 import OtpSubmit from './UserComponents/Signup/OtpSubmit'
 import SignUp from './UserComponents/Signup/UserSignup'
@@ -14,6 +16,8 @@ export default function User() {
                 <Route path="/userSignup"><SignUp /></Route>
                 <Route path ="/home"><Header /><Home /></Route>
                 <Route path ="/otpSubmit"><OtpSubmit /></Route>
+                <Route path="/userProfile"><Header /><UserProfile /></Route>
+                <Route path="/editProfile"><Header /><EditProfile /></Route>
             </Router>
         </div>
     )

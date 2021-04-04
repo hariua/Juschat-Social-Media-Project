@@ -67,6 +67,8 @@ export default function UserSignin() {
       if(response.data.loginStatus === true)
       {
         localStorage.setItem("jwt",response.data.jwtToken)
+        localStorage.setItem('User',response.data.user)
+        localStorage.setItem('userId',response.data.id)
         history.push('/home')
       }else{
         alert("Invalid Username or Password")

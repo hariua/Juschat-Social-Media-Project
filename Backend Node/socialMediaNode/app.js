@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var fileupload = require('express-fileupload')
 var cookieParser = require('cookie-parser');
 var session = require('express-session')
 var logger = require('morgan');
@@ -33,6 +34,7 @@ app.use(function (req, res, next) {
   
   next();
 })
+app.use(fileupload())
 app.use(logger('dev'));
 app.use(express.json());
 
