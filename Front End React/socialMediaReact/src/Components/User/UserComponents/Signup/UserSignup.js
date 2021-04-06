@@ -2,14 +2,17 @@ import axios from 'axios'
 import React,{useState,useEffect} from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Link,useHistory } from 'react-router-dom'
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 import server from '../../../../Server'
 import './UserSignup.css'
+import { toast } from 'react-toastify'
 
 
 export default function UserSignup() {
     const [Name,setName] = useState('')
     const [Email,setEmail] = useState('')
-    const [Mobile,setMobile] = useState('')
+    const [Mobile,setMobile] = useState()
     const [Password,setPassword] = useState('')
     useEffect(()=>
     {
@@ -21,7 +24,7 @@ export default function UserSignup() {
     },[])
     let history = useHistory()
     function handleChange(event) {
-        event.preventDefault()
+        
         let err = false
         const validEmailRegex =
             RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
@@ -109,12 +112,12 @@ export default function UserSignup() {
                 history.push('/otpSubmit')
             }
             else{
-                alert("User Already Exists")
+                toast("User Already Exists")
             }
         })
         }
         else{
-            alert("Please Fill all Fields")
+           toast("Please Fill all Fields")
         }
         
     }
@@ -138,7 +141,7 @@ export default function UserSignup() {
 
                 <div className="form-group">
                     <label><h5>Mobile</h5></label>
-                    <input type="number" name="Mobile" id="Mobile" onBlur={handleChange} className="form-control" placeholder="Enter your Mobile" />
+                    <PhoneInput name="Mobile" id="Mobile" placeholder="Enter your Mobile Number"onChange={setMobile} className="" value={Mobile}/>
                     <p className="text-center text-danger" id="mobileErr" ></p>
                 </div>
 

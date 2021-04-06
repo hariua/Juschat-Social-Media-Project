@@ -6,6 +6,7 @@ import axios from "axios";
 import server from "../../../../Server";
 import Home from "../home/Home";
 import Header from "../../Header";
+import { toast } from "react-toastify";
 
 export default function OtpSubmit() {
     const [Otp, setOtp] = useState('')
@@ -48,7 +49,7 @@ export default function OtpSubmit() {
                 history.push('/')
             }
             else{
-                alert("Invalid OTP")
+                toast("Invalid OTP")
             }
         })
 

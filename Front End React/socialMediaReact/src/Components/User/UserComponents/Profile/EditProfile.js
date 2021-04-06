@@ -7,6 +7,7 @@ import { Link, useHistory } from 'react-router-dom'
 import server from '../../../../Server'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { toast } from 'react-toastify'
 
 export default function EditProfile() {
     let history = useHistory()
@@ -132,10 +133,10 @@ export default function EditProfile() {
             axios.post(server + '/changePassword', data).then((response) => {
                 console.log(response);
                 if (response.data.passwordChange) {
-                    alert("Password Changed Successfully")
+                    toast.success("Password Changed Successfully")
                 }
                 else {
-                    alert("Invalid Current Password")
+                    toast.dark("Invalid Current Password")
                 }
             })
         }

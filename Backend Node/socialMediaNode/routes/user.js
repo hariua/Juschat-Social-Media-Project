@@ -76,7 +76,7 @@ router.post('/signUp', async (req, res) => {
         .services(otp.SERVICE_ID)
         .verifications
         .create({
-          to: `+91${req.body.Mobile}`,
+          to: req.body.Mobile,
           channel: 'sms'
         }).then((data) => {
           console.log(data, "otp data")
@@ -92,7 +92,7 @@ router.post('/otpSubmit', (req, res) => {
     .services(otp.SERVICE_ID)
     .verificationChecks
     .create({
-      to: `+91${userData.info.Mobile}`,
+      to: userData.info.Mobile,
       code: req.body.Otp
     }).then((data) => {
       if (data.valid) {

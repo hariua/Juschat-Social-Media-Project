@@ -1,5 +1,6 @@
 import React from 'react'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import Header from './Header'
 import Home from './UserComponents/home/Home'
 import EditProfile from './UserComponents/Profile/EditProfile'
@@ -19,6 +20,15 @@ export default function User() {
                 <Route path="/userProfile"><Header /><UserProfile /></Route>
                 <Route path="/editProfile"><Header /><EditProfile /></Route>
             </Router>
+            <ToastContainer position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover />
         </div>
     )
 }

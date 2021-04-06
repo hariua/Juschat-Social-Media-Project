@@ -5,6 +5,8 @@ import { useHistory, Link } from "react-router-dom";
 import axios from "axios";
 import server from "../../../../Server";
 import GoogleLogin from 'react-google-login';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function UserSignin() {
   useEffect(() => {
     let token = localStorage.getItem('jwt')
@@ -69,79 +71,78 @@ export default function UserSignin() {
         history.push('/home')
       } else if (response.data.loginStatus === 'block') {
         localStorage.removeItem('jwt')
-        alert("You are temporarily blocked by admin")
+        toast.error("You are temporarily blocked by admin")
       }
       else {
-        alert("Invalid Username   or Password")
+
+        toast.warning("Invalid Username or Password");
       }
     })
   }
-  function responseSuccessGoogle(res)
-  {
+
+  function responseSuccessGoogle(res) {
     console.log(res);
-    let data={
-      token:res.tokenId,
-      userData:res.profileObj
+    let data = {
+      token: res.tokenId,
+      userData: res.profileObj
     }
-    axios.post(server+'/googleSignup',data).then((response)=>
-    {
-      if(response.data.login === true)
-      {
-        localStorage.setItem('jwt',response.data.jwtToken)
-        localStorage.setItem('User',response.data.user)
-        localStorage.setItem('userId',response.data.id)
+    axios.post(server + '/googleSignup', data).then((response) => {
+      if (response.data.login === true) {
+        localStorage.setItem('jwt', response.data.jwtToken)
+        localStorage.setItem('User', response.data.user)
+        localStorage.setItem('userId', response.data.id)
         history.push('/home')
       }
-      else{
-        alert("Something Went Wrong !!! Please Try Again Later")
+      else {
+        toast.dark("Something Went Wrong !!! Please Try Again Later")
       }
     })
   }
-  function responseFailureGoogle(res)
-  {
-    alert("Something Went Wrong !!! Please Try Again Later")
+  function responseFailureGoogle(res) {
+    toast.dark("Something Went Wrong !!! Please Try Again Later")
   }
   return (
     <div>
       <div className="form-design-signin bg-light col-md-7  p-5 container-fluid">
-      <h3 className="text-center mb-5">Login </h3>
-      <Form>
-        <Form.Group controlId="formBasicEmail">
-          <label><h5>Email</h5></label>
-          <input type="email" name="Email" id="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
-          <p className="text-center text-danger" id="EmailErr" ></p>
+        <h3 className="text-center mb-5">Login </h3>
+        <Form>
+          <Form.Group controlId="formBasicEmail">
+            <label><h5>Email</h5></label>
+            <input type="email" name="Email" id="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
+            <p className="text-center text-danger" id="EmailErr" ></p>
 
-        </Form.Group>
+          </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <label><h5>Password</h5></label>
-          <input type="password" name="Password" id="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
-          <p className="text-center text-danger" id="PasswordErr" ></p>
-        </Form.Group>
+          <Form.Group controlId="formBasicPassword">
+            <label><h5>Password</h5></label>
+            <input type="password" name="Password" id="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
+            <p className="text-center text-danger" id="PasswordErr" ></p>
+          </Form.Group>
 
-        <Button variant="primary" id="LoginBtn" type="button" onClick={formSubmit} size="lg" className=" w-100">
-          Login
+          <Button variant="primary" id="LoginBtn" type="button" onClick={formSubmit} size="lg" className=" w-100">
+            Login
         </Button>
-      </Form>
-      <h5 className="text-right pt-4" ><Link to="/userSignup" style={{ textDecoration: "none" }}>Don't have an Account ?</Link></h5>
+        </Form>
+        <h5 className="text-right pt-4" ><Link to="/userSignup" style={{ textDecoration: "none" }}>Don't have an Account ?</Link></h5>
+
+      </div>
+
+      <div className="text-center col-md-6 pt-3">
+        <GoogleLogin
+          clientId={process.env.REACT_APP_CLIENTID}
+          render={renderProps => (
+            <button className="btn btn-danger ml-5" onClick={renderProps.onClick} disabled={renderProps.disabled}>Login with Google<i className="pl-2 fab fa-google"></i></button>
+          )}
+          buttonText="Login With Google"
+          onSuccess={responseSuccessGoogle}
+          onFailure={responseFailureGoogle}
+          cookiePolicy={'single_host_origin'}
+        />
+      </div>
       
+
     </div>
-    
-    <div className="text-center col-md-6 pt-3">
-    <GoogleLogin
-     clientId = {process.env.REACT_APP_CLIENTID}
-     render={renderProps => (
-      <button className="btn btn-danger ml-5" onClick={renderProps.onClick} disabled={renderProps.disabled}>Login with Google<i className="pl-2 fab fa-google"></i></button>
-    )}
-     buttonText="Login With Google"
-     onSuccess={responseSuccessGoogle}
-     onFailure={responseFailureGoogle}
-     cookiePolicy={'single_host_origin'}
-     />
-    </div>
-    
-    </div>
-    
-     
+
+
   );
 }
