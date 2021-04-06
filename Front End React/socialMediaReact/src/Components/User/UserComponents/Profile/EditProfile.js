@@ -33,6 +33,11 @@ export default function EditProfile() {
                     document.getElementById('editImg').src = server + response.data.imgUrl
                     document.getElementById('editImg').hidden = false
                 }
+                if(response.data.user.GoogleId)
+                {
+                    document.getElementById('psdBTN').hidden=true
+                    document.getElementById('mobInput').hidden=true
+                }
 
                 setName(response.data.user.Name)
                 document.getElementById('Email').value = response.data.user.Email
@@ -207,7 +212,7 @@ export default function EditProfile() {
                         <input type="text" name="Email" id="Email" className="form-control" readOnly />
 
                     </div>
-                    <div className="form-group">
+                    <div id="mobInput" className="form-group">
                         <label><h5>Mobile</h5></label>
                         <input type="text" name="Mobile" id="Mobile" className="form-control" readOnly />
                     </div>
@@ -243,7 +248,7 @@ export default function EditProfile() {
                 </Form>
 
             </Collapse>
-            <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setPasswordCollapse(!passwordCollapse)}>Change Password</button>
+            <button type="button" id="psdBTN" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setPasswordCollapse(!passwordCollapse)}>Change Password</button>
             <Collapse in={passwordCollapse}>
                 <Form>
                     <div className="form-group">

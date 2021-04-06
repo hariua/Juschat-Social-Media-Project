@@ -141,5 +141,22 @@ router.post('/changePassword', authenticateToken, (req, res) => {
     res.send(response)
   })
 })
-
+router.post('/googleSignup',(req,res)=>
+{
+  userHelper.googleSignup(req.body).then((data)=>{
+    if(data.userSignup)
+    {
+      let jwtToken = jwt.sign(data.userSignupData, process.env.SECRET_KEY)
+      res.send({login:true,jwtToken,user:data.userSignupData.Name,id:data.userSignupData._id})
+    }
+    if(data.userLogin)
+    {
+       jwtToken = jwt.sign(data.userLoginData, process.env.SECRET_KEY)
+       res.send({login:true,jwtToken,user:data.userLoginData.Name,id:data.userLoginData._id})
+    }
+  }).catch(()=>
+  {
+    res.send("Invalid Token")
+  })
+})
 module.exports = router;

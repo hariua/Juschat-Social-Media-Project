@@ -4,7 +4,9 @@ var bcrypt = require('bcrypt')
 var objectId = require('mongodb').ObjectID
 var base64ToImage = require('base64-to-image')
 let path = require('path')
+var {OAuth2Client} = require('google-auth-library')
 const { USER_COLLECTION } = require('../connection/collection')
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 module.exports = {
     userCheckup: (userData) => {
         return new Promise(async (resolve, reject) => {
@@ -115,6 +117,43 @@ module.exports = {
            var optionalObj = {'fileName': id, 'type':'jpg'};
            base64ToImage(base64Str,location,optionalObj); 
            
+        })
+    },
+    googleSignup:(data)=>
+    {
+        return new Promise((resolve,reject)=>
+        {
+            let token = data.token 
+            let status={}
+            
+            client.verifyIdToken({idToken : token,audience:process.env.GOOGLE_CLIENT_ID}).then(async(res)=>
+            {
+                
+                let data = {
+                    Name:res.payload.name,
+                    Email:res.payload.email,
+                    GoogleId : res.payload.sub,
+                    GoogleLogin:true
+                }
+                let user =await db.get().collection(collection.USER_COLLECTION).findOne({GoogleLogin:true,Email:data.Email})
+                if(!user)
+                {
+                    db.get().collection(collection.USER_COLLECTION).insertOne(data).then((res)=>
+                    {
+                        status.userSignup=true
+                        status.userSignupData=res.ops[0]
+                        resolve(status)
+                    })
+                }
+                else{
+                    status.userLogin=true
+                    status.userLoginData=user
+                    resolve(status)
+                }
+            }).catch(()=>
+            {
+                reject("Invalid User")
+            })
         })
     }
 }

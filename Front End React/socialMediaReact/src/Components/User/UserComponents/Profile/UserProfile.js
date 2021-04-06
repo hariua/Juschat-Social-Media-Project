@@ -25,9 +25,14 @@ export default function UserProfile() {
                 {
                     document.getElementById('userDescription').hidden=true
                 }
+                
                 else{
                     document.getElementById('userDescription').innerHTML = response.data.user.Description
                     document.getElementById('userDescription').hidden=false
+                }
+                if(response.data.user.GoogleId)
+                {
+                    document.getElementById('proMob').hidden=true
                 }
                 document.getElementById('userName').innerHTML = response.data.user.Name
                 document.getElementById('userMail').innerHTML = response.data.user.Email
@@ -56,7 +61,7 @@ export default function UserProfile() {
                     <i className="h3 far fa-envelope pr-2 pt-2 pl-5 ml-4"></i>
                     <h5 id="userMail"></h5>
                     </div>
-                    <div>
+                    <div id="proMob">
                     <i className="h3 fas fa-mobile-alt pr-2 pt-2 pl-4 ml-3"></i>
                     <h5 className="" id="userMobile"></h5>
                     </div>

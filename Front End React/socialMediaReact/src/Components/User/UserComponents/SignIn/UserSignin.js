@@ -1,19 +1,17 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import './UserSignin.css'
 import { useHistory, Link } from "react-router-dom";
 import axios from "axios";
 import server from "../../../../Server";
-
+import GoogleLogin from 'react-google-login';
 export default function UserSignin() {
-  useEffect(()=>
-  {
+  useEffect(() => {
     let token = localStorage.getItem('jwt')
-    if(token)
-    {
+    if (token) {
       history.push('/home')
     }
-  },[])
+  }, [])
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
   let history = useHistory()
@@ -64,26 +62,48 @@ export default function UserSignin() {
     }
     axios.post(server + '/signIn', data).then((response) => {
       console.log(response)
-      if(response.data.loginStatus === true)
-      {
-        localStorage.setItem("jwt",response.data.jwtToken)
-        localStorage.setItem('User',response.data.user)
-        localStorage.setItem('userId',response.data.id)
+      if (response.data.loginStatus === true) {
+        localStorage.setItem("jwt", response.data.jwtToken)
+        localStorage.setItem('User', response.data.user)
+        localStorage.setItem('userId', response.data.id)
         history.push('/home')
-      }else if(response.data.loginStatus === 'block')
-      {
+      } else if (response.data.loginStatus === 'block') {
         localStorage.removeItem('jwt')
         alert("You are temporarily blocked by admin")
       }
-      else{
-        alert("Invalid Username or Password")
+      else {
+        alert("Invalid Username   or Password")
       }
     })
-
-
+  }
+  function responseSuccessGoogle(res)
+  {
+    console.log(res);
+    let data={
+      token:res.tokenId,
+      userData:res.profileObj
+    }
+    axios.post(server+'/googleSignup',data).then((response)=>
+    {
+      if(response.data.login === true)
+      {
+        localStorage.setItem('jwt',response.data.jwtToken)
+        localStorage.setItem('User',response.data.user)
+        localStorage.setItem('userId',response.data.id)
+        history.push('/home')
+      }
+      else{
+        alert("Something Went Wrong !!! Please Try Again Later")
+      }
+    })
+  }
+  function responseFailureGoogle(res)
+  {
+    alert("Something Went Wrong !!! Please Try Again Later")
   }
   return (
-    <div className="form-design-signin bg-light col-md-7  p-5 container-fluid">
+    <div>
+      <div className="form-design-signin bg-light col-md-7  p-5 container-fluid">
       <h3 className="text-center mb-5">Login </h3>
       <Form>
         <Form.Group controlId="formBasicEmail">
@@ -104,6 +124,24 @@ export default function UserSignin() {
         </Button>
       </Form>
       <h5 className="text-right pt-4" ><Link to="/userSignup" style={{ textDecoration: "none" }}>Don't have an Account ?</Link></h5>
+      
     </div>
+    
+    <div className="text-center col-md-6 pt-3">
+    <GoogleLogin
+     clientId = {process.env.REACT_APP_CLIENTID}
+     render={renderProps => (
+      <button className="btn btn-danger ml-5" onClick={renderProps.onClick} disabled={renderProps.disabled}>Login with Google<i className="pl-2 fab fa-google"></i></button>
+    )}
+     buttonText="Login With Google"
+     onSuccess={responseSuccessGoogle}
+     onFailure={responseFailureGoogle}
+     cookiePolicy={'single_host_origin'}
+     />
+    </div>
+    
+    </div>
+    
+     
   );
 }
