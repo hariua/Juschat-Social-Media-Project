@@ -5,6 +5,8 @@ import React, { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import server from '../../../../Server'
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 
 export default function EditProfile() {
     let history = useHistory()
@@ -23,6 +25,7 @@ export default function EditProfile() {
 
         if (localStorage.getItem('jwt')) {
             axios.get(server + '/getProfileDetails?jwt=' + localStorage.getItem('jwt')).then((response) => {
+
                 if (response.data.imgUrl === '') {
                     document.getElementById('editImg').hidden = true
                 }
@@ -50,6 +53,13 @@ export default function EditProfile() {
     const [picCollapse, setPicCollapse] = useState(false)
     const [passwordCollapse, setPasswordCollapse] = useState(false)
     const [dp, setDp] = useState(null)
+
+
+    const [src, setImgFile] = useState(null)
+    const [image, setImage] = useState(null)
+    const [crop, setCrop] = useState({ aspect: 1 / 1 })
+    const [res, setRes] = useState(null)
+
     const [name, setName] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [oldPassword, setOldPassword] = useState('')
@@ -58,7 +68,8 @@ export default function EditProfile() {
     function photoChange(event) {
         if (event.target.files[0].type === 'image/jpeg' || event.target.files[0].type === 'image/png' || event.target.files[0].type === 'image/png') {
             if (event.target.files[0].size < 2097152) {
-                setDp(event.target.files[0])
+                // setDp(event.target.files[0])
+                setImgFile(URL.createObjectURL(event.target.files[0]))
                 document.getElementById('DpBtn').hidden = false
                 document.getElementById('ImgErr').innerHTML = ""
             } else {
@@ -72,10 +83,9 @@ export default function EditProfile() {
         }
     }
     function photoSubmit() {
-        let image = dp
+        let image = res
         let jwt = localStorage.getItem('jwt')
         let data = new FormData()
-        console.log(image);
         data.append('img', image)
         data.append('jwt', jwt)
         console.log(data, "data");
@@ -84,7 +94,7 @@ export default function EditProfile() {
                 'Content-Type': 'multipart/form-data;'
             }
         }).then((response) => {
-
+                console.log(response,"img res")
             document.getElementById('editImg').src = server + response.data
             document.getElementById('editImg').hidden = false
 
@@ -106,35 +116,33 @@ export default function EditProfile() {
             document.getElementById('passwordSubmit').hidden = true
         }
         else {
-            
+
             let data = {
                 CurrentPassword: oldPassword,
                 NewPassword: newPassword,
                 jwt: localStorage.getItem('jwt')
             }
-            document.getElementById('Password').value=""
-            document.getElementById('NewPassword').value=""
+            document.getElementById('Password').value = ""
+            document.getElementById('NewPassword').value = ""
             axios.post(server + '/changePassword', data).then((response) => {
                 console.log(response);
-                if(response.data.passwordChange)
-                {
+                if (response.data.passwordChange) {
                     alert("Password Changed Successfully")
                 }
-                else{
+                else {
                     alert("Invalid Current Password")
                 }
             })
         }
-        
+
     }
     function passwordChange(event) {
         if (event.target.name === 'Password') {
             setOldPassword(event.target.value)
             let tem = event.target.value
-            if(tem.length>0)
-            {
+            if (tem.length > 0) {
                 document.getElementById('psdErr').innerHTML = ""
-            document.getElementById('passwordSubmit').hidden = false
+                document.getElementById('passwordSubmit').hidden = false
             }
 
         }
@@ -150,6 +158,29 @@ export default function EditProfile() {
                 document.getElementById('passwordSubmit').hidden = false
             }
         }
+    }
+    function getCroppedImg() {
+        const canvas = document.createElement('canvas');
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height,
+        );
+        
+        const base64Image = canvas.toDataURL('image/jpeg')
+        setRes(base64Image)
     }
     return (
         <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid" style={style}>
@@ -194,10 +225,23 @@ export default function EditProfile() {
                         <input type="file" name="ProfilePic" id="ProfilePic" className="form-control" onChange={photoChange} />
                         <p className="text-center text-danger" id="ImgErr" ></p>
                     </div>
+                    <div className="row">
+                        {src && <div className="col-6">
+
+                            <ReactCrop src={src} onImageLoaded={setImage} crop={crop} onChange={setCrop} />
+                            <Button className="btn btn-success " onClick={getCroppedImg}>Crop Image </Button>
+
+                        </div>
+                        }
+                        {res && <div className="col-6">
+                            <img src={res} className="img-fluid"></img>
+                        </div>}
+                    </div>
                     <Button variant="primary" id="DpBtn" type="button" size="lg" className=" w-100" onClick={photoSubmit}>
                         Change Profile Picture
                     </Button>
                 </Form>
+
             </Collapse>
             <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setPasswordCollapse(!passwordCollapse)}>Change Password</button>
             <Collapse in={passwordCollapse}>

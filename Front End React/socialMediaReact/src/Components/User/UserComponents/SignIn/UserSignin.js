@@ -70,7 +70,12 @@ export default function UserSignin() {
         localStorage.setItem('User',response.data.user)
         localStorage.setItem('userId',response.data.id)
         history.push('/home')
-      }else{
+      }else if(response.data.loginStatus === 'block')
+      {
+        localStorage.removeItem('jwt')
+        alert("You are temporarily blocked by admin")
+      }
+      else{
         alert("Invalid Username or Password")
       }
     })
