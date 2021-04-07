@@ -155,5 +155,35 @@ module.exports = {
                 reject("Invalid User")
             })
         })
+    },
+    facebookSignup:(data)=>
+    {
+        let status={}
+        return new Promise(async(resolve,reject)=>
+        {
+            
+            let info = {
+                Name:data.Name,
+                Email:data.Email,
+                FacebookId:data.id,
+                FacebookLogin:true
+            }
+            console.log(info,"info");
+            let user =await db.get().collection(collection.USER_COLLECTION).findOne({FacebookLogin:true,Email:info.Email})
+                if(!user)
+                {
+                    db.get().collection(collection.USER_COLLECTION).insertOne(info).then((res)=>
+                    {
+                        status.userSignup=true
+                        status.userSignupData=res.ops[0]
+                        resolve(status)
+                    })
+                }
+                else{
+                    status.userLogin=true
+                    status.userLoginData=user
+                    resolve(status)
+                }
+        })
     }
 }

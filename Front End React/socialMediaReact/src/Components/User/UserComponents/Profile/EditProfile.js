@@ -34,7 +34,7 @@ export default function EditProfile() {
                     document.getElementById('editImg').src = server + response.data.imgUrl
                     document.getElementById('editImg').hidden = false
                 }
-                if(response.data.user.GoogleId)
+                if(response.data.user.GoogleId || response.data.user.FacebookId)
                 {
                     document.getElementById('psdBTN').hidden=true
                     document.getElementById('mobInput').hidden=true

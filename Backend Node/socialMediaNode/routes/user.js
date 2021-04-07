@@ -159,4 +159,20 @@ router.post('/googleSignup',(req,res)=>
     res.send("Invalid Token")
   })
 })
+router.post('/facebookSignup',(req,res)=>
+{
+  userHelper.facebookSignup(req.body).then((data)=>
+  {
+    if(data.userSignup)
+    {
+      let jwtToken = jwt.sign(data.userSignupData, process.env.SECRET_KEY)
+      res.send({login:true,jwtToken,user:data.userSignupData.Name,id:data.userSignupData._id})
+    }
+    if(data.userLogin)
+    {
+       jwtToken = jwt.sign(data.userLoginData, process.env.SECRET_KEY)
+       res.send({login:true,jwtToken,user:data.userLoginData.Name,id:data.userLoginData._id})
+    }
+  })
+})
 module.exports = router;

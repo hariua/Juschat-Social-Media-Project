@@ -30,7 +30,7 @@ export default function UserProfile() {
                     document.getElementById('userDescription').innerHTML = response.data.user.Description
                     document.getElementById('userDescription').hidden=false
                 }
-                if(response.data.user.GoogleId)
+                if(response.data.user.GoogleId || response.data.user.FacebookId)
                 {
                     document.getElementById('proMob').hidden=true
                 }
