@@ -1,9 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@1&display=swap');
 .form-design-signup{
     
     margin:auto;
     margin-top:4%;
-    opacity: 0.7;
+    margin-bottom: 5%;
+    width:500px;
+    opacity: 0.9;
     border-radius: 2em 0em;
-    border:3px solid blue;
+    
     }
     
+    #signupBg{
+        background-image: url(./micah-williams-lmFJOx7hPc4-unsplash.jpg);
+        background-size: cover;
+        background-position: center;
+
+    }
+    .signUpLabel{
+        font-family: 'Gentium Book Basic', serif;
+        font-weight: 500;
+    }
+    .socialBtn{
+        margin: auto;
+    }

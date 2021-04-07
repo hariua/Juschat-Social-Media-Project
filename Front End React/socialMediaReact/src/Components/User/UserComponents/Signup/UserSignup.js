@@ -122,31 +122,33 @@ export default function UserSignup() {
         
     }
     return (
-        <div className="form-design-signup bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid">
-            <h3 className="text-center mb-5 mt-2">Signup </h3>
+        <div className="row" id="signupBg">
+            <div className="col-md-12">
+                <div className="form-design-signup bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid">
+            <h1 className="text-center mb-3 mt-2" style={{fontFamily:'Dancing Script, cursive'}}>Juschat Signup </h1>
             <Form>
 
 
                 <div className="form-group">
-                    <label><h5>Name</h5></label>
+                    <label className="signUpLabel"><h5>Name</h5></label>
                     <input type="text" name="Name" id="Name" onBlur={handleChange} className="form-control" placeholder="Enter your Name" />
                     <p className="text-center text-danger" id="nameErr" ></p>
                 </div>
 
                 <div className="form-group">
-                    <label><h5>Email</h5></label>
+                    <label className="signUpLabel"><h5>Email</h5></label>
                     <input type="email" name="Email" id="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
                     <p className="text-center text-danger" id="emailErr" ></p>
                 </div>
 
                 <div className="form-group">
-                    <label><h5>Mobile</h5></label>
+                    <label className="signUpLabel"><h5>Mobile</h5></label>
                     <PhoneInput name="Mobile" id="Mobile" placeholder="Enter your Mobile Number"onChange={setMobile} className="" value={Mobile}/>
                     <p className="text-center text-danger" id="mobileErr" ></p>
                 </div>
 
                 <div className="form-group">
-                    <label><h5>Password</h5></label>
+                    <label className="signUpLabel"><h5>Password</h5></label>
                     <input type="password" name="Password"id="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
                     <p className="text-center text-danger" id="passwordErr" ></p>
                 </div>
@@ -156,7 +158,10 @@ export default function UserSignup() {
         </Button>
 
             </Form>
-            <h5 className="text-right pt-4" ><Link to="/" style={{ textDecoration: "none" }}>Already have an Account ?</Link></h5>
+            <h4 className="text-center pt-4 signUpLabel" ><Link to="/" style={{ textDecoration: "none" }}>Already have an Account ?</Link></h4>
+        </div>
+            </div>
+            
         </div>
     )
 }
