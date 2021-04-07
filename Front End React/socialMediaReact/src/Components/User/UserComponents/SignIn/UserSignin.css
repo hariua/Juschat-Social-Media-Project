@@ -6,6 +6,7 @@
     margin-top: 4%;
     margin-bottom: 5%;
     width:500px;
+    height:565px;
     opacity: 0.9;
     border-radius: 2em 0em;
 }
@@ -18,4 +19,8 @@
 .signinLabel{
     font-family: 'Gentium Book Basic', serif;
     font-weight: 500;
+}
+.socialBtn{
+    margin: auto;
+    align-items: center;
 }

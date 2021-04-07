@@ -5,6 +5,7 @@ var otp = require('../connection/otp')
 var fs = require('fs')
 var jwt = require('jsonwebtoken');
 var path = require('path')
+var moment = require('moment')
 var userData = {}
 const twilio = require('twilio')(otp.ACCOUNT_SID, otp.AUTH_TOKEN)
 function authenticateToken(req, res, next) {
@@ -32,7 +33,7 @@ function authenticateToken(req, res, next) {
             req.user = user
             console.log("jwt data", req.user);
             next()
-          }else{
+          } else {
             res.sendStatus(404)
           }
         })
@@ -109,8 +110,8 @@ router.post('/otpSubmit', (req, res) => {
     })
 })
 router.post('/changeProPic', authenticateToken, (req, res) => {
-  userHelper.base64Convert(req.body.img,req.user._id)
-  res.send('/ProfileImages/'+req.user._id+'.jpg')
+  userHelper.base64Convert(req.body.img, req.user._id)
+  res.send('/ProfileImages/' + req.user._id + '.jpg')
 })
 router.get('/getProfileDetails', authenticateToken, (req, res) => {
   userHelper.findUser(req.user._id).then((data) => {
@@ -141,38 +142,57 @@ router.post('/changePassword', authenticateToken, (req, res) => {
     res.send(response)
   })
 })
-router.post('/googleSignup',(req,res)=>
-{
-  userHelper.googleSignup(req.body).then((data)=>{
-    if(data.userSignup)
-    {
+router.post('/googleSignup', (req, res) => {
+  userHelper.googleSignup(req.body).then((data) => {
+    if (data.userSignup) {
       let jwtToken = jwt.sign(data.userSignupData, process.env.SECRET_KEY)
-      res.send({login:true,jwtToken,user:data.userSignupData.Name,id:data.userSignupData._id})
+      res.send({ login: true, jwtToken, user: data.userSignupData.Name, id: data.userSignupData._id })
     }
-    if(data.userLogin)
-    {
-       jwtToken = jwt.sign(data.userLoginData, process.env.SECRET_KEY)
-       res.send({login:true,jwtToken,user:data.userLoginData.Name,id:data.userLoginData._id})
+    if (data.userLogin) {
+      jwtToken = jwt.sign(data.userLoginData, process.env.SECRET_KEY)
+      res.send({ login: true, jwtToken, user: data.userLoginData.Name, id: data.userLoginData._id })
     }
-  }).catch(()=>
-  {
+  }).catch(() => {
     res.send("Invalid Token")
   })
 })
-router.post('/facebookSignup',(req,res)=>
-{
-  userHelper.facebookSignup(req.body).then((data)=>
-  {
-    if(data.userSignup)
-    {
+router.post('/facebookSignup', (req, res) => {
+  userHelper.facebookSignup(req.body).then((data) => {
+    if (data.userSignup) {
       let jwtToken = jwt.sign(data.userSignupData, process.env.SECRET_KEY)
-      res.send({login:true,jwtToken,user:data.userSignupData.Name,id:data.userSignupData._id})
+      res.send({ login: true, jwtToken, user: data.userSignupData.Name, id: data.userSignupData._id })
     }
-    if(data.userLogin)
-    {
-       jwtToken = jwt.sign(data.userLoginData, process.env.SECRET_KEY)
-       res.send({login:true,jwtToken,user:data.userLoginData.Name,id:data.userLoginData._id})
+    if (data.userLogin) {
+      jwtToken = jwt.sign(data.userLoginData, process.env.SECRET_KEY)
+      res.send({ login: true, jwtToken, user: data.userLoginData.Name, id: data.userLoginData._id })
     }
   })
+})
+router.post('/addPost',(req, res) => {
+  let date = new Date()
+  let d = moment(date).format('-YYYY-MM-DD-h-mm-ss')
+  let time= moment(date).format('h:mm')
+  let dat = moment(date).format('YYYY-MM-DD')
+  let file = req.files.item
+  let ext = req.files.item.mimetype
+  let fileName = ''
+  if(ext == 'image/jpeg' ||ext == 'image/jpg'||ext == 'image/png')
+  {
+    fileName = req.body.id+d+'.jpg'
+    file.mv('./public/PostFiles/'+req.body.id+d+'.jpg')
+  }
+  if(ext == 'video/mp4' ||ext == 'video/mkv'||ext == 'video/mpeg')
+  {
+    fileName = req.body.id+d+'.mp4'
+    file.mv('./public/PostFiles/'+req.body.id+d+'.mp4')
+  }
+  userHelper.addPost(req.body,fileName,time,dat).then((res)=>
+  {
+    console.log(res,"res");
+    
+  })
+  res.send('success')
+  
+
 })
 module.exports = router;

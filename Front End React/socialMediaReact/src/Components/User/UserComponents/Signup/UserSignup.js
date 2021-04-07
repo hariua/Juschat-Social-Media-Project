@@ -1,7 +1,7 @@
 import axios from 'axios'
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
-import { Link,useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import server from '../../../../Server'
@@ -10,21 +10,19 @@ import { toast } from 'react-toastify'
 
 
 export default function UserSignup() {
-    const [Name,setName] = useState('')
-    const [Email,setEmail] = useState('')
-    const [Mobile,setMobile] = useState()
-    const [Password,setPassword] = useState('')
-    useEffect(()=>
-    {
-      let token = localStorage.getItem('jwt')
-      if(token)
-      {
-        history.push('/home')
-      }
-    },[])
+    const [Name, setName] = useState('')
+    const [Email, setEmail] = useState('')
+    const [Mobile, setMobile] = useState()
+    const [Password, setPassword] = useState('')
+    useEffect(() => {
+        let token = localStorage.getItem('jwt')
+        if (token) {
+            history.push('/home')
+        }
+    }, [])
     let history = useHistory()
     function handleChange(event) {
-        
+
         let err = false
         const validEmailRegex =
             RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
@@ -87,81 +85,77 @@ export default function UserSignup() {
             document.getElementById('registerBtn').hidden = true
         }
     }
-    function formSubmit()
-    {
-        document.getElementById("Name").value=""
-        document.getElementById("Email").value=""
-        document.getElementById("Mobile").value=""
-        document.getElementById("Password").value=""
-        let formData={
-            Name:Name,
-            Email:Email,
-            Mobile:Mobile,
-            Password:Password
+    function formSubmit() {
+        document.getElementById("Name").value = ""
+        document.getElementById("Email").value = ""
+        document.getElementById("Mobile").value = ""
+        document.getElementById("Password").value = ""
+        let formData = {
+            Name: Name,
+            Email: Email,
+            Mobile: Mobile,
+            Password: Password
         }
-        if(formData.Name !== "" && formData.Email !== "" && formData.Mobile !== "" && formData.Password !== "")
-        {
-            axios.post(server+'/signUp',formData).then((response)=>
-        {
-            console.log(response);
-            
-            
-            if(response.data.value==="New")
-            {
+        if (formData.Name !== "" && formData.Email !== "" && formData.Mobile !== "" && formData.Password !== "") {
+            axios.post(server + '/signUp', formData).then((response) => {
+                console.log(response);
 
-                history.push('/otpSubmit')
-            }
-            else{
-                toast("User Already Exists")
-            }
-        })
+
+                if (response.data.value === "New") {
+
+                    history.push('/otpSubmit')
+                }
+                else {
+                    toast("User Already Exists")
+                }
+            })
         }
-        else{
-           toast("Please Fill all Fields")
+        else {
+            toast("Please Fill all Fields")
         }
-        
+
     }
     return (
         <div className="row" id="signupBg">
             <div className="col-md-12">
                 <div className="form-design-signup bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid">
-            <h1 className="text-center mb-3 mt-2" style={{fontFamily:'Dancing Script, cursive'}}>Juschat Signup </h1>
-            <Form>
+                    <h1 className="text-center mb-3 mt-2" style={{ fontFamily: 'Dancing Script, cursive' }}>Juschat Signup </h1>
+                    <Form>
 
 
-                <div className="form-group">
-                    <label className="signUpLabel"><h5>Name</h5></label>
-                    <input type="text" name="Name" id="Name" onBlur={handleChange} className="form-control" placeholder="Enter your Name" />
-                    <p className="text-center text-danger" id="nameErr" ></p>
+                        <div className="form-group">
+                            <label className="signUpLabel"><h5>Name</h5></label>
+                            <input type="text" name="Name" id="Name" onBlur={handleChange} className="form-control" placeholder="Enter your Name" />
+                            <p className="text-center text-danger" id="nameErr" ></p>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="signUpLabel"><h5>Email</h5></label>
+                            <input type="email" name="Email" id="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
+                            <p className="text-center text-danger" id="emailErr" ></p>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="signUpLabel"><h5>Mobile</h5></label>
+                            <PhoneInput name="Mobile" id="Mobile" placeholder="Enter your Mobile Number" onChange={setMobile} className="" value={Mobile} />
+                            <p className="text-center text-danger" id="mobileErr" ></p>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="signUpLabel"><h5>Password</h5></label>
+                            <input type="password" name="Password" id="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
+                            <p className="text-center text-danger" id="passwordErr" ></p>
+                        </div>
+
+                        <Button variant="primary" id="registerBtn" type="button" onClick={formSubmit} size="lg" className=" w-100">
+                            Register
+                         </Button>
+
+                    </Form>
+                    <h4 className="text-center pt-4 signUpLabel" ><Link to="/" style={{ textDecoration: "none" }}>Already have an Account ?</Link></h4>
                 </div>
-
-                <div className="form-group">
-                    <label className="signUpLabel"><h5>Email</h5></label>
-                    <input type="email" name="Email" id="Email" onBlur={handleChange} className="form-control" placeholder="Enter your Email" />
-                    <p className="text-center text-danger" id="emailErr" ></p>
-                </div>
-
-                <div className="form-group">
-                    <label className="signUpLabel"><h5>Mobile</h5></label>
-                    <PhoneInput name="Mobile" id="Mobile" placeholder="Enter your Mobile Number"onChange={setMobile} className="" value={Mobile}/>
-                    <p className="text-center text-danger" id="mobileErr" ></p>
-                </div>
-
-                <div className="form-group">
-                    <label className="signUpLabel"><h5>Password</h5></label>
-                    <input type="password" name="Password"id="Password" onChange={handleChange} className="form-control" placeholder="Enter password" />
-                    <p className="text-center text-danger" id="passwordErr" ></p>
-                </div>
-
-                <Button variant="primary" id="registerBtn" type="button" onClick={formSubmit} size="lg" className=" w-100">
-                    Register
-        </Button>
-
-            </Form>
-            <h4 className="text-center pt-4 signUpLabel" ><Link to="/" style={{ textDecoration: "none" }}>Already have an Account ?</Link></h4>
-        </div>
             </div>
-            
+
         </div>
     )
 }

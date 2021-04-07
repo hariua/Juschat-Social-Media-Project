@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+#postIcon{
+    font-size: 2em;
+}
+.add-post{
+    
+    margin:auto;
+    margin-top:2.5%;
+    margin-bottom: 2.5%;
+    width:500px;
+    height:auto;
+    opacity: 0.9;
+    border-radius: 2em 0em;
+    
+    }
+    
+    #postBg{
+        background-image: url(./kristina-tripkovic-8Zs5H6CnYJo-unsplash.jpg);
+        background-size: cover;
+        background-position: center;
+
+    }
+    .postLabel{
+        font-family: 'Gentium Book Basic', serif;
+        font-weight: 500;
+        font-size: 1.8em;
+    }
+    .imgPreview{
+        width:13em;
+        height: 8em;
+        margin:auto;
+    }
+    

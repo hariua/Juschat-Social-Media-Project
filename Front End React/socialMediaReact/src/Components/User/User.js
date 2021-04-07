@@ -2,6 +2,7 @@ import React from 'react'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Header from './Header'
+import AddPost from './UserComponents/Create Post/AddPost'
 import Home from './UserComponents/home/Home'
 import EditProfile from './UserComponents/Profile/EditProfile'
 import UserProfile from './UserComponents/Profile/UserProfile'
@@ -19,6 +20,7 @@ export default function User() {
                 <Route path ="/otpSubmit"><OtpSubmit /></Route>
                 <Route path="/userProfile"><Header /><UserProfile /></Route>
                 <Route path="/editProfile"><Header /><EditProfile /></Route>
+                <Route path="/addPost"><Header /><AddPost /></Route>
             </Router>
             <ToastContainer position="top-center"
         autoClose={2000}

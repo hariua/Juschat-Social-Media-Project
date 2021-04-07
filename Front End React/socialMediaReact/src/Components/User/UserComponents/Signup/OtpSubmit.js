@@ -56,11 +56,13 @@ export default function OtpSubmit() {
 
     }
     return (
-        <div className="form-design-signin bg-light col-md-7  p-5 container-fluid">
-            <h3 className="text-center mb-5">O T P SUBMIT </h3>
+        <div className="row" id="signupBg">
+            <div className="col-md-12">
+            <div className="otpLayout bg-light col-md-7  p-5 container-fluid">
+            <h3 className="text-center mb-3"  style={{fontFamily:'Gentium Book Basic serif'}}>O T P SUBMIT </h3>
             <Form>
                 <Form.Group controlId="formBasicEmail">
-                    <label><h5>Enter the OTP</h5></label>
+                    <label className="signUpLabel"><h5>Enter the OTP</h5></label>
                     <input type="number" name="Otp" id="Otp" onChange={handleChange} className="form-control" placeholder="Enter The OTP" />
                     <p className="text-center text-danger" id="OtpErr" ></p>
 
@@ -68,11 +70,13 @@ export default function OtpSubmit() {
 
 
 
-                <Button variant="primary" id="SubmitBtn" type="button" onClick={formSubmit} size="lg" className=" w-100">
+                <Button variant="primary" id="SubmitBtn" type="button" onClick={formSubmit} size="lg" className=" w-100 mt-3 mb-3">
                     Submit
-        </Button>
+                 </Button>
             </Form>
 
+        </div>
+            </div>
         </div>
     );
 }

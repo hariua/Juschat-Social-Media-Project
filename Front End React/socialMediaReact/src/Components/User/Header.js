@@ -3,7 +3,9 @@ import { Navbar, Button, Form, Nav, FormControl,Dropdown } from 'react-bootstrap
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
+
 export default function Header() {
+    
     let user = localStorage.getItem('User')
     let history = useHistory()
     function logout(){
@@ -19,15 +21,15 @@ export default function Header() {
 
                 <input type="text" placeholder="Search" className="mr-sm-2 form-control col-6 col-md-4" />
                 <Button variant="outline-info"><i className="fas fa-search"></i></Button>
-
+                
 
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="" style={{ paddingLeft: "18em" }}></Nav>
                     <Nav>
-                        <Nav.Link href="#features"><h3 title="Add Post" className="pr-3 mr-5"><i className="far fa-plus-square"></i></h3></Nav.Link>
-                        <Nav.Link href="#pricing"><h3 title="Chat" className="pr-3 mr-5"><i className="far fa-comment-alt"></i></h3></Nav.Link>
-                        <Nav.Link href="#pricing"><h3 title="Notifications" className="pr-3 mr-5"><i className="far fa-bell"></i></h3></Nav.Link>
+                        <Nav.Link><Link to="/addPost"><h3 title="Add Post" className="pr-3 mr-5"><i className="far fa-plus-square text-light"></i></h3></Link></Nav.Link>
+                        <Nav.Link><h3 title="Chat" className="pr-3 mr-5"><i className="far fa-comment-alt"></i></h3></Nav.Link>
+                        <Nav.Link><h3 title="Notifications" className="pr-3 mr-5"><i className="far fa-bell"></i></h3></Nav.Link>
                         <Nav.Link><Link to="/userProfile"><h3 title="User" className="pr-1 "><i className="far fa-user text-light"></i></h3></Link></Nav.Link>
                         <Dropdown>
                             <Dropdown.Toggle variant="sm" className="mt-2" >

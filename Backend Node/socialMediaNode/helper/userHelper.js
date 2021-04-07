@@ -6,6 +6,7 @@ var base64ToImage = require('base64-to-image')
 let path = require('path')
 var {OAuth2Client} = require('google-auth-library')
 const { USER_COLLECTION } = require('../connection/collection')
+const { resolve } = require('path')
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 module.exports = {
     userCheckup: (userData) => {
@@ -184,6 +185,26 @@ module.exports = {
                     status.userLoginData=user
                     resolve(status)
                 }
+        })
+    },
+    addPost:(info,fileName,time,date)=>
+    {
+        let data  = {
+            FileName:fileName,
+            UserID:info.id,
+            User:info.user,
+            Description:info.description,
+            Location:info.location,
+            HashTag:info.hashtag,
+            Date:date,
+            Time:time
+        }
+        return new Promise((resolve,reject)=>
+        {
+            db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res)=>
+            {
+                resolve(res.ops[0])
+            })
         })
     }
 }

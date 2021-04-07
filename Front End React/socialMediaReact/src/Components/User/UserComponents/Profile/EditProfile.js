@@ -94,7 +94,6 @@ export default function EditProfile() {
         let data = new FormData()
         data.append('img', image)
         data.append('jwt', jwt)
-        console.log(data, "data");
         axios.post(server + '/changeProPic', data, {
             headers: {
                 'Content-Type': 'multipart/form-data;'
@@ -103,6 +102,7 @@ export default function EditProfile() {
                 console.log(response,"img res")
             document.getElementById('editImg').src = server + response.data
             document.getElementById('editImg').hidden = false
+            toast.success("Profile Picture Updated Successfully")
 
         })
     }
@@ -240,7 +240,7 @@ export default function EditProfile() {
                         </div>
                         }
                         {res && <div className="col-6">
-                            <img src={res} className="img-fluid"></img>
+                            <img src={res} className="img-fluid" id="croppedImgPreview"></img>
                         </div>}
                     </div>
                     <Button variant="primary" id="DpBtn" type="button" size="lg" className=" w-100" onClick={photoSubmit}>
