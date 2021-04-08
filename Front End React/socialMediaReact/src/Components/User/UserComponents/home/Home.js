@@ -15,36 +15,97 @@ export default function Home() {
             console.log(res.data.post);
             setPost(res.data.post)
             setPath(server + res.data.path)
+            for (let i = 0; i < post.length; i++) {
+                
+                let initial = post[i].Likes.indexOf(localStorage.getItem('userId'), 0)
+                
+                if (initial !== -1) {
+                    console.log(post[i]._id);
+                    document.getElementById(post[i]._id + "likeBefore").hidden = true
+                    document.getElementById(post[i]._id + "likeAfter").hidden = false
+                } else {
+                    document.getElementById(post[i]._id + "likeBefore").hidden = false
+                    document.getElementById(post[i]._id + "likeAfter").hidden = true
+                }
+            }
+            
 
         })
     }, [])
-    function likeBefore(userId, postId,index) {
-        document.getElementById(postId+"likeBefore").hidden = true
-        document.getElementById(postId+"likeAfter").hidden = false
-        if(post[index].Likes)
-        {
-            document.getElementById(postId+"LikeCount").innerHTML=post[index].Likes+1
-        }else{
-
-            document.getElementById(postId+"emptyLike").innerHTML=1            
+    function likeBefore(userId, postId, index) {
+        document.getElementById(postId + "likeBefore").hidden = true
+        document.getElementById(postId + "likeAfter").hidden = false
+        let data = {
+            userId: userId,
+            postId: postId,
+            jwt: localStorage.getItem('jwt')
         }
+        axios.post(server + '/addLike', data).then((res) => {
+            if (res.data.oldLike) {
+                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
+            } else if (res.data.newLike) {
+                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd 
+            }
+
+        })
 
     }
-    function likeAfter(userId, postId,index) {
-        document.getElementById(postId+"likeBefore").hidden = false
-        document.getElementById(postId+"likeAfter").hidden = true
-        if(post[index].Likes)
-        {
-            document.getElementById(postId+"LikeCount").innerHTML=post[index].Likes-1
-        }else{
-
-            document.getElementById(postId+"emptyLike").innerHTML=0           
+    function likeAfter(userId, postId, index) {
+        document.getElementById(postId + "likeBefore").hidden = false
+        document.getElementById(postId + "likeAfter").hidden = true
+        let data = {
+            userId: userId,
+            postId: postId,
+            jwt: localStorage.getItem('jwt')
         }
+        axios.post(server + '/removeLike', data).then((res) => {
+            if (res.data.removeLike) {
+                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
+            }else if(res.data.noUser)
+            {
+                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
+            }
+
+        })
+
+    }
+    function commentSubmit(postId)
+    {
+        let data = {
+            comment:comment,
+            post:postId,
+            userId:localStorage.getItem('userId'),
+            user:localStorage.getItem('User'),
+            jwt:localStorage.getItem('jwt')
+        }
+        document.getElementById(postId+'Comment').value=""
+        axios.post(server+'/addComment',data).then((res)=>
+        {
+
+        })
+        const div = document.createElement('div')
+        div.classList.add(postId+'inComm')
+        div.innerHTML=`<div>
+        <h6 className="float-left" style={{margin:"0px"}}>${data.user} : </h6><p className="" style={{margin:"0px"}}>${comment}</p><br />
+        </div>`
+        document.getElementById(postId+'comm').append(div)
         
     }
-    const [readMore, setreadMore] = useState(false)
+    function commentDisplay(postId,bool){
+        setReadMore(!bool)
+        console.log(postId,bool)
+        if(bool === false)
+        {
+            document.getElementById(postId+'commentBtn').hidden=true
+        }else{
+
+            document.getElementById(postId+'commentBtn').hidden=false
+        }
+    }
+    const [readMore, setReadMore] = useState(true)
     const [post, setPost] = useState([])
     const [path, setPath] = useState()
+    const [comment,setComment] = useState()
     return (
         <div className="container mt-4 ">
             <div className="row">
@@ -64,18 +125,27 @@ export default function Home() {
 
                                         <Card.Footer>
                                             <Card.Text>
-                                                
-                                                <h3 className="text-black float-left" id={data._id+"likeBefore"}><i class="far fa-heart" onClick={() => likeBefore(localStorage.getItem('userId'), data._id,index)} ></i></h3>
-                                                <h3 className="text-danger float-left" id={data._id+"likeAfter"} hidden><i class="fas fa-heart" onClick={() => likeAfter(localStorage.getItem('userId'), data._id,index)} ></i></h3>
-                                                {data.Likes ? <h5 id={data._id+'LikeCount'} className=" p-2 ml-4">{data.Likes}</h5> : <h5 id={data._id+'emptyLike'} className=" p-2 ml-4">0</h5>}
+
+                                                <h3 className="text-black float-left" id={data._id + "likeBefore"}><i class="far fa-heart" onClick={() => likeBefore(localStorage.getItem('userId'), data._id, index)} ></i></h3>
+                                                <h3 className="text-danger float-left" id={data._id + "likeAfter"} hidden><i class="fas fa-heart" onClick={() => likeAfter(localStorage.getItem('userId'), data._id, index)} ></i></h3>
+                                                {data.Likes ? <h5 id={data._id + 'LikeCount'} className=" p-2 ml-4">{data.Likes.length}</h5> : <h5 id={data._id + 'emptyLike'} className=" p-2 ml-4">0</h5>}
                                                 <h6>{data.Description}</h6>
-                                                <button className="btn btn-light" type="button" onClick={() => setreadMore(!readMore)}>Comments</button>
-                                                <Collapse in={readMore}>
-                                                    <h6 className="float-left pt-2">User : </h6><p className="pt-2 ml-5"> Super Bro</p>
-                                                </Collapse>
+                                                <button className="btn btn-light" type="button" onClick={() => commentDisplay(data._id,readMore)}>Comments</button>
+                                                <div id={data._id+'commentBtn'} hidden>
+                                                {data.Comment.map((comment,id)=>{
+                                                        return (
+                                                            <div id={data._id+"comm"} className="mt-1" key ={id}>
+                                                                <div className={data._id+"inComm"}>
+                                                                <h6 className="float-left" style={{margin:"0px"}}>{comment.UserName} : </h6><p className="" style={{margin:"0px"}}>{comment.Comment}</p><br />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                         
                                             </Card.Text>
-                                            <input type="text" placeholder="Comment" className="mr-sm-2 form-control col-6 col-md-10 float-left" />
-                                            <Button variant="outline-info">Post</Button>
+                                            <input type="text" placeholder="Comment" name="Comment" id={data._id+'Comment'} onChange={(event)=>setComment(event.target.value)} className="mr-sm-2 form-control col-6 col-md-10 float-left" />
+                                            <Button onClick={()=>commentSubmit(data._id)} variant="outline-info">Post</Button>
                                         </Card.Footer>
                                     </Card> <br />
                                 </div>

@@ -199,4 +199,33 @@ router.get('/getAllPosts',authenticateToken,(req,res)=>{
     res.send({post:posts,path:'/PostFiles/'})
   })
 })
+router.post('/addLike',authenticateToken,(req,res)=>{
+  userHelper.addLikePost(req.body).then((response)=>
+  {
+    if(response.oldLike)
+    {
+      res.send({oldLike:true,likeAdd:response.count})
+    }else if(response.newLike)
+    {
+      res.send({newLike:true,likeAdd:response.count})
+    }
+  })
+})
+router.post('/removeLike',authenticateToken,(req,res)=>{
+  userHelper.removeLikePost(req.body).then((response)=>
+  {
+    if(response.removeLike)
+    {
+      res.send({removeLike:true,likeRem:response.remLike})
+    }
+    else if(response.noUser)
+    {
+      res.send({noUser:true,likeRem:response.remLike})
+    }
+  })
+})
+router.post('/addComment',authenticateToken,(req,res)=>
+{
+  userHelper.addComment(req.body)
+})
 module.exports = router;

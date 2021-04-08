@@ -4,9 +4,11 @@ var bcrypt = require('bcrypt')
 var objectId = require('mongodb').ObjectID
 var base64ToImage = require('base64-to-image')
 let path = require('path')
-var {OAuth2Client} = require('google-auth-library')
+var moment = require('moment')
+var { OAuth2Client } = require('google-auth-library')
 const { USER_COLLECTION } = require('../connection/collection')
 const { resolve } = require('path')
+const { post } = require('../routes/user')
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 module.exports = {
     userCheckup: (userData) => {
@@ -53,7 +55,7 @@ module.exports = {
                         }
                     })
                 }
-                else{
+                else {
                     status.userBlocked = true
                     resolve(status)
                 }
@@ -109,111 +111,190 @@ module.exports = {
             }
         })
     },
-    base64Convert:(img,id)=>
-    {
-        return new Promise((resolve,reject)=>
-        {
+    base64Convert: (img, id) => {
+        return new Promise((resolve, reject) => {
             var base64Str = img
-           let location = path.join(__dirname,'../public/ProfileImages/')
-           var optionalObj = {'fileName': id, 'type':'jpg'};
-           base64ToImage(base64Str,location,optionalObj); 
-           
+            let location = path.join(__dirname, '../public/ProfileImages/')
+            var optionalObj = { 'fileName': id, 'type': 'jpg' };
+            base64ToImage(base64Str, location, optionalObj);
+
         })
     },
-    googleSignup:(data)=>
-    {
-        return new Promise((resolve,reject)=>
-        {
-            let token = data.token 
-            let status={}
-            
-            client.verifyIdToken({idToken : token,audience:process.env.GOOGLE_CLIENT_ID}).then(async(res)=>
-            {
-                
+    googleSignup: (data) => {
+        return new Promise((resolve, reject) => {
+            let token = data.token
+            let status = {}
+
+            client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID }).then(async (res) => {
+
                 let data = {
-                    Name:res.payload.name,
-                    Email:res.payload.email,
-                    GoogleId : res.payload.sub,
-                    GoogleLogin:true
+                    Name: res.payload.name,
+                    Email: res.payload.email,
+                    GoogleId: res.payload.sub,
+                    GoogleLogin: true
                 }
-                let user =await db.get().collection(collection.USER_COLLECTION).findOne({GoogleLogin:true,Email:data.Email})
-                if(!user)
-                {
-                    db.get().collection(collection.USER_COLLECTION).insertOne(data).then((res)=>
-                    {
-                        status.userSignup=true
-                        status.userSignupData=res.ops[0]
+                let user = await db.get().collection(collection.USER_COLLECTION).findOne({ GoogleLogin: true, Email: data.Email })
+                if (!user) {
+                    db.get().collection(collection.USER_COLLECTION).insertOne(data).then((res) => {
+                        status.userSignup = true
+                        status.userSignupData = res.ops[0]
                         resolve(status)
                     })
                 }
-                else{
-                    status.userLogin=true
-                    status.userLoginData=user
+                else {
+                    status.userLogin = true
+                    status.userLoginData = user
                     resolve(status)
                 }
-            }).catch(()=>
-            {
+            }).catch(() => {
                 reject("Invalid User")
             })
         })
     },
-    facebookSignup:(data)=>
-    {
-        let status={}
-        return new Promise(async(resolve,reject)=>
-        {
-            
+    facebookSignup: (data) => {
+        let status = {}
+        return new Promise(async (resolve, reject) => {
+
             let info = {
-                Name:data.Name,
-                Email:data.Email,
-                FacebookId:data.id,
-                FacebookLogin:true
+                Name: data.Name,
+                Email: data.Email,
+                FacebookId: data.id,
+                FacebookLogin: true
             }
-            console.log(info,"info");
-            let user =await db.get().collection(collection.USER_COLLECTION).findOne({FacebookLogin:true,Email:info.Email})
-                if(!user)
-                {
-                    db.get().collection(collection.USER_COLLECTION).insertOne(info).then((res)=>
-                    {
-                        status.userSignup=true
-                        status.userSignupData=res.ops[0]
-                        resolve(status)
-                    })
-                }
-                else{
-                    status.userLogin=true
-                    status.userLoginData=user
+            console.log(info, "info");
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ FacebookLogin: true, Email: info.Email })
+            if (!user) {
+                db.get().collection(collection.USER_COLLECTION).insertOne(info).then((res) => {
+                    status.userSignup = true
+                    status.userSignupData = res.ops[0]
                     resolve(status)
-                }
+                })
+            }
+            else {
+                status.userLogin = true
+                status.userLoginData = user
+                resolve(status)
+            }
         })
     },
-    addPost:(info,fileName,time,date)=>
-    {
-        let data  = {
-            FileName:fileName,
-            UserID:info.id,
-            User:info.user,
-            Description:info.description,
-            Location:info.location,
-            HashTag:info.hashtag,
-            Date:date,
-            Time:time
+    addPost: (info, fileName, time, date) => {
+        let data = {
+            FileName: fileName,
+            UserID: info.id,
+            User: info.user,
+            Description: info.description,
+            Location: info.location,
+            HashTag: info.hashtag,
+            Date: date,
+            Time: time
         }
-        return new Promise((resolve,reject)=>
-        {
-            db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res)=>
-            {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res) => {
                 resolve(res.ops[0])
             })
         })
     },
-    getAllPosts:()=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
+    getAllPosts: () => {
+        return new Promise(async (resolve, reject) => {
             let posts = await db.get().collection(collection.POST_COLLECTION).find().toArray()
             resolve(posts)
 
+        })
+    },
+    addLikePost: (postData) => {
+        let status = {}
+        return new Promise(async (resolve, reject) => {
+            let post = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+            if (post.Likes) {
+                db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId), Likes: postData.userId }).then(async (check) => {
+                    if (check == null) {
+                        db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(postData.postId) }, {
+                            $push: {
+                                Likes: postData.userId
+                            }
+                        }).then(async () => {
+                            let newVal = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+                            status.count = newVal.Likes.length
+                            status.newLike = true
+                            resolve(status)
+                        })
+                    } else {
+                        let newVal = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+                        status.count = newVal.Likes.length
+                        status.oldLike = true
+                        resolve(status)
+                    }
+                })
+
+            } else {
+                db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(postData.postId) }, {
+                    $set: {
+                        Likes: [postData.userId]
+                    }
+                }).then(async () => {
+                    let newVal = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+                    status.count = newVal.Likes.length
+                    status.newLike = true
+                    resolve(status)
+                })
+            }
+        })
+    },
+    removeLikePost: (postData) => {
+        let status = {}
+        return new Promise(async (resolve, reject) => {
+            let post = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+            if (post.Likes) {
+                db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId), Likes: postData.userId }).then(async (check) => {
+                    if (check != null) {
+                        db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(postData.postId) }, {
+                            $pull: {
+                                Likes: postData.userId
+                            }
+                        }).then(async () => {
+                            let likeC = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+                            status.remLike = likeC.Likes.length
+                            status.removeLike = true
+                            resolve(status)
+                        })
+                    } else {
+                        let likeC = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
+                        status.remLike = likeC.Likes.length
+                        status.noUser = true
+                        resolve(status)
+                    }
+                })
+            }
+        })
+    },
+    addComment: (data) => {
+        return new Promise(async(resolve, reject) => {
+            let date = new Date()
+            var commentID = moment(date).format('YYYY-MM-DD-h-mm-ss')
+            let file = {
+                _id:commentID,
+                Comment: data.comment,
+                UserName: data.user,
+                UserId: data.userId
+            }
+            let post =await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(data.post) })
+            if (post.Comment) {
+                db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
+                    $push: {
+                        Comment: file
+                    }
+                }).then(()=>{
+                    resolve()
+                })
+            } else {
+                db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
+                    $set: {
+                        Comment: [file]
+                    }
+                }).then(()=>{
+                    resolve()
+                })
+            }
         })
     }
 }
