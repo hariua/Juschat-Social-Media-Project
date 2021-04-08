@@ -16,9 +16,9 @@ export default function Home() {
             setPost(res.data.post)
             setPath(server + res.data.path)
             for (let i = 0; i < post.length; i++) {
-                
+
                 let initial = post[i].Likes.indexOf(localStorage.getItem('userId'), 0)
-                
+
                 if (initial !== -1) {
                     console.log(post[i]._id);
                     document.getElementById(post[i]._id + "likeBefore").hidden = true
@@ -28,7 +28,7 @@ export default function Home() {
                     document.getElementById(post[i]._id + "likeAfter").hidden = true
                 }
             }
-            
+
 
         })
     }, [])
@@ -44,7 +44,7 @@ export default function Home() {
             if (res.data.oldLike) {
                 document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
             } else if (res.data.newLike) {
-                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd 
+                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
             }
 
         })
@@ -61,51 +61,47 @@ export default function Home() {
         axios.post(server + '/removeLike', data).then((res) => {
             if (res.data.removeLike) {
                 document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
-            }else if(res.data.noUser)
-            {
+            } else if (res.data.noUser) {
                 document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
             }
 
         })
 
     }
-    function commentSubmit(postId)
-    {
+    function commentSubmit(postId) {
         let data = {
-            comment:comment,
-            post:postId,
-            userId:localStorage.getItem('userId'),
-            user:localStorage.getItem('User'),
-            jwt:localStorage.getItem('jwt')
+            comment: comment,
+            post: postId,
+            userId: localStorage.getItem('userId'),
+            user: localStorage.getItem('User'),
+            jwt: localStorage.getItem('jwt')
         }
-        document.getElementById(postId+'Comment').value=""
-        axios.post(server+'/addComment',data).then((res)=>
-        {
+        document.getElementById(postId + 'Comment').value = ""
+        axios.post(server + '/addComment', data).then((res) => {
 
         })
         const div = document.createElement('div')
-        div.classList.add(postId+'inComm')
-        div.innerHTML=`<div>
+        div.classList.add(postId + 'inComm')
+        div.innerHTML = `<div>
         <h6 className="float-left" style={{margin:"0px"}}>${data.user} : </h6><p className="" style={{margin:"0px"}}>${comment}</p><br />
         </div>`
-        document.getElementById(postId+'comm').append(div)
-        
-    }
-    function commentDisplay(postId,bool){
-        setReadMore(!bool)
-        console.log(postId,bool)
-        if(bool === false)
-        {
-            document.getElementById(postId+'commentBtn').hidden=true
-        }else{
+        document.getElementById(postId + 'comm').append(div)
 
-            document.getElementById(postId+'commentBtn').hidden=false
+    }
+    function commentDisplay(postId, bool) {
+        setReadMore(!bool)
+        console.log(postId, bool)
+        if (bool === false) {
+            document.getElementById(postId + 'commentBtn').hidden = true
+        } else {
+
+            document.getElementById(postId + 'commentBtn').hidden = false
         }
     }
     const [readMore, setReadMore] = useState(true)
     const [post, setPost] = useState([])
     const [path, setPath] = useState()
-    const [comment,setComment] = useState()
+    const [comment, setComment] = useState()
     return (
         <div className="container mt-4 ">
             <div className="row">
@@ -115,8 +111,18 @@ export default function Home() {
                             return (
                                 <div>
                                     <Card className="" key={index} >
-                                        <Card.Header>
-                                            <h5 className="p-2 float-left">{data.User}</h5><a className="ml-2 p-2 btn" type="button" href="#follow" >Follow</a>
+                                        <Card.Header className="pt-3">
+                                            <div className="row">
+                                                <div className="col-md-2 col-lg-1 col-2 pl-3 mt-1" style={{padding:"0px"}}>
+                                                <img src={server+'/ProfileImages/'+data.UserID+'.jpg'} className="img-fluid rounded-circle" style={{width:"2.75em",height:"2.75em"}} ></img>
+                                            
+                                                </div>
+                                                <div className="col-md-8 col-6">
+                                                <h5 className="m-1"><b>{data.User}</b></h5>
+                                                <p className="m-1">{data.Location}</p>
+                                                </div>
+                                            </div>
+                                            
                                         </Card.Header>
                                         {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ width: "100%", height: "40%" }} src={path + data.FileName} />}
                                         {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ width: "100%", height: "30%" }}>
@@ -125,28 +131,36 @@ export default function Home() {
 
                                         <Card.Footer>
                                             <Card.Text>
+                                                <div className="row">
+                                                    <div className="col-md-1 col-2 col-sm-3">
+                                                        <h3 className="text-black float-left" id={data._id + "likeBefore"}><i class="far fa-heart" onClick={() => likeBefore(localStorage.getItem('userId'), data._id, index)} ></i></h3>
+                                                        <h3 className="text-danger float-left" id={data._id + "likeAfter"} hidden><i class="fas fa-heart" onClick={() => likeAfter(localStorage.getItem('userId'), data._id, index)} ></i></h3>
+                                                        {data.Likes ? <h5 id={data._id + 'LikeCount'} className=" p-2 ml-4 ">{data.Likes.length}</h5> : <h5 id={data._id + 'emptyLike'} className=" p-2 ml-4">0</h5>}
+                                                    </div>
+                                                    <div className="col-md-3 col-2 col-sm-3">
+                                                        <button className="btn " type="button" onClick={() => commentDisplay(data._id, readMore)}><span className="far fa-comment-alt h3"></span></button>
+                                                    </div>
+                                                </div>
+                                                <h6 className="pb-2">{data.Description}</h6>
+                                                <p>{data.HashTag}</p>
 
-                                                <h3 className="text-black float-left" id={data._id + "likeBefore"}><i class="far fa-heart" onClick={() => likeBefore(localStorage.getItem('userId'), data._id, index)} ></i></h3>
-                                                <h3 className="text-danger float-left" id={data._id + "likeAfter"} hidden><i class="fas fa-heart" onClick={() => likeAfter(localStorage.getItem('userId'), data._id, index)} ></i></h3>
-                                                {data.Likes ? <h5 id={data._id + 'LikeCount'} className=" p-2 ml-4">{data.Likes.length}</h5> : <h5 id={data._id + 'emptyLike'} className=" p-2 ml-4">0</h5>}
-                                                <h6>{data.Description}</h6>
-                                                <button className="btn btn-light" type="button" onClick={() => commentDisplay(data._id,readMore)}>Comments</button>
-                                                <div id={data._id+'commentBtn'} hidden>
-                                                {data.Comment.map((comment,id)=>{
+                                                <div id={data._id + 'commentBtn'} hidden>
+                                                    {data.Comment.map((comment, id) => {
                                                         return (
-                                                            <div id={data._id+"comm"} className="mt-1" key ={id}>
-                                                                <div className={data._id+"inComm"}>
-                                                                <h6 className="float-left" style={{margin:"0px"}}>{comment.UserName} : </h6><p className="" style={{margin:"0px"}}>{comment.Comment}</p><br />
+                                                            <div id={data._id + "comm"} className="" key={id}>
+                                                                <div className={data._id + "inComm"}>
+                                                                    <h6 className="float-left" style={{ margin: "0px" }}>{comment.UserName} : </h6><p className="" style={{ margin: "0px" }}>{comment.Comment}</p><br />
                                                                 </div>
                                                             </div>
                                                         )
                                                     })}
                                                 </div>
-                         
+
                                             </Card.Text>
-                                            <input type="text" placeholder="Comment" name="Comment" id={data._id+'Comment'} onChange={(event)=>setComment(event.target.value)} className="mr-sm-2 form-control col-6 col-md-10 float-left" />
-                                            <Button onClick={()=>commentSubmit(data._id)} variant="outline-info">Post</Button>
+                                            <input type="text" placeholder="Comment" name="Comment" id={data._id + 'Comment'} onChange={(event) => setComment(event.target.value)} className="mr-sm-2 form-control col-10 col-md-10 float-left" />
+                                            <Button onClick={() => commentSubmit(data._id)} variant="outline-info">Post</Button>
                                         </Card.Footer>
+                                        <p className="pl-4">{data.Date} -<span className="pl-2">{data.Time}</span></p>
                                     </Card> <br />
                                 </div>
                             )

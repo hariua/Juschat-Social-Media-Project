@@ -14,8 +14,10 @@ export default function Header() {
         history.push('/')
         
     }
+    
+
     return (
-        <div>
+        <div >
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className="p-3">
                 <Link to="/"><Navbar.Brand href="#home"><h3 className="ml-3">Juschat</h3></Navbar.Brand></Link>
 
