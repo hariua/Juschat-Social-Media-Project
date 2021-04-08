@@ -192,7 +192,11 @@ router.post('/addPost',(req, res) => {
     
   })
   res.send('success')
-  
-
+})
+router.get('/getAllPosts',authenticateToken,(req,res)=>{
+  userHelper.getAllPosts().then((posts)=>
+  {
+    res.send({post:posts,path:'/PostFiles/'})
+  })
 })
 module.exports = router;
