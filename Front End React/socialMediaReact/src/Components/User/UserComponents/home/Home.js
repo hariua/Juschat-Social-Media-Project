@@ -1,9 +1,10 @@
 import { Collapse } from '@material-ui/core'
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import { Card, Button } from 'react-bootstrap'
+import { Card, Button, Dropdown } from 'react-bootstrap'
 import { useHistory } from 'react-router'
 import server from '../../../../Server'
+import './Home.css'
 export default function Home() {
     let history = useHistory()
     useEffect(() => {
@@ -98,6 +99,7 @@ export default function Home() {
             document.getElementById(postId + 'commentBtn').hidden = false
         }
     }
+
     const [readMore, setReadMore] = useState(true)
     const [post, setPost] = useState([])
     const [path, setPath] = useState()
@@ -113,16 +115,29 @@ export default function Home() {
                                     <Card className="" key={index} >
                                         <Card.Header className="pt-3">
                                             <div className="row">
-                                                <div className="col-md-2 col-lg-1 col-2 pl-3 mt-1" style={{padding:"0px"}}>
-                                                <img src={server+'/ProfileImages/'+data.UserID+'.jpg'} className="img-fluid rounded-circle" style={{width:"2.75em",height:"2.75em"}} ></img>
-                                            
+                                                <div className="col-md-2 col-lg-1 col-2 pl-3 mt-1" style={{ padding: "0px" }}>
+                                                    <img src={server + '/ProfileImages/' + data.UserID + '.jpg'} className="img-fluid rounded-circle" style={{ width: "2.75em", height: "2.75em" }} ></img>
+
                                                 </div>
                                                 <div className="col-md-8 col-6">
-                                                <h5 className="m-1"><b>{data.User}</b></h5>
-                                                <p className="m-1">{data.Location}</p>
+                                                    <h5 className="m-1"><b>{data.User}</b></h5>
+                                                    <p className="m-1">{data.Location}</p>
+                                                </div>
+                                                <div className="col-md-2 col-4" style={{ padding: "0px" }}>
+                                                    
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle id="dropdown-basic" variant="sm" className="mt-2 float-right"  >
+                                                        <span className="fas fa-ellipsis-v float-right pt-2" ></span>
+                                                        </Dropdown.Toggle >
+
+                                                        <Dropdown.Menu align="right">
+                                                            <Dropdown.Item >Report Post</Dropdown.Item>
+
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
                                                 </div>
                                             </div>
-                                            
+
                                         </Card.Header>
                                         {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ width: "100%", height: "40%" }} src={path + data.FileName} />}
                                         {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ width: "100%", height: "30%" }}>
