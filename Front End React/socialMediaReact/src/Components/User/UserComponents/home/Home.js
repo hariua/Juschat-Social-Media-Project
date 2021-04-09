@@ -3,6 +3,7 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { Card, Button, Dropdown } from 'react-bootstrap'
 import { useHistory } from 'react-router'
+import { toast } from 'react-toastify'
 import server from '../../../../Server'
 import './Home.css'
 export default function Home() {
@@ -17,7 +18,7 @@ export default function Home() {
             setPost(res.data.post)
             setPath(server + res.data.path)
             for (let i = 0; i < post.length; i++) {
-
+               
                 let initial = post[i].Likes.indexOf(localStorage.getItem('userId'), 0)
 
                 if (initial !== -1) {
@@ -99,6 +100,28 @@ export default function Home() {
             document.getElementById(postId + 'commentBtn').hidden = false
         }
     }
+    function reportPost(postId,userId)
+    {
+        let data={
+            postId:postId,
+            userId:userId,
+            jwt:localStorage.getItem('jwt')
+        }
+        axios.post(server+'/reportPost',data).then((res)=>{
+            console.log(res);
+            if(res.data==='reportAdded')
+            {
+                toast("Report Added Successfully")
+            }else if (res.data === 'alreadyReported')
+            {
+                toast.warning("You Have Already Reported")
+            }
+        })
+    }
+    function hashClick(hashTag,userId)
+    {
+        console.log(hashTag,userId);
+    }
 
     const [readMore, setReadMore] = useState(true)
     const [post, setPost] = useState([])
@@ -131,7 +154,7 @@ export default function Home() {
                                                         </Dropdown.Toggle >
 
                                                         <Dropdown.Menu align="right">
-                                                            <Dropdown.Item >Report Post</Dropdown.Item>
+                                                            <Dropdown.Item onClick={()=>reportPost(data._id,localStorage.getItem('userId'))} >Report Post</Dropdown.Item>
 
                                                         </Dropdown.Menu>
                                                     </Dropdown>
@@ -157,9 +180,16 @@ export default function Home() {
                                                     </div>
                                                 </div>
                                                 <h6 className="pb-2">{data.Description}</h6>
-                                                <p>{data.HashTag}</p>
+                                                {data.HashTag?data.HashTag.match(/#[a-z]+/gi).map((hash,ind)=>{
+                                                    return(
+                                                        <div>
+                                                            <p onClick={()=>hashClick(hash,localStorage.getItem('userId'))} style={{cursor:"pointer"}} key={ind} className="float-left">{hash}</p>
+                                                        </div>
+                                                    )
+                                                    
+                                                }):<p>h</p>}<br></br>
 
-                                                <div id={data._id + 'commentBtn'} hidden>
+                                                <div className="overflow-auto" id={data._id + 'commentBtn'} hidden>
                                                     {data.Comment.map((comment, id) => {
                                                         return (
                                                             <div id={data._id + "comm"} className="" key={id}>

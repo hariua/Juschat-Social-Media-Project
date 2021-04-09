@@ -101,30 +101,37 @@ export default function UserSignin() {
     })
   }
   function responseFailureGoogle(res) {
-    toast.dark("Something Went Wrong !!! Please Try Again Later")
+    
   }
   function componentFBClicked() {
     console.log("Button FB Clicked");
   }
   function responseFacebook(res) {
     console.log(res);
-    if (res.accessToken !== '' && res.id !== '' && res.name !== '' && res.email !== '') {
-      let data = {
-        Name: res.name,
-        Email: res.email,
-        id: res.id
-      }
-      axios.post(server + '/facebookSignup', data).then((res) => {
-        console.log(res);
-        if (res.data.login === true) {
-          localStorage.setItem('jwt', res.data.jwtToken)
-          localStorage.setItem('User', res.data.user)
-          localStorage.setItem('userId', res.data.id)
-          history.push('/home')
-        } else {
-          toast.error("Something Went Wrong !!!")
+    
+    if (res.accessToken) {
+      if(res.accessToken !== '' && res.id !== '' && res.name !== '' && res.email !== '')
+      {
+        let data = {
+          Name: res.name,
+          Email: res.email,
+          id: res.id
         }
-      })
+        axios.post(server + '/facebookSignup', data).then((res) => {
+          console.log(res);
+          if (res.data.login === true) {
+            localStorage.setItem('jwt', res.data.jwtToken)
+            localStorage.setItem('User', res.data.user)
+            localStorage.setItem('userId', res.data.id)
+            history.push('/home')
+          } else {
+            toast.error("Something Went Wrong !!!")
+          }
+        })
+      }
+      else{
+        toast.error('something went wrong!!!')
+      }
     } else {
       toast.error("Something Went Wrong !!! Please Try Again Later")
     }

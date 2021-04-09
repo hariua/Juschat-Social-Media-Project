@@ -296,5 +296,46 @@ module.exports = {
                 })
             }
         })
+    },
+    reportPost:(data)=>
+    {
+        let status={}
+        return new Promise(async(resolve,reject)=>
+        {
+            let post =await db.get().collection(collection.POST_COLLECTION).findOne({_id:objectId(data.postId)})
+            if(post.Report)
+            {
+                db.get().collection(collection.POST_COLLECTION).findOne({_id:objectId(data.postId),Report:data.userId}).then((check)=>
+                {
+                    console.log(check);
+                    if(check == null)
+                    {
+                        db.get().collection(collection.POST_COLLECTION).updateOne({_id:objectId(data.postId)},{
+                            $push:{
+                                Report:data.userId
+                            }
+                        }).then(()=>
+                        {
+                            status.reportAdded=true;
+                            resolve(status)
+                        })
+                    }
+                    else{
+                        status.alreadyReported=true;
+                        resolve(status)
+                    }
+                })
+            }else{
+                db.get().collection(collection.POST_COLLECTION).updateOne({_id:objectId(data.postId)},{
+                    $set:{
+                        Report:[data.userId]
+                    }
+                }).then(()=>{
+                    status.reportAdded=true;
+                            resolve(status)
+                })
+            }
+            
+        })
     }
 }

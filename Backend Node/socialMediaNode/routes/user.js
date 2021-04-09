@@ -5,7 +5,8 @@ var otp = require('../connection/otp')
 var fs = require('fs')
 var jwt = require('jsonwebtoken');
 var path = require('path')
-var moment = require('moment')
+var moment = require('moment');
+const { response } = require('express');
 var userData = {}
 const twilio = require('twilio')(otp.ACCOUNT_SID, otp.AUTH_TOKEN)
 function authenticateToken(req, res, next) {
@@ -227,5 +228,17 @@ router.post('/removeLike',authenticateToken,(req,res)=>{
 router.post('/addComment',authenticateToken,(req,res)=>
 {
   userHelper.addComment(req.body)
+})
+router.post('/reportPost',authenticateToken,(req,res)=>{
+  console.log(req.body,"body");
+  userHelper.reportPost(req.body).then((response)=>{
+    if(response.reportAdded)
+    {
+      res.send("reportAdded")
+    }else if(response.alreadyReported)
+    {
+      res.send("alreadyReported")
+    }
+  })
 })
 module.exports = router;
