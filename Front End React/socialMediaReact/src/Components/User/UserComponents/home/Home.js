@@ -2,11 +2,13 @@ import { Collapse } from '@material-ui/core'
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { Card, Button, Dropdown } from 'react-bootstrap'
-import { useHistory } from 'react-router'
+import { Route, useHistory } from 'react-router'
+import { BrowserRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import server from '../../../../Server'
 import './Home.css'
 export default function Home() {
+    
     let history = useHistory()
     useEffect(() => {
         let token = localStorage.getItem('jwt')
@@ -80,14 +82,25 @@ export default function Home() {
         }
         document.getElementById(postId + 'Comment').value = ""
         axios.post(server + '/addComment', data).then((res) => {
-
+            console.log(res)
+            
+            if(res.data==='newComment')
+            {
+                console.log("if enterered");
+                window.location.reload(true)
+            }
+            else{
+                const div = document.createElement('div')
+                div.classList.add(postId + 'inComm')
+                div.innerHTML = `<div>
+                <h6 className="float-left" style={{margin:"0px"}}>${data.user} : </h6><p className="" style={{margin:"0px"}}>${comment}</p><br />
+                </div>`
+                document.getElementById(postId + 'comm').append(div)
+            }
+             
         })
-        const div = document.createElement('div')
-        div.classList.add(postId + 'inComm')
-        div.innerHTML = `<div>
-        <h6 className="float-left" style={{margin:"0px"}}>${data.user} : </h6><p className="" style={{margin:"0px"}}>${comment}</p><br />
-        </div>`
-        document.getElementById(postId + 'comm').append(div)
+       
+        
 
     }
     function commentDisplay(postId, bool) {
@@ -118,9 +131,11 @@ export default function Home() {
             }
         })
     }
-    function hashClick(hashTag,userId)
+    function hashClick(hashTag)
     {
-        console.log(hashTag,userId);
+        localStorage.setItem('hash',hashTag)
+        history.push('/hashPost')
+             
     }
 
     const [readMore, setReadMore] = useState(true)
@@ -162,8 +177,8 @@ export default function Home() {
                                             </div>
 
                                         </Card.Header>
-                                        {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ width: "100%", height: "40%" }} src={path + data.FileName} />}
-                                        {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ width: "100%", height: "30%" }}>
+                                        {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ width: "50em", height: "30em" }} src={path + data.FileName} />}
+                                        {data.FileName.split('.').pop() === 'mp4' && <video controls  style={{ width: "45.5em",textAlign:"center", height: "30em" }}>
                                             <source src={path + data.FileName}></source></video>}
 
 
@@ -180,17 +195,17 @@ export default function Home() {
                                                     </div>
                                                 </div>
                                                 <h6 className="pb-2">{data.Description}</h6>
-                                                {data.HashTag?data.HashTag.match(/#[a-z]+/gi).map((hash,ind)=>{
+                                                {data.HashTag?data.HashTag.map((hash,ind)=>{
                                                     return(
                                                         <div>
-                                                            <p onClick={()=>hashClick(hash,localStorage.getItem('userId'))} style={{cursor:"pointer"}} key={ind} className="float-left">{hash}</p>
+                                                            <p onClick={()=>hashClick(hash)} style={{cursor:"pointer"}} key={ind} className="float-left">{hash}</p>
                                                         </div>
                                                     )
                                                     
                                                 }):<p>h</p>}<br></br>
 
                                                 <div className="overflow-auto" id={data._id + 'commentBtn'} hidden>
-                                                    {data.Comment.map((comment, id) => {
+                                                    {data.Comment && data.Comment.map((comment, id) => {
                                                         return (
                                                             <div id={data._id + "comm"} className="" key={id}>
                                                                 <div className={data._id + "inComm"}>

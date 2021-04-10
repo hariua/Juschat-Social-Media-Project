@@ -178,15 +178,17 @@ module.exports = {
         })
     },
     addPost: (info, fileName, time, date) => {
+        let hstag = info.hashtag.match(/#[a-z]+/gi)
         let data = {
             FileName: fileName,
             UserID: info.id,
             User: info.user,
             Description: info.description,
             Location: info.location,
-            HashTag: info.hashtag,
+            HashTag: hstag,
             Date: date,
-            Time: time
+            Time: time,
+            Likes:[]
         }
         return new Promise((resolve, reject) => {
             db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res) => {
@@ -284,7 +286,13 @@ module.exports = {
                         Comment: file
                     }
                 }).then(()=>{
-                    resolve()
+                    if(post.Comment.length===0)
+                    {
+                        resolve("newComment")
+                    }else{
+                        resolve()
+                    }
+                    
                 })
             } else {
                 db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
@@ -292,7 +300,7 @@ module.exports = {
                         Comment: [file]
                     }
                 }).then(()=>{
-                    resolve()
+                    resolve("newComment")
                 })
             }
         })
@@ -336,6 +344,15 @@ module.exports = {
                 })
             }
             
+        })
+    },
+    getHashPost:(data)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {   
+            let hashPost = await db.get().collection(collection.POST_COLLECTION).find({HashTag:data.hash}).toArray()
+            console.log(hashPost,"vannutto");
+            resolve(hashPost)
         })
     }
 }

@@ -70,7 +70,8 @@ export default function AllUsers() {
                                     <td>{index + 1}</td>
                                     <td>{item.Name}</td>
                                     <td>{item.Email}</td>
-                                    <td>{item.Mobile}</td>
+                                    
+                                    {item.Mobile?<td>{item.Mobile}</td>:item.GoogleLogin?<td>Google User</td>:item.FacebookLogin?<td>Facebook User</td>:<td></td>}
                                     <td><Link to="#"><Button id={item._id + "b"} className="btn btn-danger" onClick={blockBtn} type="btn">Block</Button></Link>
                                         <Link to="#"><Button id={item._id + "u"} className="btn btn-primary" onClick={unblockBtn} type="btn" hidden>Unblock</Button> </Link>
                                     </td>

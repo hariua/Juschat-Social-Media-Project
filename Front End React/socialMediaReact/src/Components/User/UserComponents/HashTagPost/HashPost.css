@@ -1,0 +1,19 @@
+.hashbg{
+    background-image: url(./scott-graham-5fNmWej4tAA-unsplash.jpg);
+        background-size: cover;
+        background-position: center;
+        padding-top: 2%;
+        padding-bottom: 3%;
+}
+.cardHash{
+    background: none;
+    border:5px solid white;
+}
+.cardName{
+    background-color:burlywood;
+    opacity: 0.8;
+}
+.headText{
+    color:white;
+    opacity: 1.0;
+}

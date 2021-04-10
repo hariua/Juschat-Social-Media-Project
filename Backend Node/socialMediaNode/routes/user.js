@@ -227,7 +227,16 @@ router.post('/removeLike',authenticateToken,(req,res)=>{
 })
 router.post('/addComment',authenticateToken,(req,res)=>
 {
-  userHelper.addComment(req.body)
+  userHelper.addComment(req.body).then((response)=>
+  {
+    console.log(response,"reeeeeee");
+    if(response === 'newComment' )
+    {
+      res.send('newComment')
+    }else{
+      res.send('oldComment')
+    }
+  })
 })
 router.post('/reportPost',authenticateToken,(req,res)=>{
   console.log(req.body,"body");
@@ -241,4 +250,12 @@ router.post('/reportPost',authenticateToken,(req,res)=>{
     }
   })
 })
+router.post('/getHashPost',authenticateToken,(req,res)=>
+{
+  userHelper.getHashPost(req.body).then((response)=>
+  {
+    res.send(response)
+  })
+})
+
 module.exports = router;

@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Header from './Header'
 import AddPost from './UserComponents/Create Post/AddPost'
+import HashPost from './UserComponents/HashTagPost/HashPost'
 import Home from './UserComponents/home/Home'
 import EditProfile from './UserComponents/Profile/EditProfile'
 import UserProfile from './UserComponents/Profile/UserProfile'
@@ -11,8 +12,10 @@ import OtpSubmit from './UserComponents/Signup/OtpSubmit'
 import SignUp from './UserComponents/Signup/UserSignup'
 
 export default function User() {
+    
     return (
         <div>
+            
             <Router>
                 <Route path='/' exact><SignIn /></Route>
                 <Route path="/userSignup"><SignUp /></Route>
@@ -21,6 +24,8 @@ export default function User() {
                 <Route path="/userProfile"><Header /><UserProfile /></Route>
                 <Route path="/editProfile"><Header /><EditProfile /></Route>
                 <Route path="/addPost"><Header /><AddPost /></Route>
+                <Route path="/hashPost"><Header /><HashPost /></Route>
+                
             </Router>
             <ToastContainer position="top-center"
         autoClose={2000}

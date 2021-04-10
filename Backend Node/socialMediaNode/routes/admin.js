@@ -59,5 +59,12 @@ router.post('/blockUser', authenticateAdmin, (req, res) => {
 router.post('/unblockUser', authenticateAdmin, (req, res) => {
   adminHelper.unblockUser(req.body.id)
 })
+router.get('/getAllPosts',authenticateAdmin,(req,res)=>
+{
+  adminHelper.getAllPosts().then((response)=>
+  {
+    res.send(response)
+  })
+})
 
 module.exports = router;

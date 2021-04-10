@@ -29,7 +29,7 @@ export default function AdminSidebar() {
                         <Link to="/admin/allUsers">Users</Link>
                         </li>
                         <li>
-                            <a href="#">Posts</a>
+                        <Link to="/admin/allPosts">Posts</Link>
                         </li>
                         <li>
                             <a href="#">Overview</a>
