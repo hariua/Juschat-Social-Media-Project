@@ -31,6 +31,7 @@ export default function Home() {
                     document.getElementById(post[i]._id + "likeBefore").hidden = false
                     document.getElementById(post[i]._id + "likeAfter").hidden = true
                 }
+                
             }
 
 
@@ -183,7 +184,7 @@ export default function Home() {
                                             <source src={path + data.FileName}></source></video>}
 
 
-                                        <Card.Footer>
+                                        {!data.FileName=='REPORT.jpg'&&<Card.Footer >
                                             <Card.Text>
                                                 <div className="row">
                                                     <div className="col-md-1 col-2 col-sm-3">
@@ -220,7 +221,7 @@ export default function Home() {
                                             </Card.Text>
                                             <input type="text" placeholder="Comment" name="Comment" id={data._id + 'Comment'} onChange={(event) => setComment(event.target.value)} className="mr-sm-2 form-control col-10 col-md-10 float-left" />
                                             <Button onClick={() => commentSubmit(data._id)} variant="outline-info">Post</Button>
-                                        </Card.Footer>
+                                        </Card.Footer>}
                                         <p className="pl-4">{data.Date} -<span className="pl-2">{data.Time}</span></p>
                                     </Card> <br />
                                 </div>

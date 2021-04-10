@@ -66,5 +66,22 @@ router.get('/getAllPosts',authenticateAdmin,(req,res)=>
     res.send(response)
   })
 })
-
+router.get('/reportedPosts',authenticateAdmin,(req,res)=>{
+  adminHelper.getReportedPosts().then((response)=>
+  {
+    if(response=='noReport')
+    {
+      res.send('noReport')
+    }else{
+      res.send(response)
+    }
+  })
+})
+router.post('/reportPostAdmin',authenticateAdmin,(req,res)=>
+{
+  adminHelper.reportPost(req.body).then(()=>
+  {
+    res.send("PostRemoved")
+  })
+})
 module.exports = router;

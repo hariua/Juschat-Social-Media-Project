@@ -82,5 +82,31 @@ module.exports={
             let posts = await db.get().collection(collection.POST_COLLECTION).find().toArray()
             resolve(posts)
         })
+    },
+    getReportedPosts:()=>{
+        return new Promise(async(resolve,reject)=>
+        {
+            let reportPost = await db.get().collection(collection.POST_COLLECTION).find({Report:{$exists:true}}).toArray()
+            if(reportPost.length>0)
+            {
+                resolve(reportPost)
+            }else{
+                resolve("noReport")
+            }
+        })
+    },
+    reportPost:(data)=>
+    {
+        return new Promise((resolve,reject)=>
+        {
+            db.get().collection(collection.POST_COLLECTION).updateOne({_id:objectId(data.postId)},{
+                $set:{
+                    FileName:"REPORT.jpg"
+                }
+            }).then(()=>
+            {
+                resolve()
+            })
+        })
     }
 }

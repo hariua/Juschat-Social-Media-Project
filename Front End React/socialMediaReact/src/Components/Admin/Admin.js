@@ -6,6 +6,7 @@ import AdminSidebar from './AdminComponents/Home/AdminSidebar'
 import AllUsers from './AdminComponents/AllUsers/AllUsers'
 import { ToastContainer } from 'react-toastify'
 import AllPosts from './AdminComponents/AllPosts/AllPosts'
+import ReportedPosts from './AdminComponents/Reported Posts/ReportedPosts'
 export default function Admin() {
     
     return (
@@ -15,6 +16,7 @@ export default function Admin() {
                 <Route path ="/admin/home"><AdminNavbar /><AdminSidebar /></Route>
                 <Route path="/admin/allUsers"><AdminNavbar /><AdminSidebar /><AllUsers /></Route>
                 <Route path="/admin/allPosts"><AdminNavbar /><AdminSidebar /><AllPosts /></Route>
+                <Route path="/admin/reportedPosts"><AdminNavbar /><AdminSidebar /><ReportedPosts /></Route>
             </Router>
             <ToastContainer position="top-center"
         autoClose={2000}
