@@ -8,6 +8,7 @@ import server from '../../../../Server'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { toast } from 'react-toastify'
+import './UserProfile.css'
 
 export default function EditProfile() {
     let history = useHistory()
@@ -16,7 +17,7 @@ export default function EditProfile() {
         margin: "auto",
         marginTop: "4%",
         marginBottom: "4%",
-        opacity: " 0.7",
+        opacity: " 0.8",
         borderRadius: "2em 0em",
         border: "3px solid blue"
 
@@ -55,7 +56,7 @@ export default function EditProfile() {
         }
 
     }, [])
-    const [textCollapse, setTextCollapse] = useState(true)
+    const [textCollapse, setTextCollapse] = useState(false)
     const [picCollapse, setPicCollapse] = useState(false)
     const [passwordCollapse, setPasswordCollapse] = useState(false)
     const [dp, setDp] = useState(null)
@@ -189,7 +190,8 @@ export default function EditProfile() {
         setRes(base64Image)
     }
     return (
-        <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid" style={style}>
+        <div className="profileBg">
+            <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid" style={style}>
             <h3 className="text-center mb-3 mt-2">Edit Profile </h3>
             <img src='' id="editImg" className="img-fluid rounded-circle" style={{ width: "10em", height: "10em", marginLeft: "40%", marginRight: "50%" }}></img>
             <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setTextCollapse(!textCollapse)}>Edit Basic Details</button>
@@ -267,6 +269,7 @@ export default function EditProfile() {
                     </Button>
                 </Form>
             </Collapse>
+        </div>
         </div>
     )
 }

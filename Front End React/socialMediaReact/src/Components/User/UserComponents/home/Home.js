@@ -143,7 +143,8 @@ export default function Home() {
     const [path, setPath] = useState()
     const [comment, setComment] = useState()
     return (
-        <div className="container mt-4 ">
+        <div className="homeBg">
+            <div className="container mt-4 ">
             <div className="row">
                 <div className="col-md-8 ">
                     <div className="feed" >
@@ -237,6 +238,7 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     )
 }

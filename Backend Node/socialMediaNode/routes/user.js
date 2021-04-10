@@ -114,16 +114,19 @@ router.post('/changeProPic', authenticateToken, (req, res) => {
   userHelper.base64Convert(req.body.img, req.user._id)
   res.send('/ProfileImages/' + req.user._id + '.jpg')
 })
-router.get('/getProfileDetails', authenticateToken, (req, res) => {
+router.get('/getProfileDetails', authenticateToken, async(req, res) => {
+  let userPost = await userHelper.getUserPost(req.user._id)
+  
   userHelper.findUser(req.user._id).then((data) => {
     let val = path.join(__dirname, '../')
     let img = path.join(__dirname, '../public/ProfileImages/' + req.user._id + '.jpg')
+    
     console.log(img);
     if (fs.existsSync(img)) {
       console.log("img exist");
-      res.send({ user: data, imgUrl: '/ProfileImages/' + req.user._id + '.jpg' })
+      res.send({ user: data, imgUrl: '/ProfileImages/' + req.user._id + '.jpg',posts:userPost })
     } else {
-      res.send({ user: data, imgUrl: '' })
+      res.send({ user: data, imgUrl: '',posts:userPost })
     }
 
 

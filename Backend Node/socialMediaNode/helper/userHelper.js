@@ -354,5 +354,21 @@ module.exports = {
             console.log(hashPost,"vannutto");
             resolve(hashPost)
         })
+    },
+    getUserPost:(userId)=>
+    {
+        let status={}
+        return new Promise(async(resolve,reject)=>
+        {
+            let post =await db.get().collection(collection.POST_COLLECTION).find({UserID:userId}).toArray()
+            if(post)
+            {
+                status.post=post
+                resolve(status)
+            }else{
+                resolve(status)
+            }
+            
+        })
     }
 }

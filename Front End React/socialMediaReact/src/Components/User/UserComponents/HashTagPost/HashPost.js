@@ -32,15 +32,15 @@ export default function HashPost(props) {
                 </div>
                 <div className="col-md-1"></div>
                 <div className="col-md-7 ">
-                    <h2 className="pt-3 pb-3" id="hashName">{localStorage.getItem('hash')}</h2>
+                    <h2 className="pt-3 pb-3 text-white" id="hashName">{localStorage.getItem('hash')}</h2>
                 
                 </div>
 
             </div>
-            <hr className="seperator "></hr>
+            <hr className="seperator bg-white "></hr>
             <div className="row">
                 <div className="col-md-12">
-                    <p className="text-center  h4">POSTS</p>
+                    <p className="text-center text-white  h4">POSTS</p>
 
                     <div className="row">
                         {hashPost.map((data,index)=>
@@ -48,7 +48,7 @@ export default function HashPost(props) {
                             return(
                                 <div className="col-md-4 mt-3">
                             <Card className="mx-auto cardHash" >
-                            <Card.Header className="pt-3 cardName">
+                            <Card.Header className="pt-3 ">
                                             <div className="row headText">
                                                 
                                                 <div className="">
