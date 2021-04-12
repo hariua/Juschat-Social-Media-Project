@@ -260,5 +260,30 @@ router.post('/getHashPost',authenticateToken,(req,res)=>
     res.send(response)
   })
 })
+router.post('/getAnotherUserProfile',authenticateToken,async(req,res)=>{
+  let userPost = await userHelper.getUserPost(req.body.userId)
+  userHelper.findUser(req.body.userId).then((data)=>
+  {
+    let img = path.join(__dirname, '../public/ProfileImages/' + req.body.userId + '.jpg')
+    if (fs.existsSync(img)) {
+      console.log("img exist");
+      res.send({ user: data, imgUrl: '/ProfileImages/' + req.body.userId + '.jpg',posts:userPost })
+    } else {
+      res.send({ user: data, imgUrl: '',posts:userPost })
+    }
+  })
+})
+router.post('/searchUsers',authenticateToken,(req,res)=>
+{
+  userHelper.searchUser(req.body.search).then((response)=>
+  {
+    if(response.length != 0)
+    {
+      res.send(response)
+    }else{
+      res.send("NoResult")
+    }
+  })
+})
 
 module.exports = router;

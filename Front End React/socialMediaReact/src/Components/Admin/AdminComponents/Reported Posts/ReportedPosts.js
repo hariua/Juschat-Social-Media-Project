@@ -29,6 +29,7 @@ export default function ReportedPosts() {
         if(response.data==='PostRemoved')
         {
             toast("Post Removed Successfully!!!")
+            
         }
     })
    }
@@ -48,7 +49,8 @@ export default function ReportedPosts() {
                             <th>Likes</th>
                             <th>Comments</th>
                             <th>Reports</th>
-                            <th>Remove</th>
+                            <th>Block</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -63,8 +65,8 @@ export default function ReportedPosts() {
                                     <td>{item.Likes.length}</td>
                                     {item.Comment?<td>{item.Comment.length}</td>:<td>Nil</td>}
                                     {item.Report?<td>{item.Report.length}</td>:<td>Nil</td>}
-                                    <td><Button id={item._id + "r"} className="btn btn-danger" onClick={()=>report(item._id)} type="btn">Remove Post</Button>
-                                    </td>
+                                    {item.FileName==='REPORT.jpg'?<td><Button  className="btn btn-danger disabled" type="btn">Post Blocked</Button></td>:<td><Button id={item._id + "r"} className="btn btn-danger" onClick={()=>report(item._id)} type="btn">Remove Post</Button></td>}
+                                    
                                    
                                     
                                 </tr>

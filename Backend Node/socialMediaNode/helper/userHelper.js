@@ -370,5 +370,18 @@ module.exports = {
             }
             
         })
+    },
+    searchUser:(word)=>
+    {
+        return new Promise((resolve,reject)=>
+        {
+            db.get().collection(collection.USER_COLLECTION).createIndex({Name:"text"}).then(async()=>
+            {
+                let users = await db.get().collection(collection.USER_COLLECTION).find({$text:{$search:word}}).toArray()
+                resolve(users)
+            })
+            
+            
+        })
     }
 }

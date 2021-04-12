@@ -18,8 +18,13 @@ export default function HashPost(props) {
             axios.post(server + '/getHashPost' ,data).then((response) => {
                 console.log(response);
                 setHashPost(response.data)
+                
                  
             })
+        }
+        return ()=>
+        {
+            localStorage.removeItem('hash')
         }   
     },[])
     

@@ -1,16 +1,19 @@
+
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Card, CardDeck } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import server from '../../../../Server'
-import './UserProfile.css'
 
-export default function UserProfile() {
-    let user = localStorage.getItem('User')
+export default function AnotherUserProfile() {
     useEffect(() => {
         let token = localStorage.getItem('jwt')
         if (token) {
-            axios.get(server + '/getProfileDetails?jwt=' + token).then((response) => {
+            let data={
+                jwt:token,
+                userId:localStorage.getItem('profileUser')
+            }
+            axios.post(server + '/getAnotherUserProfile',data).then((response) => {
                 console.log(response);
                 if (response.data.imgUrl === '') {
                     document.getElementById('userDp').hidden = true
@@ -34,13 +37,18 @@ export default function UserProfile() {
                 document.getElementById('userMail').innerHTML = response.data.user.Email
                 document.getElementById('userMobile').innerHTML = response.data.user.Mobile
                 if (response.data.posts.post) {
-                    setPost(response.data.posts.post)
+                    setUserPost(response.data.posts.post)
                 }
+                
 
             })
         }
+        return ()=>
+        {
+            localStorage.removeItem('profileUser')
+        }
     }, [])
-    const [post, setPost] = useState([])
+    const [userPost, setUserPost] = useState([])
     return (
         <div className="profileBg">
             <div className="container mt-2">
@@ -50,9 +58,9 @@ export default function UserProfile() {
                     </div>
                     <div className="col-md-1"></div>
                     <div className="col-md-7 ">
-                        <h2 className="pt-5  mt-3 " id="userName"></h2><Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>
+                        <h2 className="pt-5  mt-3 " id="userName"></h2>{localStorage.getItem('userId')===localStorage.getItem('profileUser')?<Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>:<buton size="lg" className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
-                            {post?<li className="float-left pr-2 h6">{post.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
+                            {userPost?<li className="float-left pr-2 h6">{userPost.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
                             <li className="float-left pr-2 h6"> 5 following</li>
                             <li className=" pr-2 h6">20 followers</li>
                         </ul>
@@ -77,13 +85,13 @@ export default function UserProfile() {
                         <p className="text-center text-white h4">POSTS</p>
 
                         <div className="row">
-                            {post?post.map((data, index) => {
+                            {userPost?userPost.map((data, index) => {
                                 return (
                                     <div className="col-md-4 mt-3">
                                         <Card className="mx-auto alert border-dark" key={index} >
 
                                             {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
-                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
+                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ objectFit: "", width: "20em", height: "18em", textAlign: "center", margin: "auto" }}>
                                                 <source src={server + "/PostFiles/" + data.FileName}></source></video>}
 
                                             <div className=" row text-center">

@@ -1,3 +1,4 @@
+import './AdminSignin.css'
 import { Alert, Button } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
@@ -5,7 +6,7 @@ import axios from 'axios'
 import server from '../../../../Server'
 import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
-import './AdminSignin.css'
+
 export default function AdminSignIn() {
   useEffect(() => {
     if (localStorage.getItem('jwt1')) {

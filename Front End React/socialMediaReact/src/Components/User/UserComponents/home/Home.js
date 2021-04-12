@@ -138,6 +138,11 @@ export default function Home() {
         history.push('/hashPost')
              
     }
+    const userClick = (userId)=>
+    {
+        localStorage.setItem('profileUser',userId)
+        // history.push('/userProfile')
+    }
 
     const [readMore, setReadMore] = useState(true)
     const [post, setPost] = useState([])
@@ -145,7 +150,7 @@ export default function Home() {
     const [comment, setComment] = useState()
     return (
         <div className="homeBg">
-            <div className="container mt-4 ">
+            <div className="container ">
             <div className="row">
                 <div className="col-md-8 ">
                     <div className="feed" >
@@ -160,7 +165,7 @@ export default function Home() {
 
                                                 </div>
                                                 <div className="col-md-8 col-6">
-                                                    <h5 className="m-1"><b>{data.User}</b></h5>
+                                                    <h5 onClick={()=>userClick(data.UserID)} style={{cursor:"pointer"}} className="m-1"><b>{data.User}</b></h5>
                                                     <p className="m-1">{data.Location}</p>
                                                 </div>
                                                 <div className="col-md-2 col-4" style={{ padding: "0px" }}>
@@ -184,7 +189,7 @@ export default function Home() {
                                             <source src={path + data.FileName}></source></video>}
 
 
-                                        {!data.FileName=='REPORT.jpg'&&<Card.Footer >
+                                        {data.FileName!=='REPORT.jpg'?<Card.Footer >
                                             <Card.Text>
                                                 <div className="row">
                                                     <div className="col-md-1 col-2 col-sm-3">
@@ -200,7 +205,7 @@ export default function Home() {
                                                 {data.HashTag?data.HashTag.map((hash,ind)=>{
                                                     return(
                                                         <div>
-                                                            <p onClick={()=>hashClick(hash)} style={{cursor:"pointer"}} key={ind} className="float-left">{hash}</p>
+                                                            <p onClick={()=>hashClick(hash)} style={{cursor:"pointer"}} key={ind} className="float-left text-primary">{hash}</p>
                                                         </div>
                                                     )
                                                     
@@ -221,7 +226,7 @@ export default function Home() {
                                             </Card.Text>
                                             <input type="text" placeholder="Comment" name="Comment" id={data._id + 'Comment'} onChange={(event) => setComment(event.target.value)} className="mr-sm-2 form-control col-10 col-md-10 float-left" />
                                             <Button onClick={() => commentSubmit(data._id)} variant="outline-info">Post</Button>
-                                        </Card.Footer>}
+                                        </Card.Footer>:<p></p>}
                                         <p className="pl-4">{data.Date} -<span className="pl-2">{data.Time}</span></p>
                                     </Card> <br />
                                 </div>

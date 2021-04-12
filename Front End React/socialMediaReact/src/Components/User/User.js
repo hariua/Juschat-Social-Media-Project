@@ -5,6 +5,7 @@ import Header from './Header'
 import AddPost from './UserComponents/Create Post/AddPost'
 import HashPost from './UserComponents/HashTagPost/HashPost'
 import Home from './UserComponents/home/Home'
+import AnotherUserProfile from './UserComponents/Profile/AnotherUserProfile'
 import EditProfile from './UserComponents/Profile/EditProfile'
 import UserProfile from './UserComponents/Profile/UserProfile'
 import SignIn from './UserComponents/SignIn/UserSignin'
@@ -21,10 +22,13 @@ export default function User() {
                 <Route path="/userSignup"><SignUp /></Route>
                 <Route path ="/home"><Header /><Home /></Route>
                 <Route path ="/otpSubmit"><OtpSubmit /></Route>
-                <Route path="/userProfile"><Header /><UserProfile /></Route>
+                <Route path="/myProfile"><Header /><UserProfile /></Route>
                 <Route path="/editProfile"><Header /><EditProfile /></Route>
+                <Route path="/userProfile"><Header /><AnotherUserProfile /></Route>
                 <Route path="/addPost"><Header /><AddPost /></Route>
                 <Route path="/hashPost"><Header /><HashPost /></Route>
+                
+                
                 
             </Router>
             <ToastContainer position="top-center"

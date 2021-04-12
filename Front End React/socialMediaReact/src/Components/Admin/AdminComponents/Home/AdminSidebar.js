@@ -32,6 +32,9 @@ export default function AdminSidebar() {
                         <Link to="/admin/allPosts">Posts</Link>
                         </li>
                         <li>
+                        <Link to="/admin/reportedPosts">Reported Posts</Link>
+                        </li>
+                        <li>
                             <a href="#">Overview</a>
                         </li>
                        
