@@ -369,16 +369,20 @@ module.exports = {
 
         })
     },
-    followRequest: (requester, accepter) => {
+    followRequest: (requester, accepter, userName) => {
         return new Promise(async (resolve, reject) => {
             let status = {}
+            let val = {
+                userId: requester,
+                userName: userName
+            }
             let friend = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter })
             if (friend) {
-                db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Pending: requester }).then((check) => {
+                db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Pending: val }).then((check) => {
                     if (check == null) {
                         db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
                             $push: {
-                                Pending: requester
+                                Pending: val
                             }
                         }).then(() => {
                             status.requested = true
@@ -393,11 +397,68 @@ module.exports = {
                 let obj = {
                     User: accepter,
                     Verified: [],
-                    Pending: [requester]
+                    Pending: [val]
                 }
                 db.get().collection(collection.FRIENDS_COLLECTION).insertOne(obj).then(() => {
                     status.requested = true
                     resolve(status)
+                })
+            }
+        })
+    },
+    getFriendRequest: (id) => {
+        return new Promise(async (resolve, reject) => {
+            let request = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: id })
+            if (request) {
+                if (request.Pending.length > 0) {
+                    resolve(request.Pending)
+                } else {
+                    reject()
+                }
+            } else {
+                reject()
+            }
+        })
+    },
+    acceptFriend:(details,accepter)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let owner = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({User:accepter})
+            if(owner)
+            {
+                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:accepter},{
+                    $pull:{
+                        Pending:details
+                    }
+                }).then(()=>
+                {
+                    db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:accepter},{
+                        $push:{
+                            Verified:details
+                        }
+                    }).then(()=>
+                    {
+                        resolve()
+                    })
+                })
+            }
+        })
+    },
+    rejectFriend:(details,accepter)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let owner = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({User:accepter})
+            if(owner)
+            {
+                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:accepter},{
+                    $pull:{
+                        Pending:details
+                    }
+                }).then(()=>
+                {
+                    resolve()
                 })
             }
         })

@@ -1,7 +1,7 @@
 import { Collapse } from "@material-ui/core";
 import axios from "axios";
 import React, { useState } from "react";
-import { Navbar,Button,Form,Nav, FormControl, Dropdown, Overlay,Popover} from "react-bootstrap";
+import { Navbar, Button, Form, Nav, FormControl, Dropdown, Overlay, Popover, Table } from "react-bootstrap";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -36,28 +36,75 @@ export default function Header() {
             })
         }
     }
-    const searchFound = (id)=>{
-        localStorage.setItem("profileUser",id)
+    const searchFound = (id) => {
+        localStorage.setItem("profileUser", id)
         history.push('/userProfile')
 
     }
-    const notificationClick =(event)=>
-    {
+    const notificationClick = (event) => {
         setNotificationBool(!notificationBool)
         setNotification(event.target)
     }
-    const friendRequestClick =(event)=>
-    {
+    const friendRequestClick = (event) => {
+        if(friendRequestBool===false){
+            let data={
+                jwt:localStorage.getItem('jwt'),
+                user:localStorage.getItem('userId')
+            }
+            axios.post(server+'/getFriendRequest',data).then((response)=>
+            {
+                if(response.data !=='noRequests')
+                {
+                    setRequestList(response.data)
+                }
+            })
+        }
         setFriendRequestBool(!friendRequestBool)
         setFriendRequest(event.target)
+    }
+    const requestAccept=(userDetails,owner,index)=>
+    {
+        let data={
+            details:userDetails,
+            accepter:owner,
+            jwt:localStorage.getItem('jwt')
+        }
+        axios.post(server+'/acceptFriend',data).then((response)=>
+        {
+            if(response.data==='Accepted')
+            {
+                document.getElementById(index+'reqList').hidden=true
+            }
+        })
+        
+    }
+    const requestReject=(userDetails,owner,index)=>
+    {
+        let data={
+            details:userDetails,
+            accepter:owner,
+            jwt:localStorage.getItem('jwt')
+        }
+        axios.post(server+'/rejectFriend',data).then((response)=>
+        {
+            if(response.data==='Removed')
+            {
+                document.getElementById(index+'reqList').hidden=true
+            }
+        })
     }
     const [search, setSearch] = useState('')
     const [searchUser, setSearchUser] = useState([])
     const [searchBool, setSearchBool] = useState(false)
+
+
     const [notificationBool, setNotificationBool] = useState(false)
     const [notification, setNotification] = useState()
+
+
     const [friendRequestBool, setFriendRequestBool] = useState(false)
     const [friendRequest, setFriendRequest] = useState()
+    const [requestList,setRequestList]=useState([])
 
 
     return (
@@ -77,16 +124,15 @@ export default function Header() {
 
                 <input
                     type="text"
-                     onChange={(event) => setSearch(event.target.value)}
+                    onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search" id="searchInput"
                     className="mr-sm-2 form-control col-6 col-md-4"
                 />
                 <Button variant="outline-info"
-                onClick={searchClick}
+                    onClick={searchClick}
                 >
                     <i className="fas fa-search"></i>
                 </Button>
-
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="" style={{ paddingLeft: "18em" }}></Nav>
@@ -99,9 +145,9 @@ export default function Header() {
                             </Link>
                         </Nav.Link>
                         <Nav.Link>
-                                <h3 title="Add Friends" onClick={(event)=>friendRequestClick(event)} className="pr-3 mr-3">
-                                    <i className="fas fa-users "></i>
-                                </h3>
+                            <h3 title="Add Friends" onClick={(event) => friendRequestClick(event)} className="pr-3 mr-3">
+                                <i className="fas fa-users "></i>
+                            </h3>
                         </Nav.Link>
                         <Nav.Link>
                             <h3 title="Chat" className="pr-3 mr-3">
@@ -109,7 +155,7 @@ export default function Header() {
                             </h3>
                         </Nav.Link>
                         <Nav.Link>
-                            <h3 title="Notifications" onClick={(event)=>notificationClick(event)} className="pr-3 mr-3">
+                            <h3 title="Notifications" onClick={(event) => notificationClick(event)} className="pr-3 mr-3">
                                 <i className="far fa-bell"></i>
                             </h3>
                         </Nav.Link>
@@ -142,20 +188,20 @@ export default function Header() {
                                     return (
                                         <div>
                                             <div className="row">
-                                            <div className="col-md-2 col-lg-1 col-2 mt-1" style={{ padding: "0px" }}>
-                                                <img src={server + '/ProfileImages/' + data._id + '.jpg'} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em" }} ></img>
+                                                <div className="col-md-2 col-lg-1 col-2 mt-1" style={{ padding: "0px" }}>
+                                                    <img src={server + '/ProfileImages/' + data._id + '.jpg'} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em" }} ></img>
+
+                                                </div>
+                                                <div className="col-md-8 col-6">
+                                                    {data.Name ? <h5 style={{ cursor: "pointer" }} onClick={() => searchFound(data._id)} className="m-1"><b>{data.Name}</b></h5> : <div></div>}
+                                                    {data.Description ? <p className="m-1">{data.Description}</p> : <p></p>}
+                                                </div>
 
                                             </div>
-                                            <div className="col-md-8 col-6">
-                                                {data.Name ? <h5 style={{ cursor: "pointer" }} onClick={()=>searchFound(data._id)} className="m-1"><b>{data.Name}</b></h5> : <div></div>}
-                                                {data.Description ? <p className="m-1">{data.Description}</p> : <p></p>}
-                                            </div>
-                                            
+                                            <hr className="seperator bg-white"></hr>
                                         </div>
-                                        <hr className="seperator bg-white"></hr>
-                                        </div>
-                                            
-                                        
+
+
                                     )
                                 }) : <div></div>}
                             </ul>
@@ -182,11 +228,25 @@ export default function Header() {
                 show={friendRequestBool}
                 target={friendRequest}
                 placement="bottom"
-                containerPadding={20}
+                containerPadding={40}
             >
-                <Popover id="popover-contained">
-                    <Popover.Title as="h3">Popover bottom Friends</Popover.Title>
-                    <Popover.Content><h6>hai iam javvar</h6>
+                <Popover id="popover-contained" style={{ width: "50em" }}>
+                    <Popover.Title as="h3" className="bg-primary text-center text-white h1">Friend Requests</Popover.Title>
+                    <Popover.Content>
+                        {requestList.length>0?requestList.map((data,index)=>
+                        {
+                            return(
+                                <div id={index+"reqList"}>
+                        <div style={{ display: "flex",flexDirection:"row",textAlign:"justify" }}>
+                            <img src={server+'/ProfileImages/'+data.userId+'.jpg'} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em",margin:"auto" }}></img>
+                            <span className="ml-4 h5 text-justify" style={{margin:"auto"}}>{data.userName}</span>
+                            <span style={{ fontSize: "1.75em",margin:"auto" }} onClick={()=>requestAccept(data,localStorage.getItem('userId'),index)} className="btn far fa-check-square text-success"></span>
+                            <span style={{ fontSize: "1.75em",margin:"auto" }} onClick={()=>requestReject(data,localStorage.getItem('userId'),index)} className="btn far fa-window-close text-danger"></span>
+                        </div>
+                        <hr className="seperator"></hr>
+                        </div>
+                            )
+                        }):<h4 className="text-center">No New Requests</h4>}
                     </Popover.Content>
                 </Popover>
             </Overlay>

@@ -54,7 +54,8 @@ export default function AnotherUserProfile() {
         var data={
             jwt:localStorage.getItem('jwt'),
             accepter:accepter,
-            requester:requester
+            requester:requester,
+            name:localStorage.getItem('User')
         }
         axios.post(server+'/followRequest',data).then((response)=>
         {

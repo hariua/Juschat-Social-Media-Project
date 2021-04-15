@@ -287,7 +287,7 @@ router.post('/searchUsers',authenticateToken,(req,res)=>
 })
 router.post('/followRequest',authenticateToken,(req,res)=>
 {
-  userHelper.followRequest(req.body.requester,req.body.accepter).then((response)=>
+  userHelper.followRequest(req.body.requester,req.body.accepter,req.body.name).then((response)=>
   {
     if(response.requested)
     {
@@ -297,5 +297,28 @@ router.post('/followRequest',authenticateToken,(req,res)=>
     }
   })
 })
-
+router.post('/getFriendRequest',authenticateToken,(req,res)=>
+{
+  userHelper.getFriendRequest(req.body.user).then((response)=>
+  {
+    res.send(response)
+  }).catch(()=>
+  {
+    res.send("noRequests")
+  })
+})
+router.post('/acceptFriend',authenticateToken,(req,res)=>
+{
+  userHelper.acceptFriend(req.body.details,req.body.accepter).then(()=>
+  {
+    res.send("Accepted")
+  })
+})
+router.post('/rejectFriend',authenticateToken,(req,res)=>
+{
+  userHelper.rejectFriend(req.body.details,req.body.accepter).then(()=>
+  {
+    res.send("Removed")
+  })
+})
 module.exports = router;
