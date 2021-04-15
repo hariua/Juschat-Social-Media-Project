@@ -188,7 +188,7 @@ module.exports = {
             HashTag: hstag,
             Date: date,
             Time: time,
-            Likes:[]
+            Likes: []
         }
         return new Promise((resolve, reject) => {
             db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res) => {
@@ -270,118 +270,136 @@ module.exports = {
         })
     },
     addComment: (data) => {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let date = new Date()
             var commentID = moment(date).format('YYYY-MM-DD-h-mm-ss')
             let file = {
-                _id:commentID,
+                _id: commentID,
                 Comment: data.comment,
                 UserName: data.user,
                 UserId: data.userId
             }
-            let post =await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(data.post) })
+            let post = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(data.post) })
             if (post.Comment) {
                 db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
                     $push: {
                         Comment: file
                     }
-                }).then(()=>{
-                    if(post.Comment.length===0)
-                    {
+                }).then(() => {
+                    if (post.Comment.length === 0) {
                         resolve("newComment")
-                    }else{
+                    } else {
                         resolve()
                     }
-                    
+
                 })
             } else {
                 db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
                     $set: {
                         Comment: [file]
                     }
-                }).then(()=>{
+                }).then(() => {
                     resolve("newComment")
                 })
             }
         })
     },
-    reportPost:(data)=>
-    {
-        let status={}
-        return new Promise(async(resolve,reject)=>
-        {
-            let post =await db.get().collection(collection.POST_COLLECTION).findOne({_id:objectId(data.postId)})
-            if(post.Report)
-            {
-                db.get().collection(collection.POST_COLLECTION).findOne({_id:objectId(data.postId),Report:data.userId}).then((check)=>
-                {
+    reportPost: (data) => {
+        let status = {}
+        return new Promise(async (resolve, reject) => {
+            let post = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(data.postId) })
+            if (post.Report) {
+                db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(data.postId), Report: data.userId }).then((check) => {
                     console.log(check);
-                    if(check == null)
-                    {
-                        db.get().collection(collection.POST_COLLECTION).updateOne({_id:objectId(data.postId)},{
-                            $push:{
-                                Report:data.userId
+                    if (check == null) {
+                        db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.postId) }, {
+                            $push: {
+                                Report: data.userId
                             }
-                        }).then(()=>
-                        {
-                            status.reportAdded=true;
+                        }).then(() => {
+                            status.reportAdded = true;
                             resolve(status)
                         })
                     }
-                    else{
-                        status.alreadyReported=true;
+                    else {
+                        status.alreadyReported = true;
                         resolve(status)
                     }
                 })
-            }else{
-                db.get().collection(collection.POST_COLLECTION).updateOne({_id:objectId(data.postId)},{
-                    $set:{
-                        Report:[data.userId]
+            } else {
+                db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.postId) }, {
+                    $set: {
+                        Report: [data.userId]
                     }
-                }).then(()=>{
-                    status.reportAdded=true;
-                            resolve(status)
+                }).then(() => {
+                    status.reportAdded = true;
+                    resolve(status)
                 })
             }
-            
+
         })
     },
-    getHashPost:(data)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {   
-            let hashPost = await db.get().collection(collection.POST_COLLECTION).find({HashTag:data.hash}).toArray()
-            console.log(hashPost,"vannutto");
+    getHashPost: (data) => {
+        return new Promise(async (resolve, reject) => {
+            let hashPost = await db.get().collection(collection.POST_COLLECTION).find({ HashTag: data.hash }).toArray()
+            console.log(hashPost, "vannutto");
             resolve(hashPost)
         })
     },
-    getUserPost:(userId)=>
-    {
-        let status={}
-        return new Promise(async(resolve,reject)=>
-        {
-            let post =await db.get().collection(collection.POST_COLLECTION).find({UserID:userId}).toArray()
-            if(post)
-            {
-                status.post=post
+    getUserPost: (userId) => {
+        let status = {}
+        return new Promise(async (resolve, reject) => {
+            let post = await db.get().collection(collection.POST_COLLECTION).find({ UserID: userId }).toArray()
+            if (post) {
+                status.post = post
                 resolve(status)
-            }else{
+            } else {
                 resolve(status)
             }
-            
+
         })
     },
-    searchUser:(word)=>
-    {
-        return new Promise((resolve,reject)=>
-        {
-            db.get().collection(collection.USER_COLLECTION).createIndex({Name:"text"}).then(async()=>
-            {
-                let users = await db.get().collection(collection.USER_COLLECTION).find({$text:{$search:word}}).toArray()
+    searchUser: (word) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).createIndex({ Name: "text" }).then(async () => {
+                let users = await db.get().collection(collection.USER_COLLECTION).find({ $text: { $search: word } }).toArray()
                 resolve(users)
             })
-            
-            
+
+
+        })
+    },
+    followRequest: (requester, accepter) => {
+        return new Promise(async (resolve, reject) => {
+            let status = {}
+            let friend = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter })
+            if (friend) {
+                db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Pending: requester }).then((check) => {
+                    if (check == null) {
+                        db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
+                            $push: {
+                                Pending: requester
+                            }
+                        }).then(() => {
+                            status.requested = true
+                            resolve(status)
+                        })
+                    } else {
+                        status.alreadyRequested = true
+                        resolve(status)
+                    }
+                })
+            } else {
+                let obj = {
+                    User: accepter,
+                    Verified: [],
+                    Pending: [requester]
+                }
+                db.get().collection(collection.FRIENDS_COLLECTION).insertOne(obj).then(() => {
+                    status.requested = true
+                    resolve(status)
+                })
+            }
         })
     }
 }

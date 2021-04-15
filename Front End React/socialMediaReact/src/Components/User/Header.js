@@ -1,14 +1,7 @@
 import { Collapse } from "@material-ui/core";
 import axios from "axios";
 import React, { useState } from "react";
-import {
-    Navbar,
-    Button,
-    Form,
-    Nav,
-    FormControl,
-    Dropdown,
-} from "react-bootstrap";
+import { Navbar,Button,Form,Nav, FormControl, Dropdown, Overlay,Popover} from "react-bootstrap";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -22,35 +15,50 @@ export default function Header() {
         localStorage.removeItem("jwt");
         history.push("/");
     }
-    // const searchClick = () => {
-    //     let data = {
-    //         jwt: localStorage.getItem('jwt'),
-    //         search: search
-    //     }
-    //     document.getElementById('searchInput').value = ''
-    //     if (search.length === 0) {
-    //         toast("Enter Some Keywords!!!")
-    //     } else {
+    const searchClick = () => {
+        let data = {
+            jwt: localStorage.getItem('jwt'),
+            search: search
+        }
+        document.getElementById('searchInput').value = ''
+        if (search.length === 0) {
+            toast("Enter Some Keywords!!!")
+        } else {
 
-    //         axios.post(server + '/searchUsers', data).then((response) => {
-    //             if (response.data !== 'NoResult') {
-    //                 setSearchBool(!searchBool)
-    //                 setSearchUser(response.data)
-    //             } else {
-    //                 toast("Search Not Found !!!")
-    //             }
+            axios.post(server + '/searchUsers', data).then((response) => {
+                if (response.data !== 'NoResult') {
+                    setSearchBool(!searchBool)
+                    setSearchUser(response.data)
+                } else {
+                    toast("Search Not Found !!!")
+                }
 
-    //         })
-    //     }
-    // }
-    // const searchFound = (id)=>{
-    //     localStorage.setItem("profileUser",id)
-    //     history.push('/userProfile')
-        
-    // }
-    // const [search, setSearch] = useState('')
-    // const [searchUser, setSearchUser] = useState([])
-    // const [searchBool, setSearchBool] = useState(false)
+            })
+        }
+    }
+    const searchFound = (id)=>{
+        localStorage.setItem("profileUser",id)
+        history.push('/userProfile')
+
+    }
+    const notificationClick =(event)=>
+    {
+        setNotificationBool(!notificationBool)
+        setNotification(event.target)
+    }
+    const friendRequestClick =(event)=>
+    {
+        setFriendRequestBool(!friendRequestBool)
+        setFriendRequest(event.target)
+    }
+    const [search, setSearch] = useState('')
+    const [searchUser, setSearchUser] = useState([])
+    const [searchBool, setSearchBool] = useState(false)
+    const [notificationBool, setNotificationBool] = useState(false)
+    const [notification, setNotification] = useState()
+    const [friendRequestBool, setFriendRequestBool] = useState(false)
+    const [friendRequest, setFriendRequest] = useState()
+
 
     return (
         <div>
@@ -69,12 +77,12 @@ export default function Header() {
 
                 <input
                     type="text"
-                    //  onChange={(event) => setSearch(event.target.value)}
+                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search" id="searchInput"
                     className="mr-sm-2 form-control col-6 col-md-4"
                 />
-                <Button variant="outline-info" 
-                // onClick={searchClick}
+                <Button variant="outline-info"
+                onClick={searchClick}
                 >
                     <i className="fas fa-search"></i>
                 </Button>
@@ -85,18 +93,23 @@ export default function Header() {
                     <Nav>
                         <Nav.Link>
                             <Link to="/addPost">
-                                <h3 title="Add Post" className="pr-3 mr-5">
+                                <h3 title="Add Post" className="pr-3 mr-3">
                                     <i className="far fa-plus-square text-light"></i>
                                 </h3>
                             </Link>
                         </Nav.Link>
                         <Nav.Link>
-                            <h3 title="Chat" className="pr-3 mr-5">
+                                <h3 title="Add Friends" onClick={(event)=>friendRequestClick(event)} className="pr-3 mr-3">
+                                    <i className="fas fa-users "></i>
+                                </h3>
+                        </Nav.Link>
+                        <Nav.Link>
+                            <h3 title="Chat" className="pr-3 mr-3">
                                 <i className="far fa-comment-alt"></i>
                             </h3>
                         </Nav.Link>
                         <Nav.Link>
-                            <h3 title="Notifications" className="pr-3 mr-5">
+                            <h3 title="Notifications" onClick={(event)=>notificationClick(event)} className="pr-3 mr-3">
                                 <i className="far fa-bell"></i>
                             </h3>
                         </Nav.Link>
@@ -119,7 +132,7 @@ export default function Header() {
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            {/* <Collapse in={searchBool}>
+            <Collapse in={searchBool}>
                 <div>
                     <div className="row ml-lg-3 container-fluid">
                         <div className="col-md-1 col-sm-2"></div>
@@ -149,7 +162,34 @@ export default function Header() {
                         </div>
                     </div>
                 </div>
-            </Collapse> */}
+            </Collapse>
+            {/* notification overlay */}
+            <Overlay
+                show={notificationBool}
+                target={notification}
+                placement="bottom"
+                containerPadding={20}
+            >
+                <Popover id="popover-contained">
+                    <Popover.Title as="h3">Popover bottom</Popover.Title>
+                    <Popover.Content>
+                    </Popover.Content>
+                </Popover>
+            </Overlay>
+
+            {/* friend request overlay */}
+            <Overlay
+                show={friendRequestBool}
+                target={friendRequest}
+                placement="bottom"
+                containerPadding={20}
+            >
+                <Popover id="popover-contained">
+                    <Popover.Title as="h3">Popover bottom Friends</Popover.Title>
+                    <Popover.Content><h6>hai iam javvar</h6>
+                    </Popover.Content>
+                </Popover>
+            </Overlay>
         </div>
     );
 }

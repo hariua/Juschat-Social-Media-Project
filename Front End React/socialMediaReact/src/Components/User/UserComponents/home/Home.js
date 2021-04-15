@@ -141,7 +141,7 @@ export default function Home() {
     const userClick = (userId)=>
     {
         localStorage.setItem('profileUser',userId)
-        // history.push('/userProfile')
+        history.push('/userProfile')
     }
 
     const [readMore, setReadMore] = useState(true)

@@ -285,5 +285,17 @@ router.post('/searchUsers',authenticateToken,(req,res)=>
     }
   })
 })
+router.post('/followRequest',authenticateToken,(req,res)=>
+{
+  userHelper.followRequest(req.body.requester,req.body.accepter).then((response)=>
+  {
+    if(response.requested)
+    {
+      res.send("Requested")
+    }else if(response.alreadyRequested){
+      res.send("alreadyRequested")
+    }
+  })
+})
 
 module.exports = router;

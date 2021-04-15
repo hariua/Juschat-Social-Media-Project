@@ -3,6 +3,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Card } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import server from '../../../../Server'
 
 export default function AnotherUserProfile() {
@@ -48,6 +49,24 @@ export default function AnotherUserProfile() {
             localStorage.removeItem('profileUser')
         }
     }, [])
+    const followUser=(requester,accepter)=>
+    {
+        var data={
+            jwt:localStorage.getItem('jwt'),
+            accepter:accepter,
+            requester:requester
+        }
+        axios.post(server+'/followRequest',data).then((response)=>
+        {
+            if(response.data==='Requested')
+            {
+                toast.success("Request Sent Successfully")
+            }else if(response.data === 'alreadyRequested')
+            {
+                toast.warning("You are Already Requested")
+            }
+        })
+    }
     const [userPost, setUserPost] = useState([])
     return (
         <div className="profileBg">
@@ -58,7 +77,8 @@ export default function AnotherUserProfile() {
                     </div>
                     <div className="col-md-1"></div>
                     <div className="col-md-7 ">
-                        <h2 className="pt-5  mt-3 " id="userName"></h2>{localStorage.getItem('userId')===localStorage.getItem('profileUser')?<Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>:<buton size="lg" className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
+                        <h2 className="pt-5  mt-3 " id="userName"></h2>{localStorage.getItem('userId')===localStorage.getItem('profileUser')?<Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>
+                        :<buton size="lg" onClick={()=>followUser(localStorage.getItem('userId'),localStorage.getItem('profileUser'))} className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
                             {userPost?<li className="float-left pr-2 h6">{userPost.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
                             <li className="float-left pr-2 h6"> 5 following</li>
