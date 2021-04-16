@@ -198,7 +198,7 @@ router.post('/addPost',(req, res) => {
   res.send('success')
 })
 router.get('/getAllPosts',authenticateToken,(req,res)=>{
-  userHelper.getAllPosts().then((posts)=>
+  userHelper.getAllPosts(req.user._id).then((posts)=>
   {
     res.send({post:posts,path:'/PostFiles/'})
   })

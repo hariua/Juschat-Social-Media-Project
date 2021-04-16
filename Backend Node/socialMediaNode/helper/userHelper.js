@@ -85,23 +85,22 @@ module.exports = {
             resolve(user)
         })
     },
-    findAnotherUser: (userId,ownerId) => {
-        return new Promise(async(resolve, reject) => {
-            let user =await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
-            let data={
-                userId:String(user._id),
-                userName:user.Name
+    findAnotherUser: (userId, ownerId) => {
+        return new Promise(async (resolve, reject) => {
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
+            let data = {
+                userId: String(user._id),
+                userName: user.Name
             }
-            db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: ownerId,  Verified: data }).then((check)=>{
-                
-                if(check==null)
-                {
+            db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: ownerId, Verified: data }).then((check) => {
+
+                if (check == null) {
                     resolve(user)
-                }else{
-                    user.Friend=true
+                } else {
+                    user.Friend = true
                     resolve(user)
                 }
-            })   
+            })
         })
     },
     changePassword: (userData, id) => {
@@ -215,11 +214,33 @@ module.exports = {
             })
         })
     },
-    getAllPosts: () => {
-        return new Promise(async (resolve, reject) => {
-            let posts = await db.get().collection(collection.POST_COLLECTION).find().toArray()
-            resolve(posts)
-
+    getAllPosts: (userId) => {
+        let newId=[]
+        return new Promise(async(resolve, reject) => {
+           let id = await db.get().collection(collection.FRIENDS_COLLECTION).aggregate([
+                {
+                    $match: {
+                        User: userId
+                    }
+                },
+                {
+                    $unwind:'$Verified'
+                },
+                {
+                    $project:{
+                        _id:null,
+                        friend:'$Verified.userId'
+                    }
+                }
+            ]).toArray()
+            for(let i=0;i<id.length;i++)
+            {
+                let item = id[i].friend
+                newId.push(item)
+            }
+            console.log(newId)
+           let post = await db.get().collection(collection.POST_COLLECTION).find({UserID:{$in:newId}}).toArray()
+           resolve(post)
         })
     },
     addLikePost: (postData) => {
@@ -487,7 +508,7 @@ module.exports = {
                                             })
                                         }
                                     })
-                                    
+
                                 } else {
 
                                     resolve()
