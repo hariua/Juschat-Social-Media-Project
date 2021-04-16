@@ -85,6 +85,25 @@ module.exports = {
             resolve(user)
         })
     },
+    findAnotherUser: (userId,ownerId) => {
+        return new Promise(async(resolve, reject) => {
+            let user =await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
+            let data={
+                userId:String(user._id),
+                userName:user.Name
+            }
+            db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: ownerId,  Verified: data }).then((check)=>{
+                
+                if(check==null)
+                {
+                    resolve(user)
+                }else{
+                    user.Friend=true
+                    resolve(user)
+                }
+            })   
+        })
+    },
     changePassword: (userData, id) => {
         return new Promise(async (resolve, reject) => {
             let status = {}
@@ -420,44 +439,85 @@ module.exports = {
             }
         })
     },
-    acceptFriend:(details,accepter)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
-            let owner = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({User:accepter})
-            if(owner)
-            {
-                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:accepter},{
-                    $pull:{
-                        Pending:details
+    acceptFriend: (details, accepter, accepterName) => {
+        return new Promise(async (resolve, reject) => {
+            let val = {
+                userId: accepter,
+                userName: accepterName
+            }
+            let owner = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter })
+            if (owner) {
+                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
+                    $pull: {
+                        Pending: details
                     }
-                }).then(()=>
-                {
-                    db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:accepter},{
-                        $push:{
-                            Verified:details
+                }).then(() => {
+                    db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
+                        $push: {
+                            Verified: details
                         }
-                    }).then(()=>
-                    {
-                        resolve()
+                    }).then(async () => {
+                        let friend = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: details.userId })
+                        if (friend) {
+                            db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: details.userId, Verified: val }).then((check) => {
+                                if (check == null) {
+                                    db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: details.userId, Pending: val }).then((search) => {
+                                        if (search == null) {
+                                            db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: details.userId }, {
+                                                $push: {
+                                                    Verified: val
+                                                }
+                                            }).then(() => {
+
+                                                resolve()
+                                            })
+                                        } else {
+                                            db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: details.userId }, {
+                                                $push: {
+                                                    Verified: val
+                                                }
+                                            }).then(() => {
+                                                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: details.userId }, {
+                                                    $pull: {
+                                                        Pending: val
+                                                    }
+                                                }).then(() => {
+                                                    resolve()
+                                                })
+                                            })
+                                        }
+                                    })
+                                    
+                                } else {
+
+                                    resolve()
+                                }
+                            })
+                        } else {
+                            let obj = {
+                                User: details.userId,
+                                Verified: [val],
+                                Pending: []
+                            }
+                            db.get().collection(collection.FRIENDS_COLLECTION).insertOne(obj).then(() => {
+
+                                resolve()
+                            })
+                        }
                     })
                 })
             }
         })
     },
-    rejectFriend:(details,accepter)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
-            let owner = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({User:accepter})
-            if(owner)
-            {
-                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:accepter},{
-                    $pull:{
-                        Pending:details
+    rejectFriend: (details, accepter) => {
+        return new Promise(async (resolve, reject) => {
+            let owner = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter })
+            if (owner) {
+                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
+                    $pull: {
+                        Pending: details
                     }
-                }).then(()=>
-                {
+                }).then(() => {
                     resolve()
                 })
             }

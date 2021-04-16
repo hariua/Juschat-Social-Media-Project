@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 import server from '../../../../Server'
 import './UserSignup.css'
 import { toast } from 'react-toastify'
@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 export default function UserSignup() {
     const [Name, setName] = useState('')
     const [Email, setEmail] = useState('')
-    const [Mobile, setMobile] = useState()
+    const [Mobile, setMobile] = useState('')
     const [Password, setPassword] = useState('')
     useEffect(() => {
         let token = localStorage.getItem('jwt')
@@ -86,33 +86,42 @@ export default function UserSignup() {
         }
     }
     function formSubmit() {
-        document.getElementById("Name").value = ""
-        document.getElementById("Email").value = ""
-        document.getElementById("Mobile").value = ""
-        document.getElementById("Password").value = ""
-        let formData = {
-            Name: Name,
-            Email: Email,
-            Mobile: Mobile,
-            Password: Password
-        }
-        if (formData.Name !== "" && formData.Email !== "" && formData.Mobile !== "" && formData.Password !== "") {
-            axios.post(server + '/signUp', formData).then((response) => {
-                console.log(response);
 
-
-                if (response.data.value === "New") {
-
-                    history.push('/otpSubmit')
+        if (Mobile.length !== 0 && Name.length !== 0 && Email.length !== 0 && Password.length !== 0) {
+            if (isValidPhoneNumber(Mobile)) {
+                document.getElementById("Name").value = ""
+                document.getElementById("Email").value = ""
+                document.getElementById("Mobile").value = ""
+                document.getElementById("Password").value = ""
+                let formData = {
+                    Name: Name,
+                    Email: Email,
+                    Mobile: Mobile,
+                    Password: Password
                 }
-                else {
-                    toast("User Already Exists")
-                }
-            })
-        }
-        else {
+                setName('')
+                setEmail('')
+                setMobile('')
+                setPassword('')
+                axios.post(server + '/signUp', formData).then((response) => {
+                    console.log(response);
+
+
+                    if (response.data.value === "New") {
+
+                        history.push('/otpSubmit')
+                    }
+                    else {
+                        toast("User Already Exists")
+                    }
+                })
+            } else {
+                toast.warning("Please Enter a Valid Phone Number")
+            }
+        } else {
             toast("Please Fill all Fields")
         }
+
 
     }
     return (

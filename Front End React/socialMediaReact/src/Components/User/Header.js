@@ -67,6 +67,7 @@ export default function Header() {
         let data={
             details:userDetails,
             accepter:owner,
+            accepterName:localStorage.getItem('User'),
             jwt:localStorage.getItem('jwt')
         }
         axios.post(server+'/acceptFriend',data).then((response)=>

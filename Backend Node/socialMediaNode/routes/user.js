@@ -262,8 +262,9 @@ router.post('/getHashPost',authenticateToken,(req,res)=>
 })
 router.post('/getAnotherUserProfile',authenticateToken,async(req,res)=>{
   let userPost = await userHelper.getUserPost(req.body.userId)
-  userHelper.findUser(req.body.userId).then((data)=>
+  userHelper.findAnotherUser(req.body.userId,req.body.ownerId).then((data)=>
   {
+    console.log(data);
     let img = path.join(__dirname, '../public/ProfileImages/' + req.body.userId + '.jpg')
     if (fs.existsSync(img)) {
       console.log("img exist");
@@ -309,7 +310,7 @@ router.post('/getFriendRequest',authenticateToken,(req,res)=>
 })
 router.post('/acceptFriend',authenticateToken,(req,res)=>
 {
-  userHelper.acceptFriend(req.body.details,req.body.accepter).then(()=>
+  userHelper.acceptFriend(req.body.details,req.body.accepter,req.body.accepterName).then(()=>
   {
     res.send("Accepted")
   })
