@@ -420,14 +420,23 @@ module.exports = {
             if (friend) {
                 db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Pending: val }).then((check) => {
                     if (check == null) {
-                        db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
-                            $push: {
-                                Pending: val
+                        db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Verified: val }).then((search) =>{
+                            if(search == null)
+                            {
+                                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
+                                    $push: {
+                                        Pending: val
+                                    }
+                                }).then(() => {
+                                    status.requested = true
+                                    resolve(status)
+                                })
+                            }else{
+                                status.alreadyFriends = true
+                                resolve(status)
                             }
-                        }).then(() => {
-                            status.requested = true
-                            resolve(status)
                         })
+                        
                     } else {
                         status.alreadyRequested = true
                         resolve(status)
@@ -542,6 +551,35 @@ module.exports = {
                     resolve()
                 })
             }
+        })
+    },
+    getSuggestions:(userId)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let users = await db.get().collection(collection.USER_COLLECTION).find({_id:{$nin:[objectId('606a9aca8c95729da1eec5ff'),objectId(userId)]}}).sort({_id:-1}).limit(3).toArray()
+            resolve(users)
+        })
+    },
+    blockUser:(userId,ownerId)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            console.log(userId,"user",ownerId,"owner");
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)})
+            let userName = user.Name
+            let obj ={
+                userId:userId,
+                userName:userName
+            }
+            db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:ownerId},{
+                $pull:{
+                    Verified:obj
+                }
+            }).then(()=>
+            {
+                resolve(userName)
+            })
         })
     }
 }

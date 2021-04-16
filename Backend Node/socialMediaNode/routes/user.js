@@ -197,10 +197,11 @@ router.post('/addPost',(req, res) => {
   })
   res.send('success')
 })
-router.get('/getAllPosts',authenticateToken,(req,res)=>{
+router.get('/getAllPosts',authenticateToken,async(req,res)=>{
+  let suggestion = await userHelper.getSuggestions(req.user._id)
   userHelper.getAllPosts(req.user._id).then((posts)=>
   {
-    res.send({post:posts,path:'/PostFiles/'})
+    res.send({post:posts,path:'/PostFiles/',suggestion:suggestion})
   })
 })
 router.post('/addLike',authenticateToken,(req,res)=>{
@@ -295,6 +296,8 @@ router.post('/followRequest',authenticateToken,(req,res)=>
       res.send("Requested")
     }else if(response.alreadyRequested){
       res.send("alreadyRequested")
+    }else if(response.alreadyFriends){
+      res.send("alreadyFriends")
     }
   })
 })
@@ -320,6 +323,13 @@ router.post('/rejectFriend',authenticateToken,(req,res)=>
   userHelper.rejectFriend(req.body.details,req.body.accepter).then(()=>
   {
     res.send("Removed")
+  })
+})
+router.post('/blockUser',authenticateToken,(req,res)=>
+{
+  userHelper.blockUser(req.body.userId,req.body.ownerId).then((name)=>
+  {
+    res.send(name)
   })
 })
 module.exports = router;

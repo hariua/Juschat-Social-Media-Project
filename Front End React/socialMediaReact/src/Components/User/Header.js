@@ -94,6 +94,14 @@ export default function Header() {
             }
         })
     }
+    const searchDpError = (id)=>
+    {
+        document.getElementById(id+"dp").src = server+'/ProfileImages/DEFAULT.jpg'
+    }
+    const searchDpError1 = (id)=>
+    {
+        document.getElementById(id+"dpb").src = server+'/ProfileImages/DEFAULT.jpg'
+    }
     const [search, setSearch] = useState('')
     const [searchUser, setSearchUser] = useState([])
     const [searchBool, setSearchBool] = useState(false)
@@ -190,7 +198,7 @@ export default function Header() {
                                         <div>
                                             <div className="row">
                                                 <div className="col-md-2 col-lg-1 col-2 mt-1" style={{ padding: "0px" }}>
-                                                    <img src={server + '/ProfileImages/' + data._id + '.jpg'} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em" }} ></img>
+                                                    <img src={server + '/ProfileImages/' + data._id + '.jpg'} id={data._id+"dpb"} onError={()=>searchDpError1(data._id)} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em" }} ></img>
 
                                                 </div>
                                                 <div className="col-md-8 col-6">
@@ -239,7 +247,7 @@ export default function Header() {
                             return(
                                 <div id={index+"reqList"}>
                         <div style={{ display: "flex",flexDirection:"row",textAlign:"justify" }}>
-                            <img src={server+'/ProfileImages/'+data.userId+'.jpg'} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em",margin:"auto" }}></img>
+                            <img src={server+'/ProfileImages/'+data.userId+'.jpg'} id={data.userId+"dp"} onError={()=>searchDpError(data.userId)}  className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em",margin:"auto" }}></img>
                             <span className="ml-4 h5 text-justify" style={{margin:"auto"}}>{data.userName}</span>
                             <span style={{ fontSize: "1.75em",margin:"auto" }} onClick={()=>requestAccept(data,localStorage.getItem('userId'),index)} className="btn far fa-check-square text-success"></span>
                             <span style={{ fontSize: "1.75em",margin:"auto" }} onClick={()=>requestReject(data,localStorage.getItem('userId'),index)} className="btn far fa-window-close text-danger"></span>

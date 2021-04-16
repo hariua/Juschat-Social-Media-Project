@@ -13,11 +13,11 @@ export default function UserProfile() {
             axios.get(server + '/getProfileDetails?jwt=' + token).then((response) => {
                 console.log(response);
                 if (response.data.imgUrl === '') {
-                    document.getElementById('userDp').hidden = true
+                    document.getElementById('userDp').src=server+'/ProfileImages/DEFAULT.jpg'
                 }
                 else {
                     document.getElementById('userDp').src = server + response.data.imgUrl
-                    document.getElementById('userDp').hidden = false
+                    
                 }
                 if (response.data.user.Description === '') {
                     document.getElementById('userDescription').hidden = true

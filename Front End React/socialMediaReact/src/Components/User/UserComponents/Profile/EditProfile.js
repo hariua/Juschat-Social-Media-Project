@@ -29,11 +29,11 @@ export default function EditProfile() {
             axios.get(server + '/getProfileDetails?jwt=' + localStorage.getItem('jwt')).then((response) => {
 
                 if (response.data.imgUrl === '') {
-                    document.getElementById('editImg').hidden = true
+                    document.getElementById('editImg').src=server+'/ProfileImages/DEFAULT.jpg'
                 }
                 else {
                     document.getElementById('editImg').src = server + response.data.imgUrl
-                    document.getElementById('editImg').hidden = false
+                    
                 }
                 if(response.data.user.GoogleId || response.data.user.FacebookId)
                 {
@@ -219,8 +219,8 @@ export default function EditProfile() {
                         <label><h5>Mobile</h5></label>
                         <input type="text" name="Mobile" id="Mobile" className="form-control" readOnly />
                     </div>
-                    <Button variant="primary" id="EditBtn" type="button" size="lg" onClick={editProfile} className=" w-100">
-                        Edit Profile
+                    <Button variant="dark" id="EditBtn" type="button" size="lg" onClick={editProfile} className=" w-100">
+                        Submit
                     </Button>
 
                 </Form>
@@ -245,8 +245,8 @@ export default function EditProfile() {
                             <img src={res} className="img-fluid" id="croppedImgPreview"></img>
                         </div>}
                     </div>
-                    <Button variant="primary" id="DpBtn" type="button" size="lg" className=" w-100" onClick={photoSubmit}>
-                        Change Profile Picture
+                    <Button variant="dark" id="DpBtn" type="button" size="lg" className=" w-100" onClick={photoSubmit}>
+                        Submit
                     </Button>
                 </Form>
 
@@ -264,8 +264,8 @@ export default function EditProfile() {
                         <input type="password" name="NewPassword" id="NewPassword" className="form-control" onChange={passwordChange} placeholder="Enter new password" />
                         <p className="text-center text-danger" id="passwordErr" ></p>
                     </div>
-                    <Button variant="primary" id="passwordSubmit" onClick={passwordSubmit} type="button" size="lg" className=" w-100">
-                        Change Password
+                    <Button variant="dark" id="passwordSubmit" onClick={passwordSubmit} type="button" size="lg" className=" w-100">
+                        Submit
                     </Button>
                 </Form>
             </Collapse>
