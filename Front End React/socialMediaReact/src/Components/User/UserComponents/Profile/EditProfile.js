@@ -104,6 +104,7 @@ export default function EditProfile() {
             document.getElementById('editImg').src = server + response.data
             document.getElementById('editImg').hidden = false
             toast.success("Profile Picture Updated Successfully")
+            history.push('/myProfile')
 
         })
     }
@@ -115,6 +116,7 @@ export default function EditProfile() {
         }
         axios.post(server + '/editProfileDetails', data).then((response) => {
             localStorage.setItem('User', response.data.user.Name)
+            toast.success("Profile Details Updated")
         })
     }
     function passwordSubmit() {
@@ -135,6 +137,7 @@ export default function EditProfile() {
                 console.log(response);
                 if (response.data.passwordChange) {
                     toast.success("Password Changed Successfully")
+                    history.push('/myProfile')
                 }
                 else {
                     toast.dark("Invalid Current Password")

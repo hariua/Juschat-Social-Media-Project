@@ -159,6 +159,7 @@ export default function Home() {
             }else if(response.data === 'alreadyFriends')
             {
                 toast.warning("You are Already Friends")
+                document.getElementById(accepter+"suggestion").hidden = true
             }
         })
     }
@@ -263,7 +264,7 @@ export default function Home() {
                             {suggestion.length>0?suggestion.map((data,index)=>
                             {
                                 return(
-                                    <div >
+                                    <div id={data._id+"suggestion"}>
                                 <div style={{ display: "flex", flexDirection: "row", textAlign: "justify" }}>
                                     <img src={server+'/ProfileImages/'+data._id+'.jpg'} id={data._id+"dp"} onError={()=>dpError(data._id)} className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em", margin: "auto" }}></img>
                                     <span className="ml-2 h5 text-justify" style={{ margin: "auto",cursor: "pointer" }} onClick={() => userClick(data._id)}>{data.Name}</span>

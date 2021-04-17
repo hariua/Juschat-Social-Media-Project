@@ -215,37 +215,37 @@ module.exports = {
         })
     },
     getAllPosts: (userId) => {
-        let newId=[]
-        return new Promise(async(resolve, reject) => {
-           let id = await db.get().collection(collection.FRIENDS_COLLECTION).aggregate([
+        let newId = []
+        return new Promise(async (resolve, reject) => {
+            let id = await db.get().collection(collection.FRIENDS_COLLECTION).aggregate([
                 {
                     $match: {
                         User: userId
                     }
                 },
                 {
-                    $unwind:'$Verified'
+                    $unwind: '$Verified'
                 },
                 {
-                    $project:{
-                        _id:null,
-                        friend:'$Verified.userId'
+                    $project: {
+                        _id: null,
+                        friend: '$Verified.userId'
                     }
                 }
             ]).toArray()
-            for(let i=0;i<id.length;i++)
-            {
+            for (let i = 0; i < id.length; i++) {
                 let item = id[i].friend
                 newId.push(item)
             }
             console.log(newId)
-           let post = await db.get().collection(collection.POST_COLLECTION).find({UserID:{$in:newId}}).toArray()
-           resolve(post)
+            let post = await db.get().collection(collection.POST_COLLECTION).find({ UserID: { $in: newId } }).toArray()
+            resolve(post)
         })
     },
     addLikePost: (postData) => {
         let status = {}
         return new Promise(async (resolve, reject) => {
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(postData.userId) })
             let post = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
             if (post.Likes) {
                 db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId), Likes: postData.userId }).then(async (check) => {
@@ -258,7 +258,31 @@ module.exports = {
                             let newVal = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
                             status.count = newVal.Likes.length
                             status.newLike = true
-                            resolve(status)
+                            let Dat = new Date()
+                            let Day = moment(Dat).format('YYYY-MM-DD')
+                            let Time = moment(Dat).format('hh-mm-ss')
+                            let postId = post._id
+
+                            let notification = {
+                                Item: "Like",
+                                Sender: String(user._id),
+                                SenderName: user.Name,
+                                Receiver: post.UserID,
+                                ReceiverName: post.User,
+                                Post: String(postId),
+                                PostName:post.FileName,
+                                Date: Day,
+                                Time: Time
+                            }
+                            let noti = await db.get().collection(collection.NOTIFICATION_COLLECTION).findOne({ Item: "Like", Sender: String(user._id), Receiver: post.UserID, Post: String(postId) })
+                            if (!noti) {
+                                db.get().collection(collection.NOTIFICATION_COLLECTION).insertOne(notification).then(() => {
+                                    resolve(status)
+                                })
+                            } else {
+                                resolve(status)
+                            }
+
                         })
                     } else {
                         let newVal = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
@@ -268,17 +292,6 @@ module.exports = {
                     }
                 })
 
-            } else {
-                db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(postData.postId) }, {
-                    $set: {
-                        Likes: [postData.userId]
-                    }
-                }).then(async () => {
-                    let newVal = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(postData.postId) })
-                    status.count = newVal.Likes.length
-                    status.newLike = true
-                    resolve(status)
-                })
             }
         })
     },
@@ -319,27 +332,77 @@ module.exports = {
                 UserName: data.user,
                 UserId: data.userId
             }
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(data.userId) })
             let post = await db.get().collection(collection.POST_COLLECTION).findOne({ _id: objectId(data.post) })
             if (post.Comment) {
                 db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
                     $push: {
                         Comment: file
                     }
-                }).then(() => {
-                    if (post.Comment.length === 0) {
-                        resolve("newComment")
-                    } else {
-                        resolve()
-                    }
+                }).then(async () => {
+                    let Dat = new Date()
+                    let Day = moment(Dat).format('YYYY-MM-DD')
+                    let Time = moment(Dat).format('hh-mm-ss')
+                    let postId = post._id
 
+                    let notification = {
+                        Item: "Comment",
+                        Sender: String(user._id),
+                        SenderName: user.Name,
+                        Receiver: post.UserID,
+                        ReceiverName: post.User,
+                        Post: String(postId),
+                        PostName:post.FileName,
+                        Date: Day,
+                        Time: Time
+                    }
+                    let noti = await db.get().collection(collection.NOTIFICATION_COLLECTION).findOne({ Item: "Comment", Sender: String(user._id), Receiver: post.UserID, Post: String(postId) })
+                    if (!noti) {
+                        db.get().collection(collection.NOTIFICATION_COLLECTION).insertOne(notification).then(() => {
+                            if (post.Comment.length === 0) {
+                                resolve("newComment")
+                            } else {
+                                resolve()
+                            }
+                        })
+                    } else {
+                        if (post.Comment.length === 0) {
+                            resolve("newComment")
+                        } else {
+                            resolve()
+                        }
+                    }
                 })
             } else {
                 db.get().collection(collection.POST_COLLECTION).updateOne({ _id: objectId(data.post) }, {
                     $set: {
                         Comment: [file]
                     }
-                }).then(() => {
-                    resolve("newComment")
+                }).then(async() => {
+                    let Dat = new Date()
+                    let Day = moment(Dat).format('YYYY-MM-DD')
+                    let Time = moment(Dat).format('hh-mm-ss')
+                    let postId = post._id
+
+                    let notification = {
+                        Item: "Comment",
+                        Sender: String(user._id),
+                        SenderName: user.Name,
+                        Receiver: post.UserID,
+                        ReceiverName: post.User,
+                        Post: String(postId),
+                        PostName:post.FileName,
+                        Date: Day,
+                        Time: Time
+                    }
+                    let noti = await db.get().collection(collection.NOTIFICATION_COLLECTION).findOne({ Item: "Comment", Sender: String(user._id), Receiver: post.UserID, Post: String(postId) })
+                    if (!noti) {
+                        db.get().collection(collection.NOTIFICATION_COLLECTION).insertOne(notification).then(() => {
+                             resolve("newComment")   
+                        })
+                    } else {
+                        resolve("newComment")  
+                    }
                 })
             }
         })
@@ -420,9 +483,8 @@ module.exports = {
             if (friend) {
                 db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Pending: val }).then((check) => {
                     if (check == null) {
-                        db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Verified: val }).then((search) =>{
-                            if(search == null)
-                            {
+                        db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: accepter, Verified: val }).then((search) => {
+                            if (search == null) {
                                 db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: accepter }, {
                                     $push: {
                                         Pending: val
@@ -431,12 +493,12 @@ module.exports = {
                                     status.requested = true
                                     resolve(status)
                                 })
-                            }else{
+                            } else {
                                 status.alreadyFriends = true
                                 resolve(status)
                             }
                         })
-                        
+
                     } else {
                         status.alreadyRequested = true
                         resolve(status)
@@ -553,33 +615,41 @@ module.exports = {
             }
         })
     },
-    getSuggestions:(userId)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
-            let users = await db.get().collection(collection.USER_COLLECTION).find({_id:{$nin:[objectId('606a9aca8c95729da1eec5ff'),objectId(userId)]}}).sort({_id:-1}).limit(3).toArray()
+    getSuggestions: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let users = await db.get().collection(collection.USER_COLLECTION).find({ _id: { $nin: [objectId('606a9aca8c95729da1eec5ff'), objectId(userId)] } }).sort({ _id: -1 }).limit(3).toArray()
             resolve(users)
         })
     },
-    blockUser:(userId,ownerId)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
-            console.log(userId,"user",ownerId,"owner");
-            let user = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)})
+    blockUser: (userId, ownerId) => {
+        return new Promise(async (resolve, reject) => {
+            console.log(userId, "user", ownerId, "owner");
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
             let userName = user.Name
-            let obj ={
-                userId:userId,
-                userName:userName
+            let obj = {
+                userId: userId,
+                userName: userName
             }
-            db.get().collection(collection.FRIENDS_COLLECTION).updateOne({User:ownerId},{
-                $pull:{
-                    Verified:obj
+            db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: ownerId }, {
+                $pull: {
+                    Verified: obj
                 }
-            }).then(()=>
-            {
+            }).then(() => {
                 resolve(userName)
             })
+        })
+    },
+    getNotifications:(userId)=>{
+        return new Promise(async(resolve,reject)=>
+        {
+            let notifications = await db.get().collection(collection.NOTIFICATION_COLLECTION).find({Receiver:userId}).sort({Date:-1,Time:-1}).toArray()
+            
+            if(notifications.length>0)
+            {
+                resolve(notifications)
+            }else{
+                resolve("noNotifications")
+            }
         })
     }
 }

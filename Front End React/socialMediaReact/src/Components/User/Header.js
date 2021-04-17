@@ -42,6 +42,20 @@ export default function Header() {
 
     }
     const notificationClick = (event) => {
+        if(notificationBool === false)
+        {
+            let data={
+                jwt:localStorage.getItem('jwt'),
+                user:localStorage.getItem('userId')
+            }
+            axios.post(server+'/getNotifications',data).then((response)=>
+            {
+                if(response.data !=='noNotifications')
+                {
+                    setNotificationList(response.data)
+                }
+            })
+        }
         setNotificationBool(!notificationBool)
         setNotification(event.target)
     }
@@ -109,6 +123,7 @@ export default function Header() {
 
     const [notificationBool, setNotificationBool] = useState(false)
     const [notification, setNotification] = useState()
+    const [notificationList,setNotificationList] = useState([])
 
 
     const [friendRequestBool, setFriendRequestBool] = useState(false)
@@ -225,9 +240,20 @@ export default function Header() {
                 placement="bottom"
                 containerPadding={20}
             >
-                <Popover id="popover-contained">
-                    <Popover.Title as="h3">Popover bottom</Popover.Title>
+                <Popover id="popover-contained"  style={{ width: "50em" }}>
+                <Popover.Title as="h3" className="bg-primary text-center text-white h1">Notifications</Popover.Title>
                     <Popover.Content>
+                        {notificationList.length>0?notificationList.map((data,index)=>
+                        {
+                            return(
+                                <div>
+                            <div className="" style={{display: "flex",flexDirection:"row" }}>
+                                {data.Item === 'Like'?<div><p className="h6 ml-2" style={{margin:"auto"}}>{data.SenderName} Liked your post</p><img className="img-fluid rounded-circle ml-1" src={server+'/PostFiles/'+data.PostName} style={{width:"2.5em",height:"2.5em",margin:"auto"}}></img></div>:<div><p className="h6 ml-2" style={{margin:"auto"}}>{data.SenderName} commented on your post</p><img className="img-fluid rounded-circle ml-1" src={server+'/PostFiles/'+data.PostName} style={{width:"2.5em",height:"2.5em",margin:"auto"}}></img></div>}
+                            </div>
+                            <hr className="seperator"></hr>
+                        </div>
+                            )
+                        }):<p className="h6">No New Notifications</p>}
                     </Popover.Content>
                 </Popover>
             </Overlay>

@@ -332,4 +332,15 @@ router.post('/blockUser',authenticateToken,(req,res)=>
     res.send(name)
   })
 })
+router.post('/getNotifications',authenticateToken,(req,res)=>{
+  userHelper.getNotifications(req.body.user).then((response)=>
+  {
+    if(response != 'noNotifications')
+    {
+      res.send(response)
+    }else{
+      res.send("noNotifications")
+    }
+  })
+})
 module.exports = router;
