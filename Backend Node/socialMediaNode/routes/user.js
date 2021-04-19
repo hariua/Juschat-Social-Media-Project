@@ -177,9 +177,20 @@ router.post('/addPost',(req, res) => {
   let d = moment(date).format('-YYYY-MM-DD-h-mm-ss')
   let time= moment(date).format('h:mm')
   let dat = moment(date).format('YYYY-MM-DD')
-  let file = req.files.item
-  let ext = req.files.item.mimetype
+  let file=''
+  let ext =''
+  if(req.files)
+  {
+    file = req.files.item
+  ext = req.files.item.mimetype
+  }else{
+    console.log("no fileeee");
+  }
   let fileName = ''
+  if(req.body.cropImg)
+  {
+    fileName = req.body.id+d+'.jpg'
+  }
   if(ext == 'image/jpeg' ||ext == 'image/jpg'||ext == 'image/png')
   {
     fileName = req.body.id+d+'.jpg'

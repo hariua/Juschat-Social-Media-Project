@@ -208,6 +208,13 @@ module.exports = {
             Time: time,
             Likes: []
         }
+        if(info.cropImg)
+        {
+            var base64Str = info.cropImg
+            let location = path.join(__dirname, '../public/PostFiles/')
+            var optionalObj = { 'fileName': fileName, 'type': 'jpg' };
+            base64ToImage(base64Str, location, optionalObj);            
+        }
         return new Promise((resolve, reject) => {
             db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res) => {
                 resolve(res.ops[0])
