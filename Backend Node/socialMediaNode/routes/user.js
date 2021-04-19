@@ -343,4 +343,10 @@ router.post('/getNotifications',authenticateToken,(req,res)=>{
     }
   })
 })
+router.post('/deletePost',authenticateToken,(req,res)=>{
+  userHelper.deletePost(req.body.postId).then(()=>
+  {
+    res.send("success")
+  })
+})
 module.exports = router;

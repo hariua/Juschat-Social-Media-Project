@@ -1,7 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Card, CardDeck } from 'react-bootstrap'
+import { Card, CardDeck, Dropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import server from '../../../../Server'
 import './UserProfile.css'
 
@@ -13,11 +14,11 @@ export default function UserProfile() {
             axios.get(server + '/getProfileDetails?jwt=' + token).then((response) => {
                 console.log(response);
                 if (response.data.imgUrl === '') {
-                    document.getElementById('userDp').src=server+'/ProfileImages/DEFAULT.jpg'
+                    document.getElementById('userDp').src = server + '/ProfileImages/DEFAULT.jpg'
                 }
                 else {
                     document.getElementById('userDp').src = server + response.data.imgUrl
-                    
+
                 }
                 if (response.data.user.Description === '') {
                     document.getElementById('userDescription').hidden = true
@@ -40,6 +41,18 @@ export default function UserProfile() {
             })
         }
     }, [])
+    const deletePost=(postId,index)=>{
+        let data={
+            postId:postId,
+            jwt:localStorage.getItem('jwt')
+        }
+        axios.post(server+'/deletePost',data).then((response)=>
+        {
+            console.log(response);
+            toast.success("Post Deleted Successfully")
+            document.getElementById(index+"delete").hidden = true
+        })
+    }
     const [post, setPost] = useState([])
     return (
         <div className="profileBg">
@@ -52,7 +65,7 @@ export default function UserProfile() {
                     <div className="col-md-7 ">
                         <h2 className="pt-5  mt-3 " id="userName"></h2><Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
-                            {post?<li className="float-left pr-2 h6">{post.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
+                            {post ? <li className="float-left pr-2 h6">{post.length} posts</li> : <li className="float-left pr-2 h6">0 posts</li>}
                             <li className="float-left pr-2 h6"> 5 following</li>
                             <li className=" pr-2 h6">20 followers</li>
                         </ul>
@@ -77,10 +90,23 @@ export default function UserProfile() {
                         <p className="text-center text-white h4">POSTS</p>
 
                         <div className="row">
-                            {post?post.map((data, index) => {
+                            {post ? post.map((data, index) => {
                                 return (
                                     <div className="col-md-4 mt-3">
-                                        <Card className="mx-auto alert border-dark" key={index} >
+                                        <Card className="mx-auto alert border-dark" id={index+"delete"} key={index} >
+                                            <div className="col-md-12 col-12" style={{ padding: "0px",display:"flex",flexDirection:"row-reverse" }}>
+
+                                                <Dropdown>
+                                                    <Dropdown.Toggle id="dropdown-basic" variant="sm" className=""  >
+                                                        <span className="fas fa-ellipsis-v float-right" ></span>
+                                                    </Dropdown.Toggle >
+
+                                                    <Dropdown.Menu>
+                                                        <Dropdown.Item  onClick={()=>deletePost(data._id,index)} >Delete Post</Dropdown.Item>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                                
+                                            </div>
 
                                             {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
                                             {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
@@ -88,18 +114,18 @@ export default function UserProfile() {
 
                                             <div className=" row text-center">
                                                 <div className="col-6">
-                                                    {data.Likes?<h6 className="m-1"><span className="fas fa-heart pr-3"></span>{data.Likes.length}</h6>:<h6 className="m-1"><span className="fas fa-heart pr-3"></span>0</h6>}
+                                                    {data.Likes ? <h6 className="m-1"><span className="fas fa-heart pr-3"></span>{data.Likes.length}</h6> : <h6 className="m-1"><span className="fas fa-heart pr-3"></span>0</h6>}
 
                                                 </div>
                                                 <div className="col-6">
-                                                   {data.Comment? <h6 className="m-1"><span className="fas fa-comment-alt pr-3"></span>{data.Comment.length}</h6>: <h6 className="m-1"><span className="fas fa-comment-alt pr-3"></span>0</h6>}
+                                                    {data.Comment ? <h6 className="m-1"><span className="fas fa-comment-alt pr-3"></span>{data.Comment.length}</h6> : <h6 className="m-1"><span className="fas fa-comment-alt pr-3"></span>0</h6>}
                                                 </div>
                                             </div>
 
                                         </Card>
                                     </div>
                                 )
-                            }):<p></p>}
+                            }) : <p></p>}
 
 
 

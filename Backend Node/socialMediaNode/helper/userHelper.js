@@ -646,10 +646,21 @@ module.exports = {
             
             if(notifications.length>0)
             {
-                resolve(notifications)
+                console.log(notifications);
+                resolve(notifications.slice(0,3))
             }else{
                 resolve("noNotifications")
             }
+        })
+    },
+    deletePost:(id)=>
+    {
+        return new Promise((resolve,reject)=>
+        {
+            db.get().collection(collection.POST_COLLECTION).removeOne({_id:objectId(id)}).then(()=>
+            {
+                resolve()
+            })
         })
     }
 }

@@ -21,6 +21,7 @@ export default function AddPost() {
             if(res.data === 'success')
             {
                 toast("Data Posted Successfully")
+                history.push('/home')
                 
                 
             }
