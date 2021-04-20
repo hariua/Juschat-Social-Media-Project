@@ -15,7 +15,7 @@ export default function EditProfile() {
     const style = {
 
         margin: "auto",
-        marginTop: "4%",
+        marginTop: "6%",
         marginBottom: "4%",
         opacity: " 0.8",
         borderRadius: "2em 0em",
@@ -194,7 +194,7 @@ export default function EditProfile() {
     }
     return (
         <div className="profileBg">
-            <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid" style={style}>
+            <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid " style={style}>
             <h3 className="text-center mb-3 mt-2">Edit Profile </h3>
             <img src='' id="editImg" className="img-fluid rounded-circle" style={{ width: "10em", height: "10em", marginLeft: "40%", marginRight: "50%" }}></img>
             <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setTextCollapse(!textCollapse)}>Edit Basic Details</button>

@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Header from './Header'
+import Chat from './UserComponents/Chat/Chat'
 import AddPost from './UserComponents/Create Post/AddPost'
 import HashPost from './UserComponents/HashTagPost/HashPost'
 import Home from './UserComponents/home/Home'
 import AnotherUserProfile from './UserComponents/Profile/AnotherUserProfile'
 import EditProfile from './UserComponents/Profile/EditProfile'
+import UserPost from './UserComponents/Profile/UserPost'
 import UserProfile from './UserComponents/Profile/UserProfile'
 import SignIn from './UserComponents/SignIn/UserSignin'
 import OtpSubmit from './UserComponents/Signup/OtpSubmit'
@@ -27,6 +29,8 @@ export default function User() {
                 <Route path="/userProfile"><Header /><AnotherUserProfile /></Route>
                 <Route path="/addPost"><Header /><AddPost /></Route>
                 <Route path="/hashPost"><Header /><HashPost /></Route>
+                <Route path="/chat"><Header /><Chat /></Route>
+                <Route path='/userPost'><Header /><UserPost /></Route>
                 
                 
                 

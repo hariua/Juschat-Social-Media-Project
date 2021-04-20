@@ -1,13 +1,14 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Card, CardDeck, Dropdown } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import server from '../../../../Server'
 import './UserProfile.css'
 
 export default function UserProfile() {
     let user = localStorage.getItem('User')
+    let history = useHistory()
     useEffect(() => {
         let token = localStorage.getItem('jwt')
         if (token) {
@@ -34,9 +35,9 @@ export default function UserProfile() {
                 document.getElementById('userName').innerHTML = response.data.user.Name
                 document.getElementById('userMail').innerHTML = response.data.user.Email
                 document.getElementById('userMobile').innerHTML = response.data.user.Mobile
-                if (response.data.posts.post) {
-                    setPost(response.data.posts.post)
-                }
+        
+                    setPost(response.data.posts)
+                
 
             })
         }
@@ -53,11 +54,15 @@ export default function UserProfile() {
             document.getElementById(index+"delete").hidden = true
         })
     }
+    const userPosts=()=>
+    {
+        history.push('/userPost')
+    }
     const [post, setPost] = useState([])
     return (
         <div className="profileBg">
-            <div className="container mt-2">
-                <div className="row text-white">
+            <div className="container-fluid w-75">
+                <div className="row text-white mt-5">
                     <div className="col-md-4">
                         <img src="" id="userDp" className="img-fluid rounded-circle m-5 " style={{ height: "18em", width: "18em" }}></img>
                     </div>
@@ -92,8 +97,8 @@ export default function UserProfile() {
                         <div className="row">
                             {post ? post.map((data, index) => {
                                 return (
-                                    <div className="col-md-4 mt-3">
-                                        <Card className="mx-auto alert border-dark" id={index+"delete"} key={index} >
+                                    <div className="col-md-4 mt-3" >
+                                        <Card className="mx-auto alert border-dark" id={index+"delete"} key={index}>
                                             <div className="col-md-12 col-12" style={{ padding: "0px",display:"flex",flexDirection:"row-reverse" }}>
 
                                                 <Dropdown>
@@ -108,8 +113,8 @@ export default function UserProfile() {
                                                 
                                             </div>
 
-                                            {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
-                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
+                                            {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top"  onClick={userPosts} className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
+                                            {data.FileName.split('.').pop() === 'mp4' && <video  onClick={userPosts} controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
                                                 <source src={server + "/PostFiles/" + data.FileName}></source></video>}
 
                                             <div className=" row text-center">

@@ -41,9 +41,7 @@ export default function AnotherUserProfile() {
                 document.getElementById('userName').innerHTML = response.data.user.Name
                 document.getElementById('userMail').innerHTML = response.data.user.Email
                 document.getElementById('userMobile').innerHTML = response.data.user.Mobile
-                if (response.data.posts.post) {
-                    setUserPost(response.data.posts.post)
-                }
+                setUserPost(response.data.posts)
                 
 
             })
@@ -76,9 +74,9 @@ export default function AnotherUserProfile() {
     const [isFriend,setIsFriend] = useState(false)
     return (
         <div className="profileBg">
-            <div className="container mt-2">
+            <div className="container-fluid w-75 mt-5">
                 <div className="row text-white">
-                    <div className="col-md-4">
+                    <div className="col-md-4 ">
                         <img src="" id="userDp" className="img-fluid rounded-circle m-5 " style={{ height: "18em", width: "18em" }}></img>
                     </div>
                     <div className="col-md-1"></div>
@@ -109,7 +107,7 @@ export default function AnotherUserProfile() {
                 <hr className="seperator bg-white"></hr>
                 <div className="row">
                     <div className="col-md-12">
-                        <p className="text-center text-white h4">POSTS</p>
+                        <p className="text-center text-white h4" onClick={console.log(userPost,"userpost")}>POSTS</p>
 
                         <div className="row">
                             {userPost?userPost.map((data, index) => {

@@ -88,9 +88,9 @@ export default function AddPost() {
     return (
         <div>
             <div className="row" id="postBg">
-                <div className="col-md-6 col-lg-7">
+                <div className="col-md-6 col-lg-6">
                     <div className="add-post bg-light   pl-5 pr-5 pt-3 pb-3 container-fluid">
-                        <h1 className="text-center mb-3 mt-2" style={{ fontFamily: 'Dancing Script, cursive' }}>Add New Post </h1>
+                        <h1 className="text-center headingPost mb-3 mt-2" style={{ fontFamily: 'Dancing Script, cursive' }}>Add New Post </h1>
                         <Form>
 
                             <div className="form-group mb-1" style={{ marginBottom: "0em" }}>
@@ -126,10 +126,10 @@ export default function AddPost() {
                         </Form>
                     </div>
                 </div>
-                <div className="col-md-6 col-lg-5 mt-4">
+                <div className="col-md-6 col-lg-6 mt-4">
 
-                    <div className="add-post bg-light   pl-5 pr-5 pt-3 pb-3 container-fluid" style={{ height: "30em" }}>
-                        <h2 className="text-center mb-3 mt-2" style={{ fontFamily: 'Dancing Script, cursive' }}>Post Preview </h2>
+                    <div className="preview-post bg-light   pl-5 pr-5 pt-3 pb-3 container-fluid" style={{ height: "30em" }}>
+                        <h1 className="text-center headingPost mb-3 mt-2" style={{ fontFamily: 'Dancing Script, cursive' }}>Post Preview </h1>
                         <div className="imgPreview" style={{ margin: "auto" }} >
                             <div className="row" id="imgPre" style={{ margin: "auto" }}>
                                 {src && <div>

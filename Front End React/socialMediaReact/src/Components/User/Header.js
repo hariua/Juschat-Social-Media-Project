@@ -132,7 +132,7 @@ export default function Header() {
 
 
     return (
-        <div>
+        <div style={{position:"fixed",zIndex:"10",width:"100%"}}>
             <Navbar
                 collapseOnSelect
                 expand="lg"
@@ -159,7 +159,7 @@ export default function Header() {
                 </Button>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="" style={{ paddingLeft: "18em" }}></Nav>
+                    <Nav className="" style={{ paddingLeft: "13em" }}></Nav>
                     <Nav>
                         <Nav.Link>
                             <Link to="/addPost">
@@ -206,7 +206,7 @@ export default function Header() {
                 <div>
                     <div className="row ml-lg-3 container-fluid">
                         <div className="col-md-1 col-sm-2"></div>
-                        <div className="col-md-4 col-sm-6 alert border-primary ml-lg-5">
+                        <div className="col-md-4 col-sm-6 alert border-primary ml-lg-5 bg-light">
                             <ul style={{ listStyleType: "none" }}>
                                 {searchUser.length !== 0 ? searchUser.map((data, index) => {
                                     return (

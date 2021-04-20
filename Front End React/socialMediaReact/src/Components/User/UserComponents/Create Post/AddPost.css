@@ -3,22 +3,46 @@
     font-size: 2em;
 }
 .add-post{
-    
-    margin:auto;
-    margin-top:8%;
+    margin-top:16%;
     margin-bottom: 8%;
-    width:500px;
+    width: 500px;
     height:auto;
     opacity: 0.9;
     border-radius: 2em 0em;
+    margin-left: 3em;
     
     }
+    .preview-post{
+        margin-top:13%;
+        margin-bottom: 8%;
+        width: 500px;
+        height:auto;
+        opacity: 0.9;
+        border-radius: 2em 0em;
+        margin-left: 3em;   
+    }
+    @media only screen and (max-width:480px) {
+        .add-post{
+            width: 400px;
+            margin-top: 20%;
+
+        }
+        .preview-post{
+            width: 400px;
+            margin-top: 5%;
+
+        }
+        .headingPost{
+            font-size: 1.8em;
+        }
+        
+     }
+     
     
     #postBg{
         background-image: url(./kristina-tripkovic-8Zs5H6CnYJo-unsplash.jpg);
         background-size: cover;
         background-position: center;
-
     }
     .postLabel{
         font-family: 'Gentium Book Basic', serif;

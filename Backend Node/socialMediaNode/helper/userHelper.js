@@ -669,5 +669,13 @@ module.exports = {
                 resolve()
             })
         })
+    },
+    getUserPost:(userId)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let post = await db.get().collection(collection.POST_COLLECTION).find({UserID:userId}).toArray()
+            resolve(post)
+        })
     }
 }

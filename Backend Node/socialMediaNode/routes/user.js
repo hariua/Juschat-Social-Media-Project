@@ -360,4 +360,11 @@ router.post('/deletePost',authenticateToken,(req,res)=>{
     res.send("success")
   })
 })
+router.post('/getUserPosts',authenticateToken,(req,res)=>
+{
+  userHelper.getUserPost(req.body.userId).then((posts)=>
+  {
+    res.send({post:posts,path:'/PostFiles/'})
+  })
+})
 module.exports = router;
