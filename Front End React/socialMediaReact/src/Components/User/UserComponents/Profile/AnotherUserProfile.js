@@ -61,6 +61,7 @@ export default function AnotherUserProfile() {
         }
         axios.post(server+'/followRequest',data).then((response)=>
         {
+            console.log(response.data);
             if(response.data==='Requested')
             {
                 toast.success("Request Sent Successfully")
@@ -107,7 +108,7 @@ export default function AnotherUserProfile() {
                 <hr className="seperator bg-white"></hr>
                 <div className="row">
                     <div className="col-md-12">
-                        <p className="text-center text-white h4" onClick={console.log(userPost,"userpost")}>POSTS</p>
+                        <p className="text-center text-white h4">POSTS</p>
 
                         <div className="row">
                             {userPost?userPost.map((data, index) => {

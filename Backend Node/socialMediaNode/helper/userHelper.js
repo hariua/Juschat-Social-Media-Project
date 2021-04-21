@@ -632,17 +632,30 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             console.log(userId, "user", ownerId, "owner");
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
+            let friend = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(ownerId) })
             let userName = user.Name
             let obj = {
                 userId: userId,
                 userName: userName
+            }
+            let friendName = friend.Name
+            let obj1 = {
+                userId: ownerId,
+                userName: friendName
             }
             db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: ownerId }, {
                 $pull: {
                     Verified: obj
                 }
             }).then(() => {
-                resolve(userName)
+                db.get().collection(collection.FRIENDS_COLLECTION).updateOne({ User: userId }, {
+                    $pull: {
+                        Verified: obj1
+                    }
+                }).then(()=>{
+                    resolve(userName)
+                })
+                
             })
         })
     },
