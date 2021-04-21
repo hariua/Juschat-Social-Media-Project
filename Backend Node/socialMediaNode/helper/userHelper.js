@@ -88,14 +88,27 @@ module.exports = {
     findAnotherUser: (userId, ownerId) => {
         return new Promise(async (resolve, reject) => {
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(userId) })
+            let owner = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: objectId(ownerId) })
             let data = {
                 userId: String(user._id),
                 userName: user.Name
             }
+            let dataNew = {
+                userId: String(owner._id),
+                userName: owner.Name
+            }
             db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: ownerId, Verified: data }).then((check) => {
 
                 if (check == null) {
-                    resolve(user)
+                    db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: userId, Pending: dataNew }).then((search) => {
+                        if (search == null) {
+                            resolve(user)
+                        } else {
+                            console.log("enteredddddd");
+                            user.alreadyRequested = true
+                            resolve(user)
+                        }
+                    })
                 } else {
                     user.Friend = true
                     resolve(user)
@@ -208,12 +221,11 @@ module.exports = {
             Time: time,
             Likes: []
         }
-        if(info.cropImg)
-        {
+        if (info.cropImg) {
             var base64Str = info.cropImg
             let location = path.join(__dirname, '../public/PostFiles/')
             var optionalObj = { 'fileName': fileName, 'type': 'jpg' };
-            base64ToImage(base64Str, location, optionalObj);            
+            base64ToImage(base64Str, location, optionalObj);
         }
         return new Promise((resolve, reject) => {
             db.get().collection(collection.POST_COLLECTION).insertOne(data).then((res) => {
@@ -277,7 +289,7 @@ module.exports = {
                                 Receiver: post.UserID,
                                 ReceiverName: post.User,
                                 Post: String(postId),
-                                PostName:post.FileName,
+                                PostName: post.FileName,
                                 Date: Day,
                                 Time: Time
                             }
@@ -359,7 +371,7 @@ module.exports = {
                         Receiver: post.UserID,
                         ReceiverName: post.User,
                         Post: String(postId),
-                        PostName:post.FileName,
+                        PostName: post.FileName,
                         Date: Day,
                         Time: Time
                     }
@@ -385,7 +397,7 @@ module.exports = {
                     $set: {
                         Comment: [file]
                     }
-                }).then(async() => {
+                }).then(async () => {
                     let Dat = new Date()
                     let Day = moment(Dat).format('YYYY-MM-DD')
                     let Time = moment(Dat).format('hh-mm-ss')
@@ -398,17 +410,17 @@ module.exports = {
                         Receiver: post.UserID,
                         ReceiverName: post.User,
                         Post: String(postId),
-                        PostName:post.FileName,
+                        PostName: post.FileName,
                         Date: Day,
                         Time: Time
                     }
                     let noti = await db.get().collection(collection.NOTIFICATION_COLLECTION).findOne({ Item: "Comment", Sender: String(user._id), Receiver: post.UserID, Post: String(postId) })
                     if (!noti) {
                         db.get().collection(collection.NOTIFICATION_COLLECTION).insertOne(notification).then(() => {
-                             resolve("newComment")   
+                            resolve("newComment")
                         })
                     } else {
-                        resolve("newComment")  
+                        resolve("newComment")
                     }
                 })
             }
@@ -652,57 +664,46 @@ module.exports = {
                     $pull: {
                         Verified: obj1
                     }
-                }).then(()=>{
+                }).then(() => {
                     resolve(userName)
                 })
-                
+
             })
         })
     },
-    getNotifications:(userId)=>{
-        return new Promise(async(resolve,reject)=>
-        {
-            let notifications = await db.get().collection(collection.NOTIFICATION_COLLECTION).find({Receiver:userId}).sort({Date:-1,Time:-1}).toArray()
-            
-            if(notifications.length>0)
-            {
+    getNotifications: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let notifications = await db.get().collection(collection.NOTIFICATION_COLLECTION).find({ Receiver: userId }).sort({ Date: -1, Time: -1 }).toArray()
+
+            if (notifications.length > 0) {
                 console.log(notifications);
-                resolve(notifications.slice(0,3))
-            }else{
+                resolve(notifications.slice(0, 3))
+            } else {
                 resolve("noNotifications")
             }
         })
     },
-    deletePost:(id)=>
-    {
-        return new Promise((resolve,reject)=>
-        {
-            db.get().collection(collection.POST_COLLECTION).removeOne({_id:objectId(id)}).then(()=>
-            {
+    deletePost: (id) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.POST_COLLECTION).removeOne({ _id: objectId(id) }).then(() => {
                 resolve()
             })
         })
     },
-    getUserPost:(userId)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
-            let post = await db.get().collection(collection.POST_COLLECTION).find({UserID:userId}).toArray()
+    getUserPost: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let post = await db.get().collection(collection.POST_COLLECTION).find({ UserID: userId }).toArray()
             resolve(post)
         })
     },
-    getFriendsList:(userId)=>
-    {
-        return new Promise(async(resolve,reject)=>
-        {
-            let document = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({User:userId})
-            let friends=[]
-            if(document)
-            {
-                if(document.Verified.length>0)
-                {
+    getFriendsList: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let document = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User: userId })
+            let friends = []
+            if (document) {
+                if (document.Verified.length > 0) {
                     friends = document.Verified
-                    
+
                 }
             }
             resolve(friends)

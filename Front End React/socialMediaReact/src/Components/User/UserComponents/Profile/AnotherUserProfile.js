@@ -17,9 +17,12 @@ export default function AnotherUserProfile() {
                 ownerId:localStorage.getItem('userId')
             }
             axios.post(server + '/getAnotherUserProfile',data).then((response) => {
-               
+               console.log(response);
                 if(response.data.user.Friend){
                     setIsFriend(true)
+                }else if(response.data.user.alreadyRequested)
+                {
+                    setAlreadyRequested(true)
                 }
                 if (response.data.imgUrl === '') {
                     document.getElementById('userDp').src=server+'/ProfileImages/DEFAULT.jpg'
@@ -91,6 +94,7 @@ export default function AnotherUserProfile() {
     const [anotherFriendBool, setAnotherFriendBool] = useState(false)
     const [userPost, setUserPost] = useState([])
     const [isFriend,setIsFriend] = useState(false)
+    const [alreadyRequested,setAlreadyRequested] = useState(false)
     return (
         <div className="profileBg">
             <div className="container-fluid w-75 mt-5">
@@ -102,7 +106,7 @@ export default function AnotherUserProfile() {
                     <div className="col-md-7 ">
                         <h2 className="pt-5  mt-3 " id="userName"></h2>{localStorage.getItem('userId')===localStorage.getItem('profileUser')?<Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>
                         :isFriend===true?<buton size="lg"  className="btn btn-primary border-primary m-2"><span className="h5">Friends</span></buton>
-                        :<buton size="lg" onClick={()=>followUser(localStorage.getItem('userId'),localStorage.getItem('profileUser'))} className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
+                        :alreadyRequested===true?<buton size="lg" className="btn btn-info border-primary m-2"><span className="h5">Requested</span></buton>:<buton size="lg" onClick={()=>followUser(localStorage.getItem('userId'),localStorage.getItem('profileUser'))} className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
                             {userPost?<li className="float-left pr-2 h6">{userPost.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
                             {anotherFriendList.length>0?isFriend==true?<li className=" pr-2 h6" style={{cursor:"pointer"}} onClick={() => getFriendAnother()}>{anotherFriendList.length} Friends</li>:<li className=" pr-2 h6">{anotherFriendList.length} Friends</li>:<li className=" pr-2 h6">0 Friends</li>}

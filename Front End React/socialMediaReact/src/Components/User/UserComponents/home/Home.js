@@ -10,7 +10,6 @@ import './Home.css'
 export default function Home() {
 
     let history = useHistory()
-    const [suggestion, setSuggestion] = useState([]) 
     useEffect(() => {
         let token = localStorage.getItem('jwt')
         if (!token) {
@@ -158,22 +157,16 @@ export default function Home() {
             }else if(response.data === 'alreadyRequested')
             {
                 toast.warning("You are Already Requested")
+                document.getElementById(accepter+"suggestion").hidden=true
+                
             }else if(response.data === 'alreadyFriends')
             {
-                toast.warning("You are Already Friends")
-                
+                toast.warning("You are Already Friends")   
             }
-            for(let i=0;i<suggestion.length;i++)
-                {
-                    console.log(suggestion[i]._id,accepter);
-                    if(suggestion[i]._id == accepter){
-                        
-                        console.log("Matching")
-                    }
-                }
+            
         })
     }
-
+    const [suggestion, setSuggestion] = useState([]) 
     const [readMore, setReadMore] = useState(true)
     const [post, setPost] = useState([])
     const [path, setPath] = useState()
