@@ -116,7 +116,7 @@ router.post('/changeProPic', authenticateToken, (req, res) => {
 })
 router.get('/getProfileDetails', authenticateToken, async(req, res) => {
   let userPost = await userHelper.getUserPost(req.user._id)
-  
+  let friend = await userHelper.getFriendsList(req.user._id)
   userHelper.findUser(req.user._id).then((data) => {
     let val = path.join(__dirname, '../')
     let img = path.join(__dirname, '../public/ProfileImages/' + req.user._id + '.jpg')
@@ -124,9 +124,9 @@ router.get('/getProfileDetails', authenticateToken, async(req, res) => {
     console.log(img);
     if (fs.existsSync(img)) {
       console.log("img exist");
-      res.send({ user: data, imgUrl: '/ProfileImages/' + req.user._id + '.jpg',posts:userPost })
+      res.send({ user: data, imgUrl: '/ProfileImages/' + req.user._id + '.jpg',posts:userPost,friends:friend })
     } else {
-      res.send({ user: data, imgUrl: '',posts:userPost })
+      res.send({ user: data, imgUrl: '',posts:userPost,friends:friend })
     }
 
 

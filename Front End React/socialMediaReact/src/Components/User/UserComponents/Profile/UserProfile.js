@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Card, CardDeck, Dropdown } from 'react-bootstrap'
+import { Card, CardDeck, Dropdown, Modal, Overlay, Popover } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import server from '../../../../Server'
@@ -32,33 +32,49 @@ export default function UserProfile() {
                 if (response.data.user.GoogleId || response.data.user.FacebookId) {
                     document.getElementById('proMob').hidden = true
                 }
+                if (response.data.friends.length > 0) {
+                    setFriendsList(response.data.friends)
+                }
                 document.getElementById('userName').innerHTML = response.data.user.Name
                 document.getElementById('userMail').innerHTML = response.data.user.Email
                 document.getElementById('userMobile').innerHTML = response.data.user.Mobile
-        
-                    setPost(response.data.posts)
-                
+
+                setPost(response.data.posts)
+
 
             })
         }
     }, [])
-    const deletePost=(postId,index)=>{
-        let data={
-            postId:postId,
-            jwt:localStorage.getItem('jwt')
+    const searchDpError = (id)=>
+    {
+        document.getElementById(id+"dp").src = server+'/ProfileImages/DEFAULT.jpg'
+    }
+    const friendPage = (id) => {
+        localStorage.setItem("profileUser", id)
+        history.push('/userProfile')
+
+    }
+    const deletePost = (postId, index) => {
+        let data = {
+            postId: postId,
+            jwt: localStorage.getItem('jwt')
         }
-        axios.post(server+'/deletePost',data).then((response)=>
-        {
+        axios.post(server + '/deletePost', data).then((response) => {
             console.log(response);
             toast.success("Post Deleted Successfully")
-            document.getElementById(index+"delete").hidden = true
+            document.getElementById(index + "delete").hidden = true
         })
     }
-    const userPosts=()=>
-    {
+    const userPosts = () => {
         history.push('/userPost')
     }
+    const getFriends = (event) => {
+        setFriendsBool(!friendBool)
+    }
     const [post, setPost] = useState([])
+
+    const [friendsList, setFriendsList] = useState([])
+    const [friendBool, setFriendsBool] = useState(false)
     return (
         <div className="profileBg">
             <div className="container-fluid w-75">
@@ -71,8 +87,8 @@ export default function UserProfile() {
                         <h2 className="pt-5  mt-3 " id="userName"></h2><Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
                             {post ? <li className="float-left pr-2 h6">{post.length} posts</li> : <li className="float-left pr-2 h6">0 posts</li>}
-                            <li className="float-left pr-2 h6"> 5 following</li>
-                            <li className=" pr-2 h6">20 followers</li>
+                            {friendsList.length>0?<li className=" pr-2 h6" onClick={(event) => getFriends(event)}>{friendsList.length} Friends</li>:<li className=" pr-2 h6">0 Friends</li>}
+
                         </ul>
                         <em><p className="h5 text-justify" id="userDescription"></p></em>
                         <div className="float-left pr-5">
@@ -98,8 +114,8 @@ export default function UserProfile() {
                             {post ? post.map((data, index) => {
                                 return (
                                     <div className="col-md-4 mt-3" >
-                                        <Card className="mx-auto alert border-dark" id={index+"delete"} key={index}>
-                                            <div className="col-md-12 col-12" style={{ padding: "0px",display:"flex",flexDirection:"row-reverse" }}>
+                                        <Card className="mx-auto alert border-dark" id={index + "delete"} key={index}>
+                                            <div className="col-md-12 col-12" style={{ padding: "0px", display: "flex", flexDirection: "row-reverse" }}>
 
                                                 <Dropdown>
                                                     <Dropdown.Toggle id="dropdown-basic" variant="sm" className=""  >
@@ -107,14 +123,14 @@ export default function UserProfile() {
                                                     </Dropdown.Toggle >
 
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item  onClick={()=>deletePost(data._id,index)} >Delete Post</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => deletePost(data._id, index)} >Delete Post</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
-                                                
+
                                             </div>
 
-                                            {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top"  onClick={userPosts} className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
-                                            {data.FileName.split('.').pop() === 'mp4' && <video  onClick={userPosts} controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
+                                            {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" onClick={userPosts} className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
+                                            {data.FileName.split('.').pop() === 'mp4' && <video onClick={userPosts} controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
                                                 <source src={server + "/PostFiles/" + data.FileName}></source></video>}
 
                                             <div className=" row text-center">
@@ -135,10 +151,33 @@ export default function UserProfile() {
 
 
                         </div>
+                        <Modal show={friendBool} onHide={getFriends} aria-labelledby="contained-modal-title-vcenter"
+                            centered>
+                            <Modal.Header closeButton>
+                                <Modal.Title >Friends List</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {friendsList.length > 0 ? friendsList.map((data, index) => {
+                                    return (
+                                        <div key={index}>
+                                            <div className="row ml-3">
+                                                <div style={{ display: "flex", flexDirection: "row" }}>
+                                                    <img src={server + '/ProfileImages/' + data.userId + '.jpg'} id={index + "dp"} onError={() => searchDpError(index)}
+                                                        className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em", margin: "auto" }} ></img>
+                                                    <h5 style={{ cursor: "pointer" }} onClick={()=>friendPage(data.userId)} className="m-1 ml-3"><b>{data.userName}</b></h5>
+                                                </div>
+                                            </div>
+                                            <hr className="seperator bg-white"></hr>
+                                        </div>
+                                    )
+                                }) : <div></div>}
+                            </Modal.Body>
 
+                        </Modal>
 
                     </div>
                 </div>
+
             </div>
         </div>
     )

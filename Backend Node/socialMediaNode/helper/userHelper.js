@@ -690,5 +690,22 @@ module.exports = {
             let post = await db.get().collection(collection.POST_COLLECTION).find({UserID:userId}).toArray()
             resolve(post)
         })
+    },
+    getFriendsList:(userId)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let document = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({User:userId})
+            let friends=[]
+            if(document)
+            {
+                if(document.Verified.length>0)
+                {
+                    friends = document.Verified
+                    
+                }
+            }
+            resolve(friends)
+        })
     }
 }

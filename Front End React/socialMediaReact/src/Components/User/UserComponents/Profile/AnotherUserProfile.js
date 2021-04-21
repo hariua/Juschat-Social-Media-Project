@@ -16,7 +16,7 @@ export default function AnotherUserProfile() {
                 ownerId:localStorage.getItem('userId')
             }
             axios.post(server + '/getAnotherUserProfile',data).then((response) => {
-                console.log(response);
+               
                 if(response.data.user.Friend){
                     setIsFriend(true)
                 }
@@ -87,8 +87,8 @@ export default function AnotherUserProfile() {
                         :<buton size="lg" onClick={()=>followUser(localStorage.getItem('userId'),localStorage.getItem('profileUser'))} className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
                             {userPost?<li className="float-left pr-2 h6">{userPost.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
-                            <li className="float-left pr-2 h6"> 5 following</li>
-                            <li className=" pr-2 h6">20 followers</li>
+                            <li className=" pr-2 h6"> 5 following</li>
+                            
                         </ul>
                         <em><p className="h5 text-justify" id="userDescription"></p></em>
                         <div className="float-left pr-5">
