@@ -68,7 +68,7 @@ export default function UserProfile() {
     const userPosts = () => {
         history.push('/userPost')
     }
-    const getFriends = (event) => {
+    const getFriends = () => {
         setFriendsBool(!friendBool)
     }
     const [post, setPost] = useState([])
@@ -86,8 +86,8 @@ export default function UserProfile() {
                     <div className="col-md-7 ">
                         <h2 className="pt-5  mt-3 " id="userName"></h2><Link to="/editProfile"><buton size="lg" className="btn btn-light border-primary m-2"><span className="h5">Edit Profile</span></buton></Link>
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
-                            {post ? <li className="float-left pr-2 h6">{post.length} posts</li> : <li className="float-left pr-2 h6">0 posts</li>}
-                            {friendsList.length>0?<li className=" pr-2 h6" onClick={(event) => getFriends(event)}>{friendsList.length} Friends</li>:<li className=" pr-2 h6">0 Friends</li>}
+                            {post ? <li  onClick={userPosts} style={{cursor:"pointer"}} className="float-left pr-2 h6">{post.length} posts</li> : <li className="float-left pr-2 h6">0 posts</li>}
+                            {friendsList.length>0?<li className=" pr-2 h6" style={{cursor:"pointer"}} onClick={() => getFriends()}>{friendsList.length} Friends</li>:<li className=" pr-2 h6">0 Friends</li>}
 
                         </ul>
                         <em><p className="h5 text-justify" id="userDescription"></p></em>
@@ -129,8 +129,8 @@ export default function UserProfile() {
 
                                             </div>
 
-                                            {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" onClick={userPosts} className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
-                                            {data.FileName.split('.').pop() === 'mp4' && <video onClick={userPosts} controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto" }}>
+                                            {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" onClick={userPosts} className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em",cursor:"pointer" }} src={server + "/PostFiles/" + data.FileName} />}
+                                            {data.FileName.split('.').pop() === 'mp4' && <video onClick={userPosts} controls style={{ objectFit: "", width: "21em", height: "18em", textAlign: "center", margin: "auto",cursor:"pointer" }}>
                                                 <source src={server + "/PostFiles/" + data.FileName}></source></video>}
 
                                             <div className=" row text-center">

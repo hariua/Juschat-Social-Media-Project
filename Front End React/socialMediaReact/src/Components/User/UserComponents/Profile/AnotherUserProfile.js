@@ -1,12 +1,13 @@
 
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Card } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Card, Modal } from 'react-bootstrap'
+import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import server from '../../../../Server'
 
 export default function AnotherUserProfile() {
+    let history = useHistory()
     useEffect(() => {
         let token = localStorage.getItem('jwt')
         if (token) {
@@ -37,6 +38,9 @@ export default function AnotherUserProfile() {
                 }
                 if (response.data.user.GoogleId || response.data.user.FacebookId) {
                     document.getElementById('proMob').hidden = true
+                }
+                if (response.data.friends.length > 0) {
+                    setAnotherFriendList(response.data.friends)
                 }
                 document.getElementById('userName').innerHTML = response.data.user.Name
                 document.getElementById('userMail').innerHTML = response.data.user.Email
@@ -71,6 +75,20 @@ export default function AnotherUserProfile() {
             }
         })
     }
+    const getFriendAnother = () => {
+        setAnotherFriendBool(!anotherFriendBool)
+    }
+    const searchDpError = (id)=>
+    {
+        document.getElementById(id+"dp").src = server+'/ProfileImages/DEFAULT.jpg'
+    }
+    const friendPage = (id) => {
+        localStorage.setItem("profileUser", id)
+        history.push('/userProfile')
+
+    }
+    const [anotherFriendList, setAnotherFriendList] = useState([])
+    const [anotherFriendBool, setAnotherFriendBool] = useState(false)
     const [userPost, setUserPost] = useState([])
     const [isFriend,setIsFriend] = useState(false)
     return (
@@ -87,7 +105,7 @@ export default function AnotherUserProfile() {
                         :<buton size="lg" onClick={()=>followUser(localStorage.getItem('userId'),localStorage.getItem('profileUser'))} className="btn btn-primary border-primary m-2"><span className="h5">Follow</span></buton>}
                         <ul className="pl-0 pt-3 " style={{ listStyleType: "none" }}>
                             {userPost?<li className="float-left pr-2 h6">{userPost.length} posts</li>:<li className="float-left pr-2 h6">0 posts</li>}
-                            <li className=" pr-2 h6"> 5 following</li>
+                            {anotherFriendList.length>0?isFriend==true?<li className=" pr-2 h6" style={{cursor:"pointer"}} onClick={() => getFriendAnother()}>{anotherFriendList.length} Friends</li>:<li className=" pr-2 h6">{anotherFriendList.length} Friends</li>:<li className=" pr-2 h6">0 Friends</li>}
                             
                         </ul>
                         <em><p className="h5 text-justify" id="userDescription"></p></em>
@@ -138,6 +156,34 @@ export default function AnotherUserProfile() {
 
 
                         </div>
+                        <Modal show={anotherFriendBool} onHide={getFriendAnother} aria-labelledby="contained-modal-title-vcenter"
+                            centered>
+                            <Modal.Header closeButton>
+                                <Modal.Title >Friends List</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {anotherFriendList.length > 0 ? anotherFriendList.map((data, index) => {
+                                    return (
+                                        <div key={index}>
+                                            <div className="row ml-3">
+                                                {data.userId!=localStorage.getItem('userId')?
+                                                <div style={{ display: "flex", flexDirection: "row" }}>
+                                                <img src={server + '/ProfileImages/' + data.userId + '.jpg'} id={index + "dp"} onError={() => searchDpError(index)}
+                                                    className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em", margin: "auto" }} ></img>
+                                                <h5 style={{ cursor: "pointer" }} onClick={()=>friendPage(data.userId)} className="m-1 ml-3"><b>{data.userName}</b></h5>
+                                            </div>:<div style={{ display: "flex", flexDirection: "row" }}>
+                                                <img src={server + '/ProfileImages/' + data.userId + '.jpg'} id={index + "dp"} onError={() => searchDpError(index)}
+                                                    className="img-fluid rounded-circle" style={{ width: "2.5em", height: "2.5em", margin: "auto" }} ></img>
+                                                <h5 style={{ cursor: "pointer" }} className="m-1 ml-3"><b>You</b></h5>
+                                            </div>}
+                                            </div>
+                                            <hr className="seperator bg-white"></hr>
+                                        </div>
+                                    )
+                                }) : <div></div>}
+                            </Modal.Body>
+
+                        </Modal>
 
 
                     </div>
