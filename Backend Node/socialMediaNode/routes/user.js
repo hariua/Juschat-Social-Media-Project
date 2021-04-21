@@ -363,7 +363,7 @@ router.post('/deletePost',authenticateToken,(req,res)=>{
 })
 router.post('/getUserPosts',authenticateToken,(req,res)=>
 {
-  userHelper.getUserPost(req.body.userId).then((posts)=>
+  userHelper.getOwnerPost(req.body.userId).then((posts)=>
   {
     res.send({post:posts,path:'/PostFiles/'})
   })

@@ -468,19 +468,19 @@ module.exports = {
             resolve(hashPost)
         })
     },
-    getUserPost: (userId) => {
-        let status = {}
-        return new Promise(async (resolve, reject) => {
-            let post = await db.get().collection(collection.POST_COLLECTION).find({ UserID: userId }).toArray()
-            if (post) {
-                status.post = post
-                resolve(status)
-            } else {
-                resolve(status)
-            }
+    // getUserPost: (userId) => {
+    //     let status = {}
+    //     return new Promise(async (resolve, reject) => {
+    //         let post = await db.get().collection(collection.POST_COLLECTION).find({ UserID: userId }).toArray()
+    //         if (post) {
+    //             status.post = post
+    //             resolve(status)
+    //         } else {
+    //             resolve(status)
+    //         }
 
-        })
-    },
+    //     })
+    // },
     searchUser: (word) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.USER_COLLECTION).createIndex({ Name: "text" }).then(async () => {
@@ -707,6 +707,30 @@ module.exports = {
                 }
             }
             resolve(friends)
+        })
+    },
+    getOwnerPost: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            
+            let post = await db.get().collection(collection.POST_COLLECTION).find({ UserID: userId }).toArray()
+            for(let i=0;i<post.length;i++)
+            {
+                let names=[]
+                let likePeople = post[i].Likes
+                for(let j=0;j<likePeople.length;j++)
+                {
+                    likePeople[j]=objectId(likePeople[j])
+                }
+               let people = await db.get().collection(collection.USER_COLLECTION).find({_id:{$in:likePeople}}).toArray()
+               for(let k=0;k<people.length;k++)
+               {
+                   names.push(people[k].Name)
+               }
+               post[i].LikeNames=names
+               names=null
+            
+            }
+            resolve(post)
         })
     }
 }

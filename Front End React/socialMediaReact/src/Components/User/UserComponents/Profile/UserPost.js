@@ -26,42 +26,42 @@ export default function UserPost() {
         })
         
     }, [])
-    function likeOld(userId, postId, index) {
-        document.getElementById(postId + "likeOld").hidden = true
-        document.getElementById(postId + "likeNew").hidden = false
-        let data = {
-            userId: userId,
-            postId: postId,
-            jwt: localStorage.getItem('jwt')
-        }
-        axios.post(server + '/addLike', data).then((res) => {
-            if (res.data.oldLike) {
-                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
-            } else if (res.data.newLike) {
-                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
-            }
+    // function likeOld(userId, postId, index) {
+    //     document.getElementById(postId + "likeOld").hidden = true
+    //     document.getElementById(postId + "likeNew").hidden = false
+    //     let data = {
+    //         userId: userId,
+    //         postId: postId,
+    //         jwt: localStorage.getItem('jwt')
+    //     }
+    //     axios.post(server + '/addLike', data).then((res) => {
+    //         if (res.data.oldLike) {
+    //             document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
+    //         } else if (res.data.newLike) {
+    //             document.getElementById(postId + "LikeCount").innerHTML = res.data.likeAdd
+    //         }
 
-        })
+    //     })
 
-    }
-    function likeNew(userId, postId, index) {
-        document.getElementById(postId + "likeOld").hidden = false
-        document.getElementById(postId + "likeNew").hidden = true
-        let data = {
-            userId: userId,
-            postId: postId,
-            jwt: localStorage.getItem('jwt')
-        }
-        axios.post(server + '/removeLike', data).then((res) => {
-            if (res.data.removeLike) {
-                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
-            } else if (res.data.noUser) {
-                document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
-            }
+    // }
+    // function likeNew(userId, postId, index) {
+    //     document.getElementById(postId + "likeOld").hidden = false
+    //     document.getElementById(postId + "likeNew").hidden = true
+    //     let data = {
+    //         userId: userId,
+    //         postId: postId,
+    //         jwt: localStorage.getItem('jwt')
+    //     }
+    //     axios.post(server + '/removeLike', data).then((res) => {
+    //         if (res.data.removeLike) {
+    //             document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
+    //         } else if (res.data.noUser) {
+    //             document.getElementById(postId + "LikeCount").innerHTML = res.data.likeRem
+    //         }
 
-        })
+    //     })
 
-    }
+    // }
     function commentSub(postId) {
         let data = {
             comment: comment,
@@ -102,6 +102,16 @@ export default function UserPost() {
             document.getElementById(postId + 'commentBtn').hidden = false
         }
     }
+    function likeDisp(postId, bool) {
+        setLikeNameBool(!bool)
+        console.log(postId, bool)
+        if (bool === false) {
+            document.getElementById(postId + 'likeName').hidden = true
+        } else {
+
+            document.getElementById(postId + 'likeName').hidden = false
+        }
+    }
     function hashClicks(hashTag) {
         localStorage.setItem('hash', hashTag)
         history.push('/hashPost')
@@ -123,6 +133,7 @@ export default function UserPost() {
     const [postUser, setPostUser] = useState([])
     const [path, setPath] = useState()
     const [comment, setComment] = useState()
+    const [likeNameBool,setLikeNameBool] = useState(false)
     return (
         <div className="homeBg">
             <div className="container-fluid w-75"  >
@@ -157,14 +168,26 @@ export default function UserPost() {
                                                 <Card.Text>
                                                     <div className="row">
                                                         <div className="col-md-1 col-2 col-sm-3">
-                                                            <h3 className="text-black float-left" id={data._id + "likeOld"}><i class="far fa-heart" onClick={() => likeOld(localStorage.getItem('userId'), data._id, index)} ></i></h3>
-                                                            <h3 className="text-danger float-left" id={data._id + "likeNew"} hidden><i class="fas fa-heart" onClick={() => likeNew(localStorage.getItem('userId'), data._id, index)} ></i></h3>
-                                                            {data.Likes ? <h5 id={data._id + 'LikeCount'} className=" p-2 ml-4 ">{data.Likes.length}</h5> : <h5 id={data._id + 'emptyLike'} className=" p-2 ml-4">0</h5>}
+                                                            <h3 className="text-black float-left" id={data._id + "likeOld"}><i class="far fa-heart" 
+                                                            // onClick={() => likeOld(localStorage.getItem('userId'), data._id, index)}
+                                                             ></i></h3>
+                                                            {/* <h3 className="text-danger float-left" id={data._id + "likeNew"} hidden><i class="fas fa-heart" onClick={() => likeNew(localStorage.getItem('userId'), data._id, index)} ></i></h3> */}
+                                                            
                                                         </div>
+                                                        {data.Likes.length>0 ? <h6 id={data._id + 'LikeCount'}  className=" p-2">{data.LikeNames[0]===localStorage.getItem('User')?<strong>You</strong>
+                                                        :<strong>{data.LikeNames[0]}</strong>}{data.LikeNames.length>1?<p>and <span style={{cursor:"pointer"}} onClick={() => likeDisp(data._id,likeNameBool)}>{data.LikeNames.length-1} others</span></p>:<p></p>}</h6>
+                                                        : <h5 id={data._id + 'emptyLike'} className=" p-2 ml-4">0</h5>}
                                                         <div className="col-md-3 col-2 col-sm-3">
                                                             <button className="btn " type="button" onClick={() => commentDisp(data._id, readMoreUser)}><span className="far fa-comment-alt h3"></span></button>
                                                         </div>
                                                     </div>
+                                                    <ul hidden className="animated fade-in-down" id={data._id+"likeName"} style={{listStyleType:"none",display:"flex",flexDirection:"row"}}>
+                                                                {data.LikeNames.length>1?data.LikeNames.map((likeName,index)=>{
+                                                                    return(
+                                                                        <li><em className="h6">{likeName},</em></li>
+                                                                    )
+                                                                }):<p></p>}
+                                                            </ul>
                                                     <h6 className="pb-2">{data.Description}</h6>
                                                     {data.HashTag ? data.HashTag.map((hash, ind) => {
                                                         return (
