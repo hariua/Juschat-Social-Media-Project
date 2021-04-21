@@ -2,7 +2,7 @@ import { Collapse } from '@material-ui/core'
 import { findAllByTestId } from '@testing-library/dom'
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Modal } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import server from '../../../../Server'
 import ReactCrop from 'react-image-crop';
@@ -29,16 +29,15 @@ export default function EditProfile() {
             axios.get(server + '/getProfileDetails?jwt=' + localStorage.getItem('jwt')).then((response) => {
 
                 if (response.data.imgUrl === '') {
-                    document.getElementById('editImg').src=server+'/ProfileImages/DEFAULT.jpg'
+                    document.getElementById('editImg').src = server + '/ProfileImages/DEFAULT.jpg'
                 }
                 else {
                     document.getElementById('editImg').src = server + response.data.imgUrl
-                    
+
                 }
-                if(response.data.user.GoogleId || response.data.user.FacebookId)
-                {
-                    document.getElementById('psdBTN').hidden=true
-                    document.getElementById('mobInput').hidden=true
+                if (response.data.user.GoogleId || response.data.user.FacebookId) {
+                    document.getElementById('psdBTN').hidden = true
+                    document.getElementById('mobInput').hidden = true
                 }
 
                 setName(response.data.user.Name)
@@ -60,6 +59,7 @@ export default function EditProfile() {
     const [picCollapse, setPicCollapse] = useState(false)
     const [passwordCollapse, setPasswordCollapse] = useState(false)
     const [dp, setDp] = useState(null)
+    const [editDpBool,setEditDpBool]=useState(false)
 
 
     const [src, setImgFile] = useState(null)
@@ -91,7 +91,8 @@ export default function EditProfile() {
     }
     function photoSubmit() {
         let image = res
-        let jwt = localStorage.getItem('jwt')
+        if(res){
+            let jwt = localStorage.getItem('jwt')
         let data = new FormData()
         data.append('img', image)
         data.append('jwt', jwt)
@@ -100,13 +101,16 @@ export default function EditProfile() {
                 'Content-Type': 'multipart/form-data;'
             }
         }).then((response) => {
-                console.log(response,"img res")
+            console.log(response, "img res")
             document.getElementById('editImg').src = server + response.data
             document.getElementById('editImg').hidden = false
             toast.success("Profile Picture Updated Successfully")
             history.push('/myProfile')
 
         })
+        }else{
+            toast("Please Select an Image")
+        }
     }
     function editProfile() {
         let data = {
@@ -188,91 +192,102 @@ export default function EditProfile() {
             crop.width,
             crop.height,
         );
-        
+
         const base64Image = canvas.toDataURL('image/jpeg')
         setRes(base64Image)
+    }
+    const editProfilePic=()=>
+    {
+        setEditDpBool(!editDpBool)
     }
     return (
         <div className="profileBg">
             <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid " style={style}>
-            <h3 className="text-center mb-3 mt-2">Edit Profile </h3>
-            <img src='' id="editImg" className="img-fluid rounded-circle" style={{ width: "10em", height: "10em", marginLeft: "40%", marginRight: "50%" }}></img>
-            <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setTextCollapse(!textCollapse)}>Edit Basic Details</button>
-            <Collapse in={textCollapse}>
-                <Form>
+                <h3 className="text-center mb-3 mt-2">Edit Profile </h3>
+                <img src='' id="editImg" onClick={editProfilePic} className="img-fluid rounded-circle" style={{ width: "10em", height: "10em", marginLeft: "40%", marginRight: "50%" }}></img>
+                <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setTextCollapse(!textCollapse)}>Edit Basic Details</button>
+                <Collapse in={textCollapse}>
+                    <Form>
 
 
-                    <div className="form-group">
-                        <label><h5>Name</h5></label>
-                        <input type="text" name="Name" id="Name" value={name} className="form-control" onChange={(event) => setName(event.target.value)} />
-                        {/* <p className="text-center text-danger" id="nameErr" ></p> */}
-                    </div>
+                        <div className="form-group">
+                            <label><h5>Name</h5></label>
+                            <input type="text" name="Name" id="Name" value={name} className="form-control" onChange={(event) => setName(event.target.value)} />
+                            {/* <p className="text-center text-danger" id="nameErr" ></p> */}
+                        </div>
 
-                    <div className="form-group">
-                        <label><h5>Description</h5></label>
-                        <input type="text" name="Description" value={description} required maxLength="50" id="Description" className="form-control" onChange={(event) => setDescription(event.target.value)} placeholder="Enter your Profile Description" />
-
-                    </div>
-                    <div className="form-group">
-                        <label><h5>Email</h5></label>
-                        <input type="text" name="Email" id="Email" className="form-control" readOnly />
-
-                    </div>
-                    <div id="mobInput" className="form-group">
-                        <label><h5>Mobile</h5></label>
-                        <input type="text" name="Mobile" id="Mobile" className="form-control" readOnly />
-                    </div>
-                    <Button variant="dark" id="EditBtn" type="button" size="lg" onClick={editProfile} className=" w-100">
-                        Submit
-                    </Button>
-
-                </Form>
-            </Collapse>
-            <button type="button" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setPicCollapse(!picCollapse)}>Change Profile Picture</button>
-            <Collapse in={picCollapse}>
-                <Form>
-                    <div className="form-group">
-                        <label><h5>Profile Picture</h5></label>
-                        <input type="file" name="ProfilePic" id="ProfilePic" className="form-control" onChange={photoChange} />
-                        <p className="text-center text-danger" id="ImgErr" ></p>
-                    </div>
-                    <div className="row">
-                        {src && <div className="col-6">
-
-                            <ReactCrop src={src} onImageLoaded={setImage} crop={crop} onChange={setCrop} />
-                            <Button className="btn btn-success " onClick={getCroppedImg}>Crop Image </Button>
+                        <div className="form-group">
+                            <label><h5>Description</h5></label>
+                            <input type="text" name="Description" value={description} required maxLength="50" id="Description" className="form-control" onChange={(event) => setDescription(event.target.value)} placeholder="Enter your Profile Description" />
 
                         </div>
-                        }
-                        {res && <div className="col-6">
-                            <img src={res} className="img-fluid" id="croppedImgPreview"></img>
-                        </div>}
-                    </div>
-                    <Button variant="dark" id="DpBtn" type="button" size="lg" className=" w-100" onClick={photoSubmit}>
-                        Submit
-                    </Button>
-                </Form>
+                        <div className="form-group">
+                            <label><h5>Email</h5></label>
+                            <input type="text" name="Email" id="Email" className="form-control" readOnly />
 
-            </Collapse>
-            <button type="button" id="psdBTN" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setPasswordCollapse(!passwordCollapse)}>Change Password</button>
-            <Collapse in={passwordCollapse}>
-                <Form>
-                    <div className="form-group">
-                        <label><h5>Current Password</h5></label>
-                        <input type="password" name="Password" id="Password" className="form-control" onChange={passwordChange} placeholder="Enter current password" />
-                        <p className="text-center text-danger" id="psdErr" ></p>
-                    </div>
-                    <div className="form-group">
-                        <label><h5>New Password</h5></label>
-                        <input type="password" name="NewPassword" id="NewPassword" className="form-control" onChange={passwordChange} placeholder="Enter new password" />
-                        <p className="text-center text-danger" id="passwordErr" ></p>
-                    </div>
-                    <Button variant="dark" id="passwordSubmit" onClick={passwordSubmit} type="button" size="lg" className=" w-100">
-                        Submit
+                        </div>
+                        <div id="mobInput" className="form-group">
+                            <label><h5>Mobile</h5></label>
+                            <input type="text" name="Mobile" id="Mobile" className="form-control" readOnly />
+                        </div>
+                        <Button variant="dark" id="EditBtn" type="button" size="lg" onClick={editProfile} className=" w-100">
+                            Submit
                     </Button>
-                </Form>
-            </Collapse>
-        </div>
+
+                    </Form>
+                </Collapse>
+                
+                <button type="button" id="psdBTN" className="btn btn-primary w-100 mt-3 mb-4" onClick={() => setPasswordCollapse(!passwordCollapse)}>Change Password</button>
+                <Collapse in={passwordCollapse}>
+                    <Form>
+                        <div className="form-group">
+                            <label><h5>Current Password</h5></label>
+                            <input type="password" name="Password" id="Password" className="form-control" onChange={passwordChange} placeholder="Enter current password" />
+                            <p className="text-center text-danger" id="psdErr" ></p>
+                        </div>
+                        <div className="form-group">
+                            <label><h5>New Password</h5></label>
+                            <input type="password" name="NewPassword" id="NewPassword" className="form-control" onChange={passwordChange} placeholder="Enter new password" />
+                            <p className="text-center text-danger" id="passwordErr" ></p>
+                        </div>
+                        <Button variant="dark" id="passwordSubmit" onClick={passwordSubmit} type="button" size="lg" className=" w-100">
+                            Submit
+                    </Button>
+                    </Form>
+                </Collapse>
+            </div>
+            <Modal show={editDpBool} onHide={editProfilePic} aria-labelledby="contained-modal-title-vcenter"
+                            centered>
+                            <Modal.Header closeButton>
+                                <Modal.Title >Change Profile Pic</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                            <Form>
+                        <div className="form-group">
+                            <label><h5>Profile Picture</h5></label><br></br>
+                            <label for="ProfilePic" className="btn btn-primary">Upload Image</label>
+                            <input type="file" name="ProfilePic" id="ProfilePic" className="form-control" style={{display:"none"}} onChange={photoChange} />
+                            <p className="text-center text-danger" id="ImgErr" ></p>
+                        </div>
+                        <div className="row">
+                            {src && <div className="col-6">
+
+                                <ReactCrop src={src} onImageLoaded={setImage} crop={crop} onChange={setCrop} />
+                                <Button className="btn btn-success w-100 mb-2" onClick={getCroppedImg}>Crop Image </Button>
+
+                            </div>
+                            }
+                            {res && <div className="col-6">
+                                <img src={res} className="img-fluid" id="croppedImgPreview"></img>
+                            </div>}
+                        </div>
+                        <Button variant="dark" id="DpBtn" type="button" size="lg" className=" w-100" onClick={photoSubmit}>
+                            Submit
+                    </Button>
+                    </Form>
+                            </Modal.Body>
+
+                        </Modal>
         </div>
     )
 }
