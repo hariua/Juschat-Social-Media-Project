@@ -732,5 +732,16 @@ module.exports = {
             }
             resolve(post)
         })
+    },
+    getUserFriends:(id)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let friendList=[]
+            let friend = await db.get().collection(collection.FRIENDS_COLLECTION).findOne({ User:id })
+            friendList = friend.Verified
+            resolve(friendList)
+            
+        })
     }
 }

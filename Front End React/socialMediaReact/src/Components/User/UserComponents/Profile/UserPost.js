@@ -135,10 +135,10 @@ export default function UserPost() {
     const [comment, setComment] = useState()
     const [likeNameBool,setLikeNameBool] = useState(false)
     return (
-        <div className="homeBg">
-            <div className="container-fluid w-75"  >
+        <div className="profileBg">
+            <div className="container"  >
                 <div className="row">
-                    <div className="col-md-12 col-lg-8 container homeCompo">
+                    <div className="col-md-8 col-12 col-lg-8 container homeCompo">
                         <div className="feed" >
                             {postUser.length > 0 ? postUser.map((data, index) => {
                                 return (

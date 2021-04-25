@@ -368,4 +368,11 @@ router.post('/getUserPosts',authenticateToken,(req,res)=>
     res.send({post:posts,path:'/PostFiles/'})
   })
 })
+router.post('/getChatUsers',authenticateToken,(req,res)=>
+{
+  userHelper.getUserFriends(req.body.userId).then((response)=>
+  {
+    res.send(response)
+  })
+})
 module.exports = router;

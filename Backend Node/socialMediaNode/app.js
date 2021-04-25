@@ -1,4 +1,5 @@
 var createError = require('http-errors');
+var http = require('http');
 var express = require('express');
 var path = require('path');
 var fileupload = require('express-fileupload')
@@ -8,10 +9,37 @@ var logger = require('morgan');
 var cors = require('cors')
 var dotenv = require('dotenv').config()
 var db = require('./connection/connection')
+var chatUser = require('./helper/chatUser')
+var chatMessage = require('./helper/chatMessage') 
+
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 
+var socketio = require('socket.io')
 var app = express();
+var server = http.createServer(app)
+var port = 3001
+app.set('port',port)
+server.listen(port)
+const io = socketio(server,{
+  cors:{
+    origin:"*"
+  }
+})
+
+io.on('connection',socket=>
+{
+  
+  socket.on('joinChat',async({sender,receiver,senderName,receiverName})=>{
+    const person = chatUser.userJoin(socket.id, sender, receiver,senderName,receiverName)    
+  })
+  socket.on('chatMessage',msg=>     
+    {
+      let user = chatUser.getCurrentUser(socket.id)
+      io.emit('chatResponse',chatMessage.chatMessage(msg,user.senderName,user.sender,user.receiverName,user.receiver))
+    })
+  
+})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');

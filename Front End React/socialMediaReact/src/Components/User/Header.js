@@ -170,17 +170,17 @@ export default function Header() {
                         </Nav.Link>
                         <Nav.Link>
                             <h3 title="Add Friends" onClick={(event) => friendRequestClick(event)} className="pr-3 mr-3">
-                                <i className="fas fa-users "></i>
+                                <i className="fas fa-users text-light"></i>
                             </h3>
                         </Nav.Link>
                         <Nav.Link>
-                            <h3 title="Chat" className="pr-3 mr-3">
-                                <i className="far fa-comment-alt"></i>
-                            </h3>
+                            <Link to="/chat"><h3 title="Chat" className="pr-3 mr-3">
+                                <i className="far fa-comment-alt text-light"></i>
+                            </h3></Link>
                         </Nav.Link>
                         <Nav.Link>
                             <h3 title="Notifications" onClick={(event) => notificationClick(event)} className="pr-3 mr-3">
-                                <i className="far fa-bell"></i>
+                                <i className="far fa-bell text-light"></i>
                             </h3>
                         </Nav.Link>
                         <Nav.Link>
