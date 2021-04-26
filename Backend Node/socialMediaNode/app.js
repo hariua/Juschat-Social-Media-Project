@@ -35,13 +35,20 @@ io.on('connection',socket=>
   })
   socket.on('chatMessage',msg=>     
     {
+      var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); 
+     let urlCheck = !!pattern.test(msg)
       let user = chatUser.getCurrentUser(socket.id)
-      io.emit('chatResponse',chatMessage.chatMessage(msg,user.senderName,user.sender,user.receiverName,user.receiver))
+      io.emit('chatResponse',chatMessage.chatMessage(msg,user.senderName,user.sender,user.receiverName,user.receiver,urlCheck))
     })
    
 })
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views')); 
 app.set('view engine', 'hbs');
 app.use(
   session({

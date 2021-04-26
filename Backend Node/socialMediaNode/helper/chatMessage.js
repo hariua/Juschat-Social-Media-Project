@@ -1,6 +1,6 @@
 let moment = require('moment')
 module.exports={
-    chatMessage:(msg,senderName,senderId,receiverName,receiverId)=>
+    chatMessage:(msg,senderName,senderId,receiverName,receiverId,urlCheck)=>
     {
         let userData={}
         let d = new Date()
@@ -10,10 +10,11 @@ module.exports={
             Message:msg, 
             senderName:senderName,
             senderId:senderId,
-            receiverName:receiverName,
+            receiverName:receiverName, 
             receiverId:receiverId,
             date:date,
-            time:time
+            time:time,
+            url:urlCheck
         }
         return userData
         

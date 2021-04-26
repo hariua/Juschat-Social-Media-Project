@@ -46,10 +46,14 @@ export default function Chat() {
             socket.emit('chatMessage', chatInputMessage)
         }
         document.getElementById('chatInput').value = ""
+        let chatScroll = document.getElementById('chatScroll')
+        chatScroll.scrollTop=chatScroll.scrollHeight
         
     }
     const receivedMessage = (message) => {
         setMessages(oldMsgs => [...oldMsgs, message])
+        let chatScroll = document.getElementById('chatScroll')
+        chatScroll.scrollTop=chatScroll.scrollHeight
     }
     return (
         <div >
@@ -92,7 +96,7 @@ export default function Chat() {
                         <div className="row" >
                             <div className="col-12 alert p-3 alert-light border-primary h4" style={{ position: "fixed", zIndex: "10", width: "100%", marginTop: "-1.8%", marginLeft: "-0.8%" }}>{chatUserName}</div>
                         </div>
-                        <div className="msg_history mt-5">
+                        <div id="chatScroll" className="msg_history mt-5">
                             {messages.length > 0 ? messages.map((data, index) => {
                                 return (
                                     <div key={index}>
@@ -100,12 +104,12 @@ export default function Chat() {
                                             <div className="incoming_msg_img"> <img className="img-fluid rounded-circle" src={server+'/ProfileImages/'+data.senderId+".jpg"} alt="sunil"></img> </div>
                                             <div className="received_msg">
                                                 <div className="received_withd_msg">
-                                                    <p>{data.Message}</p>
+                                                {data.url===true?<a style={{textDecoration:"none"}} href={"https://"+data.Message} target="_blank"><p>{data.Message}</p></a>:<p>{data.Message}</p>}
                                                     <span className="time_date"> {data.time}   |    {data.date}</span></div>
                                             </div>
                                         </div> : data.senderId==localStorage.getItem('userId')?<div className="outgoing_msg">
                                             <div className="sent_msg">
-                                                <p>{data.Message}</p>
+                                            {data.url===true?<a style={{textDecoration:"none"}} href={"https://"+data.Message} target="_blank"><p>{data.Message}</p></a>:<p>{data.Message}</p>}
                                                 <span className="time_date"> {data.time}   |    {data.date}</span> </div>
                                         </div>:<div></div>}
                                     </div>
