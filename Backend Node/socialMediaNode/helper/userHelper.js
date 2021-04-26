@@ -743,5 +743,14 @@ module.exports = {
             resolve(friendList)
             
         })
+    },
+    getChatMessages:(senderId,receiverId)=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let chat=[]
+            chat = await db.get().collection(collection.CHAT_COLLECTION).find({senderId:{$in:[senderId,receiverId]},receiverId:{$in:[senderId,receiverId]}}).toArray()
+            resolve(chat)
+        })
     }
 }

@@ -26,12 +26,9 @@ export default function Chat() {
         axios.post(server + '/getChatUsers', data).then((response) => {
             console.log(response);
             setFriendList(response.data)
-
         })
         socket.on('chatResponse', data => {
-            console.log(data,"kjhsad");
             receivedMessage(data)
-            
         })
     }, [])
     const userClick = (receiver, receiverName, sender, senderName) => {
@@ -39,28 +36,37 @@ export default function Chat() {
         socket.emit("joinChat", ({ sender, receiver, senderName, receiverName }))
         setChatUserId(receiver)
         setChatUserName(receiverName)
-        document.getElementById('chatHome').hidden=false
+        document.getElementById('chatHome').hidden = false
+        let data={
+            jwt:localStorage.getItem('jwt'),
+            senderId:sender,
+            receiverId:receiver
+        }
         setMessages([])
+        axios.post(server+'/getChatMessages',data).then((response)=>
+        {
+            console.log(response);
+            setMessages(response.data)
+        })
     }
     const chatSubmit = () => {
-        let data={
-            msg:chatInputMessage,
-            senderId:localStorage.getItem('userId'),
-            receiverId:chatUserId
+        let data = {
+            msg: chatInputMessage,
+            senderId: localStorage.getItem('userId'),
+            receiverId: chatUserId
         }
         if (chatInputMessage.length > 0) {
-            
             socket.emit('chatMessage', data)
         }
         document.getElementById('chatInput').value = ""
         let chatScroll = document.getElementById('chatScroll')
-        chatScroll.scrollTop=chatScroll.scrollHeight
-        
+        chatScroll.scrollTop = chatScroll.scrollHeight
+
     }
     const receivedMessage = (message) => {
         setMessages(oldMsgs => [...oldMsgs, message])
         let chatScroll = document.getElementById('chatScroll')
-        chatScroll.scrollTop=chatScroll.scrollHeight
+        chatScroll.scrollTop = chatScroll.scrollHeight
     }
     return (
         <div >
@@ -71,7 +77,7 @@ export default function Chat() {
                             <div className="recent_heading ">
                                 <h3 className="text-secondary ">Friends</h3>
                             </div>
-                           
+
                         </div>
                         <div className="inbox_chat scroll">
                             {friendList.length > 0 ? friendList.map((data, index) => {
@@ -103,18 +109,18 @@ export default function Chat() {
                             {messages.length > 0 ? messages.map((data, index) => {
                                 return (
                                     <div key={index}>
-                                        {data.senderId == chatUserId && data.receiverId==localStorage.getItem('userId') ? <div className="incoming_msg">
-                                            <div className="incoming_msg_img"> <img className="img-fluid rounded-circle" src={server+'/ProfileImages/'+data.senderId+".jpg"}></img> </div>
+                                        {data.senderId == chatUserId && data.receiverId == localStorage.getItem('userId') ? <div className="incoming_msg">
+                                            <div className="incoming_msg_img"> <img className="img-fluid rounded-circle" src={server + '/ProfileImages/' + data.senderId + ".jpg"}></img> </div>
                                             <div className="received_msg">
                                                 <div className="received_withd_msg">
-                                                {data.url===true?<a style={{textDecoration:"none"}} href={"https://"+data.Message} target="_blank"><p>{data.Message}</p></a>:<p>{data.Message}</p>}
+                                                    {data.url === true ? <a style={{ textDecoration: "none" }} href={"https://" + data.Message} target="_blank"><p>{data.Message}</p></a> : <p>{data.Message}</p>}
                                                     <span className="time_date"> {data.time}   |    {data.date}</span></div>
                                             </div>
-                                        </div> : data.senderId==localStorage.getItem('userId')?<div className="outgoing_msg">
+                                        </div> : data.senderId == localStorage.getItem('userId') ? <div className="outgoing_msg">
                                             <div className="sent_msg">
-                                            {data.url===true?<a style={{textDecoration:"none"}} href={"https://"+data.Message} target="_blank"><p>{data.Message}</p></a>:<p>{data.Message}</p>}
+                                                {data.url === true ? <a style={{ textDecoration: "none" }} href={"https://" + data.Message} target="_blank"><p>{data.Message}</p></a> : <p>{data.Message}</p>}
                                                 <span className="time_date"> {data.time}   |    {data.date}</span> </div>
-                                        </div>:<div></div>}
+                                        </div> : <div></div>}
                                     </div>
                                 )
                             }) : <div></div>}

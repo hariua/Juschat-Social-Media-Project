@@ -375,4 +375,11 @@ router.post('/getChatUsers',authenticateToken,(req,res)=>
     res.send(response)
   })
 })
+router.post('/getChatMessages',authenticateToken,(req,res)=>
+{
+  userHelper.getChatMessages(req.body.senderId,req.body.receiverId).then((response)=>
+  {
+    res.send(response)
+  })
+})
 module.exports = router;

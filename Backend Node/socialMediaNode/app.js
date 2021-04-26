@@ -9,6 +9,7 @@ var logger = require('morgan');
 var cors = require('cors')
 var dotenv = require('dotenv').config()
 var db = require('./connection/connection')
+var collection = require('./connection/collection')
 var chatUser = require('./helper/chatUser')
 var chatMessage = require('./helper/chatMessage')
 
@@ -33,8 +34,6 @@ io.on('connection', socket => {
     const person = chatUser.userJoin(socket.id, sender, receiver, senderName, receiverName)
   })
   socket.on('chatMessage', data => {
-    console.log(data);
-    // let user = { id: "", sender: "", receiver: "", senderName: "", receiverName: "" }
     var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
       '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -42,8 +41,9 @@ io.on('connection', socket => {
       '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
       '(\\#[-a-z\\d_]*)?$', 'i');
     let urlCheck = !!pattern.test(data.msg) 
-    
-    io.emit('chatResponse', chatMessage.chatMessage(data.msg, data.senderId, data.receiverId, urlCheck))
+    let resp = chatMessage.chatMessage(data.msg, data.senderId, data.receiverId, urlCheck)
+    db.get().collection(collection.CHAT_COLLECTION).insertOne(resp)
+    io.emit('chatResponse',resp )
   })
 
 })

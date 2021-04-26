@@ -2,5 +2,6 @@ module.exports={
     USER_COLLECTION:'user',
     POST_COLLECTION:'posts',
     FRIENDS_COLLECTION:'friends',
-    NOTIFICATION_COLLECTION:'notification'
+    NOTIFICATION_COLLECTION:'notification',
+    CHAT_COLLECTION:'chat'
 }
