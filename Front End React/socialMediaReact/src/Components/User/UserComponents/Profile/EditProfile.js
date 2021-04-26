@@ -201,7 +201,7 @@ export default function EditProfile() {
         setEditDpBool(!editDpBool)
     }
     return (
-        <div className="profileBg">
+        <div className="editProfileBg">
             <div className=" bg-light col-md-7  pl-5 pr-5 pt-3 pb-3 container-fluid " style={style}>
                 <h3 className="text-center mb-3 mt-2">Edit Profile </h3>
                 <img src='' id="editImg" onClick={editProfilePic} className="img-fluid rounded-circle" style={{ width: "10em", height: "10em", marginLeft: "40%", marginRight: "50%",cursor:"pointer" }}></img>

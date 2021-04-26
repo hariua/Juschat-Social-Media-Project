@@ -132,7 +132,7 @@ export default function Header() {
 
 
     return (
-        <div style={{position:"fixed",zIndex:"10",width:"100%"}}>
+        <div style={{position:"fixed",zIndex:"100",width:"100%"}}>
             <Navbar
                 collapseOnSelect
                 expand="lg"

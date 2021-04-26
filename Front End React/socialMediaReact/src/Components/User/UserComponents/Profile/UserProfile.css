@@ -5,3 +5,10 @@
   padding-top: 2%;
   padding-bottom: 8%;
 }
+.editProfileBg {
+  background-image: url(./scott-graham-5fNmWej4tAA-unsplash.jpg);
+  background-size: cover;
+  background-position: center;
+  padding-top: 5%;
+  padding-bottom: 2%;
+}

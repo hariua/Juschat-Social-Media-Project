@@ -35,6 +35,7 @@ export default function Chat() {
         })
     }, [])
     const userClick = (receiver, receiverName, sender, senderName) => {
+        console.log("userchanged");
         socket.emit("joinChat", ({ sender, receiver, senderName, receiverName }))
         setChatUserId(receiver)
         setChatUserName(receiverName)
@@ -42,8 +43,14 @@ export default function Chat() {
         setMessages([])
     }
     const chatSubmit = () => {
+        let data={
+            msg:chatInputMessage,
+            senderId:localStorage.getItem('userId'),
+            receiverId:chatUserId
+        }
         if (chatInputMessage.length > 0) {
-            socket.emit('chatMessage', chatInputMessage)
+            
+            socket.emit('chatMessage', data)
         }
         document.getElementById('chatInput').value = ""
         let chatScroll = document.getElementById('chatScroll')
@@ -61,14 +68,10 @@ export default function Chat() {
                 <div className="inbox_msg">
                     <div className="inbox_people" >
                         <div className="headind_srch">
-                            <div className="recent_heading">
-                                <h4>Friends</h4>
+                            <div className="recent_heading ">
+                                <h3 className="text-secondary ">Friends</h3>
                             </div>
-                            <div className="srch_bar">
-                                <div className="stylish-input-group">
-                                    <input type="text" className="search-bar form-control" placeholder="Search" ></input>
-                                </div>
-                            </div>
+                           
                         </div>
                         <div className="inbox_chat scroll">
                             {friendList.length > 0 ? friendList.map((data, index) => {
@@ -94,14 +97,14 @@ export default function Chat() {
                     </div>
                     <div className="mesgs" id="chatHome" hidden>
                         <div className="row" >
-                            <div className="col-12 alert p-3 alert-light border-primary h4" style={{ position: "fixed", zIndex: "10", width: "100%", marginTop: "-1.8%", marginLeft: "-0.8%" }}>{chatUserName}</div>
+                            <div className="col-12 p-3 bg-secondary" style={{ position: "fixed", zIndex: "10", width: "100%", marginTop: "-1.8%", marginLeft: "-0.8%" }}><p className="h4 text-white">{chatUserName}</p></div>
                         </div>
                         <div id="chatScroll" className="msg_history mt-5">
                             {messages.length > 0 ? messages.map((data, index) => {
                                 return (
                                     <div key={index}>
-                                        {data.senderId == chatUserId ? <div className="incoming_msg">
-                                            <div className="incoming_msg_img"> <img className="img-fluid rounded-circle" src={server+'/ProfileImages/'+data.senderId+".jpg"} alt="sunil"></img> </div>
+                                        {data.senderId == chatUserId && data.receiverId==localStorage.getItem('userId') ? <div className="incoming_msg">
+                                            <div className="incoming_msg_img"> <img className="img-fluid rounded-circle" src={server+'/ProfileImages/'+data.senderId+".jpg"}></img> </div>
                                             <div className="received_msg">
                                                 <div className="received_withd_msg">
                                                 {data.url===true?<a style={{textDecoration:"none"}} href={"https://"+data.Message} target="_blank"><p>{data.Message}</p></a>:<p>{data.Message}</p>}
