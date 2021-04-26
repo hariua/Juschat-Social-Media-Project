@@ -29,7 +29,7 @@ const io = socketio(server,{
 
 io.on('connection',socket=>
 {
-  
+  console.log("A user connected");
   socket.on('joinChat',async({sender,receiver,senderName,receiverName})=>{
     const person = chatUser.userJoin(socket.id, sender, receiver,senderName,receiverName)    
   })
@@ -38,7 +38,7 @@ io.on('connection',socket=>
       let user = chatUser.getCurrentUser(socket.id)
       io.emit('chatResponse',chatMessage.chatMessage(msg,user.senderName,user.sender,user.receiverName,user.receiver))
     })
-  
+   
 })
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

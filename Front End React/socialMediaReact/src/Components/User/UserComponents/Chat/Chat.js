@@ -28,6 +28,11 @@ export default function Chat() {
             setFriendList(response.data)
 
         })
+        socket.on('chatResponse', data => {
+            console.log(data,"kjhsad");
+            receivedMessage(data)
+            
+        })
     }, [])
     const userClick = (receiver, receiverName, sender, senderName) => {
         socket.emit("joinChat", ({ sender, receiver, senderName, receiverName }))
@@ -41,11 +46,7 @@ export default function Chat() {
             socket.emit('chatMessage', chatInputMessage)
         }
         document.getElementById('chatInput').value = ""
-        socket.on('chatResponse', data => {
-            receivedMessage(data)
-            
-        })
-
+        
     }
     const receivedMessage = (message) => {
         setMessages(oldMsgs => [...oldMsgs, message])
