@@ -13,7 +13,10 @@ import server from '../../../../Server'
 
 const AdminDashboard = () => {
     let history = useHistory()
-    const [dashboardData,setDashboardData] = useState()
+    const [allUsers,setAllUsers] = useState()
+    const [reportedUsers,setReportedUsers] = useState()
+    const [allPosts,setAllPosts] = useState()
+    const [reportedPosts,setReportedPosts] = useState()
     useEffect(()=>
     {
         let token = localStorage.getItem('jwt1')
@@ -23,8 +26,11 @@ const AdminDashboard = () => {
         }
         axios.get(server+'/admin/adminDashboardData?jwt1='+token).then((response)=>
         {
-            console.log(response);
-            setDashboardData(response.data)
+            setAllUsers(response.data.allUsers)
+            setAllPosts(response.data.allPosts)
+            setReportedUsers(response.data.reportedUsers)
+            setReportedPosts(response.data.reportedPosts)
+
         })
     },[])
 
@@ -35,10 +41,10 @@ const AdminDashboard = () => {
          <CRow>
         <CCol sm="6" lg="3">
           <CWidgetDropdown style={{backgroundColor: "rgb(1,3,70)",
-background: "linear-gradient(90deg, rgba(1,3,70,1) 0%, rgba(5,27,166,1) 52%)",border:"none"}}
+            background: "linear-gradient(90deg, rgba(1,3,70,1) 0%, rgba(5,27,166,1) 52%)",border:"none"}}
             color="blue"
             className="h5"
-            header="16"
+            header={allUsers}
             text="Total Users"
             footerSlot={
               <ChartLineSimple
@@ -57,9 +63,9 @@ background: "linear-gradient(90deg, rgba(1,3,70,1) 0%, rgba(5,27,166,1) 52%)",bo
   
         <CCol sm="6" lg="3">
           <CWidgetDropdown style={{backgroundColor: "rgb(19,142,0)",
-background: "linear-gradient(90deg, rgba(19,142,0,1) 0%, rgba(48,235,4,1) 100%)",border:"none"}}
+            background: "linear-gradient(90deg, rgba(19,142,0,1) 0%, rgba(48,235,4,1) 100%)",border:"none"}}
             color="gradient-info"
-            header="3"
+            header={reportedUsers}
             className="h5"
             text="Blocked Users"
             footerSlot={
@@ -81,9 +87,9 @@ background: "linear-gradient(90deg, rgba(19,142,0,1) 0%, rgba(48,235,4,1) 100%)"
   
         <CCol sm="6" lg="3">
           <CWidgetDropdown style={{backgroundColor: "rgb(242,188,6)",
-background: "linear-gradient(90deg, rgba(242,188,6,1) 0%, rgba(255,244,5,1) 100%)",border:"none"}}
+            background: "linear-gradient(90deg, rgba(242,188,6,1) 0%, rgba(255,244,5,1) 100%)",border:"none"}}
             color="gradient-warning"
-            header="10"
+            header={allPosts}
             className="h5"
             text="Total Posts"
             footerSlot={
@@ -105,9 +111,9 @@ background: "linear-gradient(90deg, rgba(242,188,6,1) 0%, rgba(255,244,5,1) 100%
   
         <CCol sm="6" lg="3">
           <CWidgetDropdown style={{backgroundColor: "rgb(242,6,6)",
-background: "linear-gradient(90deg, rgba(242,6,6,1) 0%, rgba(255,5,149,100%)",border:"none"}}
+            background: "linear-gradient(90deg, rgba(242,6,6,1) 0%, rgba(255,5,149,100%)",border:"none"}}
             color="gradient-danger"
-            header="5"
+            header={reportedPosts}
             className="h5"
             text="Reported Posts"
             footerSlot={

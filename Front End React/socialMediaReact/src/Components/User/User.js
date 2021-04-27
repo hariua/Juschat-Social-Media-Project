@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import Footer from './Footer'
 import Header from './Header'
 import Chat from './UserComponents/Chat/Chat'
 import AddPost from './UserComponents/Create Post/AddPost'
@@ -22,15 +23,15 @@ export default function User() {
             <Router>
                 <Route path='/' exact><SignIn /></Route>
                 <Route path="/userSignup"><SignUp /></Route>
-                <Route path ="/home"><Header /><Home /></Route>
+                <Route path ="/home"><Header /><Home /><Footer /></Route>
                 <Route path ="/otpSubmit"><OtpSubmit /></Route>
-                <Route path="/myProfile"><Header /><UserProfile /></Route>
-                <Route path="/editProfile"><Header /><EditProfile /></Route>
-                <Route path="/userProfile"><Header /><AnotherUserProfile /></Route>
-                <Route path="/addPost"><Header /><AddPost /></Route>
-                <Route path="/hashPost"><Header /><HashPost /></Route>
+                <Route path="/myProfile"><Header /><UserProfile /><Footer /></Route>
+                <Route path="/editProfile"><Header /><EditProfile /><Footer /></Route>
+                <Route path="/userProfile"><Header /><AnotherUserProfile /><Footer /></Route>
+                <Route path="/addPost"><Header /><AddPost /><Footer /></Route>
+                <Route path="/hashPost"><Header /><HashPost /><Footer /></Route>
                 <Route path="/chat"><Header /><Chat /></Route>
-                <Route path='/userPost'><Header /><UserPost /></Route>
+                <Route path='/userPost'><Header /><UserPost /><Footer /></Route>
                 
                 
                 
