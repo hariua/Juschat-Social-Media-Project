@@ -108,5 +108,23 @@ module.exports={
                 resolve()
             })
         })
+    },
+    getDashboardData:()=>
+    {
+        return new Promise(async(resolve,reject)=>
+        {
+            let allPosts = await db.get().collection(collection.POST_COLLECTION).find().count()
+            let allUsers = await db.get().collection(collection.USER_COLLECTION).find().count()
+
+            let reportedPosts = await db.get().collection(collection.POST_COLLECTION).find({FileName:"REPORT.jpg"}).count()
+            let reportedUsers = await db.get().collection(collection.USER_COLLECTION).find({Status:true}).count()
+            let data={
+                allPosts:allPosts,
+                allUsers:allUsers,
+                reportedPosts:reportedPosts,
+                reportedUsers:reportedUsers
+            }
+            resolve(data)
+        })
     }
 }

@@ -50,17 +50,17 @@ export default function AllUsers() {
         })
     }
     return (
-        <div className="row container-fluid">
-            <div className="col-md-2"></div>
-            <div className=" col-xl-10 float-right">
+        <div className="container-fluid" style={{margin:"auto"}}>
+            <div className="col-md-12 col-lg-10 float-right" >
 
-                <Table striped bordered hover>
+                <Table striped bordered hover responsive>
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Mobile</th>
+                            <th>Block User</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,7 +72,7 @@ export default function AllUsers() {
                                     <td>{item.Email}</td>
                                     
                                     {item.Mobile?<td>{item.Mobile}</td>:item.GoogleLogin?<td>Google User</td>:item.FacebookLogin?<td>Facebook User</td>:<td></td>}
-                                    <td><Link to="#"><Button id={item._id + "b"} className="btn btn-danger" onClick={blockBtn} type="btn">Block</Button></Link>
+                                    <td style={{margin:"auto"}}><Link to="#"><Button id={item._id + "b"} className="btn btn-danger" onClick={blockBtn} type="btn">Block</Button></Link>
                                         <Link to="#"><Button id={item._id + "u"} className="btn btn-primary" onClick={unblockBtn} type="btn" hidden>Unblock</Button> </Link>
                                     </td>
                                 </tr>

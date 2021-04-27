@@ -84,4 +84,10 @@ router.post('/reportPostAdmin',authenticateAdmin,(req,res)=>
     res.send("PostRemoved")
   })
 })
+router.get('/adminDashboardData',authenticateAdmin,(req,res)=>{
+  adminHelper.getDashboardData().then((response)=>
+  {
+    res.send(response) 
+  })
+})
 module.exports = router;

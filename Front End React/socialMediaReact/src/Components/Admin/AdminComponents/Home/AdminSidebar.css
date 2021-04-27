@@ -1,5 +1,4 @@
 body {
-    overflow-x: hidden;
  }
 
 /* Toggle Styles */
@@ -93,10 +92,15 @@ body {
     color: #fff;
     background: none;
 }
-
-@media(min-width:1350px) {
+#btnClick{
+    background-color: black;
+}
+@media(min-width:750px) {
     #wrapper {
         padding-left: 250px;
+    }
+    #btnClick{
+        background-color: white;
     }
 
     #wrapper.toggled {

@@ -35,9 +35,8 @@ export default function ReportedPosts() {
    }
     const [reportPost,setReportPost] = useState([])
     return (
-        <div className="row container-fluid overflow-auto">
-            <div className="col-md-2"></div>
-            <div className=" col-xl-10 float-right">
+        <div className=" container-fluid overflow-auto" style={{margin:"auto"}}>
+            <div className="col-lg-10 col-md-12 float-right">
 
                 <Table striped bordered hover>
                     <thead>

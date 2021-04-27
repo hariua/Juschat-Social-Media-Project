@@ -15,9 +15,8 @@ export default function AllPosts() {
     },[])
     
     return (
-        <div className="row container-fluid overflow-auto">
-            <div className="col-md-2"></div>
-            <div className=" col-xl-10 float-right">
+        <div className=" container-fluid overflow-auto" style={{margin:"auto"}}>
+            <div className=" col-md-12 col-lg-10 float-right">
 
                 <Table striped bordered hover>
                     <thead>

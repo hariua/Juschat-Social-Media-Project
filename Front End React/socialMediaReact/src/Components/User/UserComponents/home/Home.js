@@ -209,7 +209,7 @@ export default function Home() {
 
                                             </Card.Header>
                                             {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ width: "50em", height: "30em" }} src={path + data.FileName} />}
-                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ width: "45.5em", textAlign: "center", height: "30em" }}>
+                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ width: "35em", textAlign: "center", height: "30em" }}>
                                                 <source src={path + data.FileName}></source></video>}
 
 
