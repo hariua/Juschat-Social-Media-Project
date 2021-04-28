@@ -5,7 +5,7 @@ import { Card, Modal } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import server from '../../../../Server'
-
+import './UserProfile.css'
 export default function AnotherUserProfile() {
     let history = useHistory()
     useEffect(() => {
@@ -97,10 +97,10 @@ export default function AnotherUserProfile() {
     const [alreadyRequested,setAlreadyRequested] = useState(false)
     return (
         <div className="profileBg">
-            <div className="container-fluid w-75 mt-5">
+            <div className="container-fluid mt-5 userProfileHead">
                 <div className="row text-white">
                     <div className="col-md-4 ">
-                        <img src="" id="userDp" className="img-fluid rounded-circle m-5 " style={{ height: "18em", width: "18em" }}></img>
+                        <img src="" id="userDp" className="img-fluid rounded-circle m-5 profileDp" ></img>
                     </div>
                     <div className="col-md-1"></div>
                     <div className="col-md-7 ">
@@ -139,7 +139,7 @@ export default function AnotherUserProfile() {
                                         <Card className="mx-auto alert border-dark" key={index} >
 
                                             {data.FileName.split('.').pop() === 'jpg' && <Card.Img variant="top" className="img-fluid mx-auto" style={{ objectFit: "", width: "28em", height: "18em" }} src={server + "/PostFiles/" + data.FileName} />}
-                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ objectFit: "", width: "20em", height: "18em", textAlign: "center", margin: "auto" }}>
+                                            {data.FileName.split('.').pop() === 'mp4' && <video controls style={{ objectFit: "", width: "18em", height: "18em", textAlign: "center", margin: "auto" }}>
                                                 <source src={server + "/PostFiles/" + data.FileName}></source></video>}
 
                                             <div className=" row text-center">

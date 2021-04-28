@@ -12,3 +12,110 @@
   padding-top: 5%;
   padding-bottom: 2%;
 }
+.editProfileBox{
+
+    margin: auto;
+    margin-top: 7%;
+    margin-bottom: 4%;
+    opacity:  0.8;
+    border-radius: 2em 0em;
+    border: 3px solid blue;
+    width: 500px;
+
+
+}
+.editProfileDp{
+  margin-left: 30%;
+  margin-right: 30%;
+  width: 10em;
+  height: 10em;
+  cursor: pointer;
+}
+.userProfileHead{
+  width: 75%;
+}
+.profileDp{
+  height: 18em;
+  width: 18em;
+  margin-top: 0%;
+}
+@media only screen and (max-width:768px)
+{
+  .userProfileHead{
+    width: 90%;
+  }
+  .profileDp{
+    height: 12em;
+    width: 12em;
+  }
+  .editProfileBox{
+
+    margin: auto;
+    margin-top: 10%;
+    margin-bottom: 2%;
+    opacity:  0.8;
+    border-radius: 2em 0em;
+    border: 3px solid blue;
+    width: 350px;
+
+
+}
+.editProfileDp{
+  margin-left: 25%;
+  margin-right: 20%;
+  height: 8em;
+  width: 8em;
+  cursor: pointer;
+}
+
+}
+@media only screen and (max-width:425px)
+{
+  .editProfileBox{
+
+    margin: auto;
+    margin-top: 25%;
+    margin-bottom: 4%;
+    opacity:  0.8;
+    border-radius: 2em 0em;
+    border: 3px solid blue;
+    width: 350px;
+
+
+}
+.editProfileDp{
+  margin-left: 25%;
+  margin-right: 20%;
+  height: 8em;
+  width: 8em;
+  cursor: pointer;
+}
+}
+@media only screen and (max-width:360px)
+{
+  .userProfileHead{
+    margin-top: 5em;
+  }
+  .userDetails{
+    text-align: center;
+  }
+  .editProfileBox{
+
+    margin: auto;
+    margin-top: 32%;
+    margin-bottom: 2%;
+    opacity:  0.8;
+    border-radius: 2em 0em;
+    border: 3px solid blue;
+    width: 300px;
+
+
+}
+.editProfileDp{
+  margin-left: 22%;
+  margin-right: 20%;
+  height: 7em;
+  width: 7em;
+  cursor: pointer;
+}
+}
