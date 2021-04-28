@@ -20,10 +20,10 @@ export default function Header() {
     return (
         <div className="container-fluid bg-danger">
             <div className="row p-2">
-                <div className="col-md-9 col-6">
-                    <Link  to=""><Navbar.Brand href="#home"><h3 id="navbarHeading" className="ml-3  text-white">Juschat Admin</h3></Navbar.Brand></Link>
+                <div className="col-md-8 col-12">
+                    <Link  to="/admin/home"><Navbar.Brand><h3 id="navbarHeading" className="ml-3  text-white">Juschat Admin</h3></Navbar.Brand></Link>
                 </div>
-                <div className="col-md-3 mt-1 col-6">
+                <div className="col-md-4 mt-1 col-12">
                     <Link to=""><h3 title="User" className="pr-1 float-left "><i className="far fa-user text-light"></i></h3></Link>
                     <Dropdown>
                         <Dropdown.Toggle variant="sm" className="" >

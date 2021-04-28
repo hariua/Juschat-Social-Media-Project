@@ -54,7 +54,7 @@ export default function AdminSignIn() {
   return (
     <div className="row" id="LoginBg">
       <div className="col-md-12">
-        <div className="form-design-signin bg-light col-md-7  p-5 container-fluid">
+        <div className="form-design-admin bg-light  p-5 container-fluid">
           <h1 className="text-center mb-3"  style={{fontFamily:'Dancing Script, cursive'}}>Admin Login </h1>
           <Form>
             <Form.Group controlId="formBasicEmail">

@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Basic:ital@1&display=swap');
-.form-design-signin{
+.form-design-admin{
     
     margin:auto;
     margin-top: 8.5%;
-    margin-bottom: 9.2%;
+    margin-bottom: 5.2%;
     width:450px;
     height:425px;
     opacity: 0.8;
@@ -20,4 +20,37 @@
 .signinLabel{
     font-family: 'Gentium Book Basic', serif;
     font-weight: 500;
+}
+
+@media only screen and (max-width:430px)
+{
+    .form-design-admin{
+    
+        margin:auto;
+        margin-top: 8.5%;
+        margin-bottom: 5.2%;
+        margin-left:2%;
+        width:370px;
+        height:425px;
+        opacity: 0.8;
+        border-radius: 2em 0em;
+        
+    }
+}
+
+@media only screen and (max-width:360px)
+{
+    .form-design-admin{
+    
+        margin:auto;
+        margin-top: 30%;
+        margin-bottom: 40%;
+        margin-left:9%;
+        margin-right: 3%;
+        width:300px;
+        height:425px;
+        opacity: 0.8;
+        border-radius: 2em 0em;
+        
+    }
 }

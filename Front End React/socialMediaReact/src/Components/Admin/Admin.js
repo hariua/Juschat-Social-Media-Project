@@ -14,11 +14,11 @@ export default function Admin() {
         <div>
             <Router>
                 <Route path="/admin" exact><AdminSignIn /></Route>
-                <Route path ="/admin/home"><AdminNavbar /><AdminSidebar /></Route>
+                <Route path ="/admin/home"><AdminNavbar /><AdminSidebar /><AdminDashboard /></Route>
                 <Route path="/admin/allUsers"><AdminNavbar /><AdminSidebar /><AllUsers /></Route>
                 <Route path="/admin/allPosts"><AdminNavbar /><AdminSidebar /><AllPosts /></Route>
                 <Route path="/admin/reportedPosts"><AdminNavbar /><AdminSidebar /><ReportedPosts /></Route>
-                <Route path="/admin/dashboard"><AdminNavbar /><AdminSidebar /><AdminDashboard /></Route>
+                <Route path="/admin/dashboard"><AdminNavbar /><AdminSidebar /></Route>
             </Router>
             <ToastContainer position="top-center"
         autoClose={2000}
