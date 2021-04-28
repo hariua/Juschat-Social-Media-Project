@@ -4,24 +4,85 @@
  .homeCompo{
     margin-top: 9%;
 }
-@media only screen and (max-width:480px) {
-    .homeCompo{
-        margin-top: 32%;
-    }
+.homeTotal{
+    width: 75%;
+    margin: auto;
 }
 .suggestionCompo{
-    margin-top: 0%;
-    height: 30%;
     width: auto;
-    height: auto;
-    
+    margin-top: 29%;
 }
-@media only screen and (min-width:1000px) {
+@media only screen and (max-width:1024px) {
+    .homeTotal{
+        width: 80%;
+    }
     .suggestionCompo{
-        width: 300px;
+        width: auto;
         padding: auto;
-        margin-top:30%;
+        margin-top:29%;
 
         
     }
+    
 }
+@media only screen and (max-width:991px) {
+    .homeTotal{
+        width: 80%;
+    }
+    .suggestionCompo{
+        width: auto;
+        padding: auto;
+        margin-top:0%;
+
+        
+    }
+    
+}
+
+@media only screen and (max-width:768px) {
+    .homeTotal{
+        margin-left: 3%;
+    }
+    .suggestionCompo{
+        width: 500px;
+        padding: auto;
+        margin-top:0%;
+        margin-left: auto;
+
+        
+    }
+    .homeCompo{
+        margin-top: 13%;
+    }
+}
+@media only screen and (max-width:480px) {
+    .homeCompo{
+        margin-top: 17%;
+        margin-left: 2%;
+    }
+    .homeTotal{
+        width: 100%;
+        margin: auto;
+    }
+    .suggestionCompo{
+        width: 400px;
+        margin: auto;
+    }
+}
+@media only screen and (max-width:320px) {
+    .homeCompo{
+        margin-top: 38%;
+        width: 95%;
+    }
+    .homeTotal{
+        width: 98%;
+        
+        margin-top: 0%;
+    }
+    .suggestionCompo{
+        width: 270px;
+        
+    }
+}
+
+

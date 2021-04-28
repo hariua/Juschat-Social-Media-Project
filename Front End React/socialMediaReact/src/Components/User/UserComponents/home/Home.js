@@ -173,7 +173,7 @@ export default function Home() {
     const [comment, setComment] = useState()
     return (
         <div className="homeBg">
-            <div className="container-fluid w-75"  >
+            <div className="homeTotal"  >
                 <div className="row">
                     <div className="col-md-12 col-lg-8 container homeCompo">
                         <div className="feed" >

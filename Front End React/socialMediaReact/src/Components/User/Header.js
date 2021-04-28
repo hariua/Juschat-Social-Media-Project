@@ -150,7 +150,7 @@ export default function Header() {
                     type="text"
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Search" id="searchInput"
-                    className="mr-sm-2 form-control col-6 col-md-4"
+                    className="mr-sm-2 form-control col-4 col-md-4"
                 />
                 <Button variant="outline-info"
                     onClick={searchClick}
@@ -159,7 +159,7 @@ export default function Header() {
                 </Button>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="" style={{ paddingLeft: "13em" }}></Nav>
+                    <Nav className="" style={{ paddingLeft: "20%" }}></Nav>
                     <Nav>
                         <Nav.Link>
                             <Link to="/addPost">

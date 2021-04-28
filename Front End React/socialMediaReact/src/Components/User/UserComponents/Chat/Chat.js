@@ -82,7 +82,7 @@ export default function Chat() {
                         <div className="inbox_chat scroll">
                             {friendList.length > 0 ? friendList.map((data, index) => {
                                 return (
-                                    <div className="chat_list active_chat" onClick={() => userClick(data.userId, data.userName, localStorage.getItem('userId'), localStorage.getItem('User'))} >
+                                    <div className="chat_list active_chat" style={{cursor:"pointer"}} onClick={() => userClick(data.userId, data.userName, localStorage.getItem('userId'), localStorage.getItem('User'))} >
                                         <div className="chat_people">
                                             <div className="chat_img"> <img className="img-fluid rounded-circle" src={server + '/ProfileImages/' + data.userId + '.jpg'} alt="sunil"></img> </div>
                                             <div className="chat_ib">
@@ -132,7 +132,7 @@ export default function Chat() {
                         </div>
                         <div className="type_msg" >
                             <div className="input_msg_write">
-                                <input type="text" id="chatInput" onChange={(event) => setChatInputMessage(event.target.value)} className="write_msg form-control" placeholder="Type a message" />
+                                <input type="text" id="chatInput" maxLength="180" onBlur={(event) => setChatInputMessage(event.target.value)} className="write_msg form-control" placeholder="Type a message" />
                                 <button className="msg_send_btn" onClick={chatSubmit} type="button"><i className="fa fa-paper-plane" aria-hidden="true"></i></button>
                             </div>
                         </div>

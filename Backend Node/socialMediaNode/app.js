@@ -22,7 +22,7 @@ var server = http.createServer(app)
 var port = 3001
 app.set('port', port)
 server.listen(port)
-const io = socketio(server, {
+const io = socketio(server, {   
   cors: {
     origin: "*"
   }
