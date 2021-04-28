@@ -132,7 +132,9 @@ export default function Header() {
 
 
     return (
-        <div style={{position:"fixed",zIndex:"100",width:"100%"}}>
+        <div className="row">
+            <div className="col-md-12">
+            <div style={{position:"fixed",zIndex:"100",width:"100%"}}>
             <Navbar
                 collapseOnSelect
                 expand="lg"
@@ -285,6 +287,8 @@ export default function Header() {
                     </Popover.Content>
                 </Popover>
             </Overlay>
+        </div>
+            </div>
         </div>
     );
 }

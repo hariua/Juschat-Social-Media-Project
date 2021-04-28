@@ -1,57 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-#postIcon{
-    font-size: 2em;
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
+#postIcon {
+  font-size: 2em;
 }
-.add-post{
-    margin-top:16%;
-    margin-bottom: 8%;
-    width: 500px;
-    height:auto;
-    opacity: 0.9;
-    border-radius: 2em 0em;
-    margin-left: 3em;
-    
+.add-post {
+  margin-top: 16%;
+  margin-bottom: 8%;
+  width: 500px;
+  height: auto;
+  opacity: 0.9;
+  border-radius: 2em 0em;
+  margin-left: 3em;
+}
+.preview-post {
+  margin-top: 13%;
+  margin-bottom: 8%;
+  width: 500px;
+  height: auto;
+  opacity: 0.9;
+  border-radius: 2em 0em;
+  margin-left: 3em;
+}
+@media only screen and (max-width: 1024px) {
+    .add-post {
+      width: 400px;
+      margin-top: 20%;
     }
-    .preview-post{
-        margin-top:13%;
-        margin-bottom: 8%;
-        width: 500px;
-        height:auto;
-        opacity: 0.9;
-        border-radius: 2em 0em;
-        margin-left: 3em;   
+    .preview-post {
+      width: 400px;
+      margin-top: 16%;
     }
-    @media only screen and (max-width:480px) {
-        .add-post{
-            width: 400px;
-            margin-top: 20%;
+    .headingPost {
+      font-size: 1.8em;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .add-post {
+      width: 300px;
+      margin-top: 20%;
+    }
+    .preview-post {
+      width: 300px;
+      margin-top: 16%;
+    }
+    .headingPost {
+      font-size: 1.8em;
+    }
+  }
+@media only screen and (max-width: 480px) {
+  .add-post {
+    width: 400px;
+    margin-top: 20%;
+  }
+  .preview-post {
+    width: 400px;
+    margin-top: 5%;
+  }
+  .headingPost {
+    font-size: 1.8em;
+  }
+}
+@media only screen and (max-width: 320px) {
+    .add-post {
+      width: 280px;
+      margin-top: 42%;
+      margin-left:1%;
+      margin-right:1%
+    }
+    .preview-post {
+        width: 280px;
+        margin-top: 2%;
+        margin-left:1%;
+        margin-right:1%
+    }
+    .headingPost {
+      font-size: 1.8em;
+    }
+  }
 
-        }
-        .preview-post{
-            width: 400px;
-            margin-top: 5%;
-
-        }
-        .headingPost{
-            font-size: 1.8em;
-        }
-        
-     }
-     
-    
-    #postBg{
-        background-image: url(./kristina-tripkovic-8Zs5H6CnYJo-unsplash.jpg);
-        background-size: cover;
-        background-position: center;
-    }
-    .postLabel{
-        font-family: 'Gentium Book Basic', serif;
-        font-weight: 500;
-        font-size: 1.8em;
-    }
-    .imgPreview{
-        width:13em;
-        height: 8em;
-        margin:auto;
-    }
-    
+#postBg {
+  background-image: url(./kristina-tripkovic-8Zs5H6CnYJo-unsplash.jpg);
+  background-size: cover;
+  background-position: center;
+}
+.postLabel {
+  font-family: "Gentium Book Basic", serif;
+  font-weight: 500;
+  font-size: 1.8em;
+}
+.imgPreview {
+  width: 13em;
+  height: 8em;
+  margin: auto;
+}
