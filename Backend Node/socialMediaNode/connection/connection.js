@@ -6,7 +6,7 @@ var state={
     connect:(done)=>
     {
         const dbName="Juschat"
-        const url="mongodb://localhost:27017"
+        const url=process.env.DATABASE_URL
         mongoClient.connect(url,(err,data)=>
         {
             if(err)

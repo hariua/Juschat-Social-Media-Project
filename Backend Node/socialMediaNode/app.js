@@ -79,6 +79,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 db.connect((err) => {
   if (err) {
+    console.log(err);
     console.log("Database Connection Failure");
   } else {
     console.log("Database Connection Success");
