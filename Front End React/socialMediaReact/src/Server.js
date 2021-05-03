@@ -1,2 +1,2 @@
-const server = "https://juschat.hariua.xyz:3001"
+const server = "https://juschat.hariua.xyz"
 export default server
